@@ -28,10 +28,4 @@ public class UserDaoImpl implements UserDao {
         });
         return userList.get(0);
     }
-//    @Override
-//    public User getUserByUsername(String username) {
-//        User user = jdbcTemplate.queryForObject("SELECT * FROM user_table WHERE username = ?", new Object[]{username}, User.class);
-//        System.out.println(user);
-//        return user;
-//    }
 }
