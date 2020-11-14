@@ -1,10 +1,12 @@
 package com.nc.project.authentification;
 
 import com.nc.project.service.JwtService;
-import com.nc.project.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -17,13 +19,11 @@ import java.io.IOException;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final UserService userService;
-    private final JwtService jwtService;
-
-    public JwtAuthenticationFilter(UserService userService, JwtService jwtService) {
-        this.userService = userService;
-        this.jwtService = jwtService;
-    }
+    @Autowired
+    @Qualifier("userService")
+    private UserDetailsService userDetailsService;
+    @Autowired
+    private JwtService jwtService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -35,10 +35,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
             jwtToken = requestTokenHeader.substring(7);
             username = jwtService.extractUsername(jwtToken);
+        }
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                UserDetails userDetails = this.userService.loadUserByUsername(username);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
 
                 if (jwtService.validateToken(jwtToken, userDetails.getUsername())) {
 
@@ -51,6 +53,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
             chain.doFilter(request, response);
-        }
+
     }
 }
