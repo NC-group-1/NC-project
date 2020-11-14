@@ -1,7 +1,8 @@
-package com.nc.project.service;
+package com.nc.project.ServiceImpl;
 
 import com.nc.project.dao.UserDao;
 import com.nc.project.model.User;
+import com.nc.project.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

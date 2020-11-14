@@ -1,6 +1,6 @@
 package com.nc.project.authentification;
 
-import com.nc.project.service.JwtService;
+import com.nc.project.ServiceImpl.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

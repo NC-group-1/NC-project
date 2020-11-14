@@ -1,5 +1,6 @@
-package com.nc.project.dao;
+package com.nc.project.daoImpl;
 
+import com.nc.project.dao.UserDao;
 import com.nc.project.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;

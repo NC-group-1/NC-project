@@ -1,4 +1,4 @@
-package com.nc.project.service;
+package com.nc.project.ServiceImpl;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
