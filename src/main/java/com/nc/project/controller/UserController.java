@@ -5,8 +5,12 @@ import com.nc.project.dto.AuthResponse;
 import com.nc.project.model.User;
 import com.nc.project.ServiceImpl.JwtService;
 import com.nc.project.ServiceImpl.UserService;
+
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +29,17 @@ public class UserController {
     @ResponseStatus(value = HttpStatus.OK)
     public void register(@RequestBody User user){
         userService.createUser(user);
+    }
+    
+    @GetMapping("{clientId}")
+    public ResponseEntity<User> show(@PathVariable int clientId) {
+		Optional<User> user = userService.getById(clientId);
+				
+		if (user.isPresent()) {
+			return ResponseEntity.ok(user.get());
+	    } else {
+	    	return ResponseEntity.notFound().build();
+	    }
     }
 
     @RequestMapping(path = "/auth", method = RequestMethod.POST)

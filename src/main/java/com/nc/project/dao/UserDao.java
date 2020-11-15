@@ -6,9 +6,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserDao {
     void create(User user);
     User getUserByUsername(String username);
+    public Optional<User> findById(int id);
 }
