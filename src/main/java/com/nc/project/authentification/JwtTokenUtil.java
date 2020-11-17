@@ -1,4 +1,4 @@
-package com.nc.project.ServiceImpl;
+package com.nc.project.authentification;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-public class JwtService {
+public class JwtTokenUtil {
     private final String SECRET_KEY = "NC_GROUP_1";
 
     public String extractUsername(String token) {

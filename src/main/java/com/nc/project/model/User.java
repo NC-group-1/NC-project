@@ -20,9 +20,18 @@ public class User implements UserDetails {
     private String username;
     private String password;
     private String role;
+    private String email;
+    private Boolean enable;
+    private String confirmationToken;
 
-    /* Some other fields */
+    //to do: edit fields
 
+    public User(int id, String username, String password, String role) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
