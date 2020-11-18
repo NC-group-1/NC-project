@@ -26,7 +26,7 @@ public class UserService implements IUserService, UserDetailsService {
 
     @Override
     public User createUser(User user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+//        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userDao.create(user);
         return user;
     }

@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -20,19 +21,18 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void create(User user) {
-        jdbcTemplate.update("INSERT INTO user_table (username, password, role) VALUES (?,?,?)", user.getUsername(), user.getPassword(), user.getRole());
+        jdbcTemplate.update("INSERT INTO user_table (username, email, role) VALUES (?,?,?);", user.getEmail(), user.getEmail(), user.getRole());
+        jdbcTemplate.update("INSERT INTO recovery_token (token, expiry_date, user_id) VALUES (?,?, (SELECT id from user_table WHERE email = ?));", UUID.randomUUID().toString(), new Timestamp(new Date().getTime() + 60000), user.getEmail());
     }
 
     @Override
     public User getUserByUsername(String username) {
-        List<User> userList = jdbcTemplate.query("SELECT * FROM user_table WHERE username = ?", new Object[]{username}, (resultSet,i) -> {
-            System.out.println(1);
+        return jdbcTemplate.queryForObject("SELECT * FROM user_table WHERE username = ?", new Object[]{username}, (resultSet, i) -> {
             return new User(resultSet.getInt("id"),
                     resultSet.getString("username"),
                     resultSet.getString("password"),
                     resultSet.getString("role"));
         });
-        return userList.get(0);
     }
 
     @Override
@@ -49,30 +49,28 @@ public class UserDaoImpl implements UserDao {
                         rs.getString("role"),
                         rs.getString("email"),
                         rs.getBoolean("enabled"),
-                        rs.getString("confirmationToken")
-
+                        rs.getString("confirmation_token")
                 ));
         return user;
     }
 
     @Override
     public Optional<User> findById(int id) {
-		
-		try {
-			User user = jdbcTemplate.queryForObject(
-					"select id, username, password, role  from user_table where id = ?",
-					new Object[]{id}, 
-					(rs, rowNum) -> new User(
-			                rs.getInt("id"),
-			                rs.getString("username"),
-			                rs.getString("password"),
-			                rs.getString("role")
-			        ));
-			return Optional.of(user);
-		} catch(EmptyResultDataAccessException e) {
-			return Optional.empty();
-		}
-        
+
+        try {
+            User user = jdbcTemplate.queryForObject(
+                    "select id, username, password, role  from user_table where id = ?",
+                    new Object[]{id},
+                    (rs, rowNum) -> new User(
+                            rs.getInt("id"),
+                            rs.getString("username"),
+                            rs.getString("password"),
+                            rs.getString("role")
+                    ));
+            return Optional.of(user);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -83,21 +81,21 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void saveToken(RecoveryToken recoveryToken) {
-        this.jdbcTemplate.update("UPDATE recovery_token, expiry_date SET token=?, expiry_date=? WHERE id=?",
-                recoveryToken, new Timestamp(new Date().getTime()), recoveryToken.getUser_id());
+        this.jdbcTemplate.update("UPDATE recovery_token SET token=?, expiry_date=? WHERE user_id=?",
+                recoveryToken.getToken(), new Timestamp(new Date().getTime()), recoveryToken.getUser_id());
     }
 
     @Override
     public void changeUserPassword(RecoveryToken recoveryToken, String password) {
-        this.jdbcTemplate.update("UPDATE user SET password=? WHERE id=?", password, recoveryToken.getUser_id());
+        this.jdbcTemplate.update("UPDATE user_table SET password=? WHERE id=?", password, recoveryToken.getUser_id());
     }
 
     @Override
     public Optional<User> findUserByPasswordToken(String token) {
         try {
             User user = jdbcTemplate.queryForObject(
-                    "SELECT id, username, password, role, email, enabled, confirmation_token " +
-                            "FROM user_table WHERE confirmationToken = ?",
+                    "SELECT user_table.id, username, password, role, email, enabled, confirmation_token " +
+                            "FROM user_table JOIN recovery_token ON user_table.id = recovery_token.user_id WHERE recovery_token.token = ?",
                     new Object[]{token},
                     (rs, rowNum) -> new User(
                             rs.getInt("id"),
@@ -106,7 +104,7 @@ public class UserDaoImpl implements UserDao {
                             rs.getString("role"),
                             rs.getString("email"),
                             rs.getBoolean("enabled"),
-                            rs.getString("confirmationToken")
+                            rs.getString("confirmation_token")
                     ));
             return Optional.of(user);
         } catch (EmptyResultDataAccessException e) {
@@ -117,7 +115,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public RecoveryToken findTokenByRecoverPasswordToken(String token) {
-        RecoveryToken recoveryToken = jdbcTemplate.queryForObject(
+        return jdbcTemplate.queryForObject(
                 "SELECT token, user_id, expiry_date " +
                         "FROM recovery_token WHERE token = ?",
                 new Object[]{token},
@@ -126,8 +124,6 @@ public class UserDaoImpl implements UserDao {
                         rs.getInt("user_id"),
                         rs.getDate("expiry_date")
                 ));
-        return recoveryToken;
-
     }
 
     @Override
@@ -148,7 +144,7 @@ public class UserDaoImpl implements UserDao {
     public RecoveryToken findRecoveryTokenByUserId(int id) {
         RecoveryToken recoveryToken = jdbcTemplate.queryForObject(
                 "SELECT token, user_id, expiry_date " +
-                        "FROM recovery_token WHERE id = ?",
+                        "FROM recovery_token WHERE user_id = ?",
                 new Object[]{id},
                 (rs, rowNum) -> new RecoveryToken(
                         rs.getString("token"),

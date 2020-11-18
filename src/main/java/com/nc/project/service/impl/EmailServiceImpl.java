@@ -41,8 +41,12 @@ public class EmailServiceImpl implements EmailService {
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
 
         mimeMessageHelper.setTo(String.join(",", email.getRecipients()));
-        mimeMessageHelper.setSubject(email.getSubject());
-        mimeMessageHelper.setText(email.getBody());
+//        mimeMessageHelper.setSubject(email.getSubject());
+        mimeMessage.setSubject("Password recovery");
+//        mimeMessageHelper.setText(email.getBody());
+        mimeMessageHelper.setText("Hello, %s!<br/> \\\n" +
+                "             Your new password: <br/>\\\n" + recoverPasswordLink +
+                "             %s<br/><br/>");
         Boolean isSent = false;
         try {
             javaMailSender.send(mimeMessage);

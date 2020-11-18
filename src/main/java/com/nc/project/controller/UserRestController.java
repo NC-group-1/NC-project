@@ -27,7 +27,7 @@ public class UserRestController {
     @PostMapping
     @ResponseStatus(value = HttpStatus.OK)
     public void register(@RequestBody User user){
-          userService.createUser(user);
+        userService.createUser(user);
     }
     
     @GetMapping("{clientId}")

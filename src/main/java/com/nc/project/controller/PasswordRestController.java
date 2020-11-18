@@ -36,7 +36,7 @@ public class PasswordRestController {
         String token = UUID.randomUUID().toString();
         try {
             userService.updateConfirmationToken(user, token);
-            String recoverPasswordLink = "http://localhost:4200/recovery-password?token=" + token;
+            String recoverPasswordLink = "http://localhost:4200/password/change?token=" + token;
             emailService.sendMessageWithAttachment(email, recoverPasswordLink);
         } catch (UserNotFoundException | MessagingException e) {
             System.out.println("User not found" + e.getMessage());
@@ -49,17 +49,16 @@ public class PasswordRestController {
         String token = passwordDto.getToken();
         String result = userService.validatePasswordRecoverToken(token);
         if (result != null) {
+            log.error(result);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Optional<User> user = userService.getUserByRecoverPasswordToken(token);
-        RecoveryToken recoveryToken = userService.getRecoverTokenByToken(token);
         if (user.isPresent()) {
+            RecoveryToken recoveryToken = userService.getRecoverTokenByToken(token);
             userService.changeUserPassword(recoveryToken, passwordDto.getNewPassword());
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
     }
-
 }

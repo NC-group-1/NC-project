@@ -6,6 +6,7 @@ import com.nc.project.model.RecoveryToken;
 import com.nc.project.model.User;
 
 public interface IUserService {
+
     User createUser(User user);
 
     User findByEmail(String email);
