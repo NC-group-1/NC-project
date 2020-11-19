@@ -2,6 +2,8 @@ package com.nc.project.dao;
 
 import com.nc.project.model.RecoveryToken;
 import com.nc.project.model.User;
+import com.nc.project.model.UserProfile;
+
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -13,8 +15,6 @@ public interface UserDao {
     User getUserByUsername(String username);
 
     User findByEmail(String email);
-
-    Optional<User> findById(int id);
 
     void addToken(RecoveryToken recoveryToken);
 

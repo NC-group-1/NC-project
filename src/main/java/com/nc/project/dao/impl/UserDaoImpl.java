@@ -3,6 +3,8 @@ package com.nc.project.dao.impl;
 import com.nc.project.dao.UserDao;
 import com.nc.project.model.RecoveryToken;
 import com.nc.project.model.User;
+import com.nc.project.model.UserProfile;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -52,25 +54,6 @@ public class UserDaoImpl implements UserDao {
                         rs.getString("confirmation_token")
                 ));
         return user;
-    }
-
-    @Override
-    public Optional<User> findById(int id) {
-
-        try {
-            User user = jdbcTemplate.queryForObject(
-                    "select id, username, password, role  from user_table where id = ?",
-                    new Object[]{id},
-                    (rs, rowNum) -> new User(
-                            rs.getInt("id"),
-                            rs.getString("username"),
-                            rs.getString("password"),
-                            rs.getString("role")
-                    ));
-            return Optional.of(user);
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
     }
 
     @Override

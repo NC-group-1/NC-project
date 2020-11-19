@@ -11,8 +11,6 @@ public interface IUserService {
 
     User findByEmail(String email);
 
-    Optional<User> getById(int id);
-
     void updateConfirmationToken(User user, String token);
 
     void changeUserPassword(RecoveryToken recoveryToken, String password);

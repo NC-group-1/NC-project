@@ -43,10 +43,10 @@ public class UserService implements IUserService, UserDetailsService {
                 userByName.getPassword(), userByName.getAuthorities());
     }
     
-    @Override
+    /*@Override
     public Optional<User> getById(int id) {
 		return userDao.findById(id);
-	}
+	}*/
 
 	@Override
 	public void updateConfirmationToken(User user, String token) {
