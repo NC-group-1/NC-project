@@ -9,4 +9,6 @@ import com.nc.project.model.UserProfile;
 @Repository
 public interface UserProfileDao {
     Optional<UserProfile> findById(int id);
+    
+    Optional<UserProfile> findByEmail(String email);
 }

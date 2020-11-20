@@ -22,8 +22,6 @@ public class UserRestController {
     @Autowired
     private UserService userService;
     @Autowired
-    private ProfileService userProfileService;
-    @Autowired
     private JwtTokenUtil jwtTokenUtil;
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -34,13 +32,6 @@ public class UserRestController {
         userService.createUser(user);
     }
     
-    @GetMapping("{clientId}")
-    public ResponseEntity<UserProfile> show(@PathVariable int clientId) {
-		Optional<UserProfile> userProfile = userProfileService.getById(clientId);
-
-        return userProfile.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
     @RequestMapping(path = "/auth", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
     public AuthResponse authenticate(@RequestBody AuthRequest req){

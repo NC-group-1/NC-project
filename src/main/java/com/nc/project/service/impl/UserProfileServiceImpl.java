@@ -22,4 +22,9 @@ public class UserProfileServiceImpl implements ProfileService {
     public Optional<UserProfile> getById(int id) {
 		return userProfileDao.findById(id);
 	}
+	
+	@Override
+    public Optional<UserProfile> getByEmail(String email) {
+		return userProfileDao.findByEmail(email);
+	}
 }
