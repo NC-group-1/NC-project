@@ -39,4 +39,25 @@ public class UserProfileDaoImpl implements UserProfileDao {
 			return Optional.empty();
 		}
 	}
+	
+	@Override
+	public Optional<UserProfile> findByEmail(String email) {
+
+		try {
+			UserProfile userProfile = jdbcTemplate.queryForObject(
+					"SELECT name, surname, role, reg_date, activated, about_me, image_link FROM usr WHERE email = ?",
+					new Object[] { email },
+					(rs, rowNum) -> new UserProfile(rs.getString("name"), 
+													rs.getString("surname"),
+													rs.getString("role"),
+													rs.getDate("reg_date"), 
+													rs.getBoolean("activated"), 
+													rs.getString("about_me"),
+													rs.getString("image_link")
+													));
+			return Optional.of(userProfile);
+		} catch (EmptyResultDataAccessException e) {
+			return Optional.empty();
+		}
+	}
 }
