@@ -23,6 +23,7 @@ public class UserProfileRestController {
 		this.userProfileService = userProfileService;
 	}
 
+	
 	@GetMapping("user/{clientId}")
 	public ResponseEntity<UserProfile> show(@PathVariable int clientId) {
 		Optional<UserProfile> userProfile = userProfileService.getById(clientId);
