@@ -5,8 +5,6 @@ import com.nc.project.dto.AuthRequest;
 import com.nc.project.dto.AuthResponse;
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.User;
-import com.nc.project.model.UserProfile;
-import com.nc.project.service.ProfileService;
 import com.nc.project.service.impl.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

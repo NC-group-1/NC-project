@@ -3,7 +3,6 @@ package com.nc.project.dao;
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.RecoveryToken;
 import com.nc.project.model.User;
-import com.nc.project.model.UserProfile;
 
 import org.springframework.stereotype.Repository;
 
