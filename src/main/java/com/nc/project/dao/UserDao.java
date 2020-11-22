@@ -1,5 +1,6 @@
 package com.nc.project.dao;
 
+import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.RecoveryToken;
 import com.nc.project.model.User;
 import com.nc.project.model.UserProfile;
@@ -12,21 +13,16 @@ import java.util.Optional;
 public interface UserDao {
     void create(User user);
 
-    User getUserByUsername(String username);
-
-    User findByEmail(String email);
-
-    void addToken(RecoveryToken recoveryToken);
+    Optional<User> findByEmailForAuth(String email);
+    Optional<User> findByEmailForRecovery(String email);
+    Optional<UserProfileDto> findByEmail(String email);
 
     void saveToken(RecoveryToken recoveryToken);
 
-    void changeUserPassword(RecoveryToken recoveryToken, String password);
+    void changeUserPassword(int userId, String password);
 
-    Optional<User> findUserByPasswordToken(String token);
+    Optional<Integer> findUserIdByPasswordToken(String token);
 
     RecoveryToken findTokenByRecoverPasswordToken(String token);
 
-    RecoveryToken findRecoverTokenByToken(String token);
-
-    RecoveryToken findRecoveryTokenByUserId(int id);
 }
