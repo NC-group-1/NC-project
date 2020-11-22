@@ -2,6 +2,10 @@ package com.nc.project.service;
 
 import com.nc.project.model.Project;
 
+import java.util.List;
+
 public interface ProjectService {
-    Project createProject(Project project);
+    void createProject(Project project);
+    List<Project> getAll();
+    void editProject(Project project);
 }
