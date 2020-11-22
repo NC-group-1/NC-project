@@ -42,6 +42,11 @@ public class UserService implements IUserService, UserDetailsService {
     }
 
     @Override
+    public void UpdateUserFromTable(UserProfileDto userProfile) {
+        userDao.UpdateUserFromTable(userProfile);
+    }
+
+    @Override
     public Optional<User> findByEmailForRecovery(String email) {
         return userDao.findByEmailForRecovery(email);
     }

@@ -14,7 +14,9 @@ public interface UserDao {
     void create(User user);
 
     Optional<User> findByEmailForAuth(String email);
+
     Optional<User> findByEmailForRecovery(String email);
+
     Optional<UserProfileDto> findByEmail(String email);
 
     void saveToken(RecoveryToken recoveryToken);
@@ -26,4 +28,6 @@ public interface UserDao {
     RecoveryToken findTokenByRecoverPasswordToken(String token);
 
     List<UserProfileDto> getAllByPage(int page,int size);
+
+    void UpdateUserFromTable(UserProfileDto userProfile);
 }

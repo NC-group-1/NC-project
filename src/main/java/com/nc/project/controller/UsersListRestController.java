@@ -1,5 +1,6 @@
 package com.nc.project.controller;
 
+import com.nc.project.dto.PasswordDto;
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.service.impl.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,5 +28,13 @@ public class UsersListRestController {
     {
         List<UserProfileDto> userList = userService.getAllByPage(page, size);
         return new ResponseEntity<>(userList, HttpStatus.OK);
+    }
+
+    @PostMapping
+    @ResponseStatus(value = HttpStatus.OK)
+    public void update(
+            @RequestBody UserProfileDto userProfileDto)
+    {
+        userService.UpdateUserFromTable(userProfileDto);
     }
 }

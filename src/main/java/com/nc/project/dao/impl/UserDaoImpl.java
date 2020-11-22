@@ -108,24 +108,7 @@ public class UserDaoImpl implements UserDao {
                 ));
     }
 
-    //@Override
-    public List<UserProfileDto> getAllByPage22(int page, int size) {
-        List<UserProfileDto> listUserProfile = new ArrayList<>();
-        List<Map<String, Object>> rows = jdbcTemplate.queryForList("SELECT name, surname, email, role, activated, image_link, reg_date, about_me FROM usr LIMIT ? OFFSET ?*?",
-                size,size,(page-1));
-        for (Map row : rows) {
-            listUserProfile.add(new UserProfileDto(
-                    (String)row.get("name"),
-                    (String)row.get("surname"),
-                    (String)row.get("email"),
-                    (String)row.get("role"),
-                    (boolean)row.get("activated"),
-                    (String)row.get("image_link"),
-                    (Timestamp)row.get("reg_date"),
-                    (String)row.get("about_me")));
-        }
-        return listUserProfile;
-    }
+
 
     @Override
     public List<UserProfileDto> getAllByPage(int page, int size) {
@@ -143,5 +126,15 @@ public class UserDaoImpl implements UserDao {
                 )
         );
         return listUserProfile;
+    }
+
+    @Override
+    public void UpdateUserFromTable(UserProfileDto userProfile) {
+        jdbcTemplate.update("UPDATE usr SET name=?, surname=?, role=?, activated=? WHERE email=?",
+                userProfile.getName(),
+                userProfile.getSurname(),
+                userProfile.getRole(),
+                userProfile.getActivated(),
+                userProfile.getEmail());
     }
 }
