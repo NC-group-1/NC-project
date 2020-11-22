@@ -76,7 +76,7 @@ public class UserDaoImpl implements UserDao {
                         rs.getTimestamp("code_expire_date")
                 ));
         return Optional.of(user);
-        return user;
+
     }
 
     @Override
