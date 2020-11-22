@@ -8,8 +8,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -17,26 +19,42 @@ import java.util.Collections;
 public class User implements UserDetails {
     @Id
     private int id;
-    private String username;
-    private String password;
-    private String role;
+    private String name;
+    private String surname;
     private String email;
-    private Boolean enable;
-    private String confirmationToken;
+    private String role;
+    private Boolean activated;
+    private String imageLink;
+    private String pass;
+    private Timestamp regDate;
+    private String aboutMe;
+    private String emailCode;
+    private Timestamp codeExpireDate;
 
-    //to do: edit fields
-
-    public User(int id, String username, String password, String role) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
+    public User(String email, String role, Boolean activated, String pass) {
+        this.email = email;
         this.role = role;
+        this.activated = activated;
+        this.pass = pass;
+    }
+
+    public User(int id, String email, String emailCode, Timestamp codeExpireDate) {
+        this.id = id;
+        this.email = email;
+        this.emailCode = emailCode;
+        this.codeExpireDate = codeExpireDate;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(role));
     }
+
+    @Override
+    public String getPassword() { return pass; }
+
+    @Override
+    public String getUsername() { return email; }
 
     @Override
     public boolean isAccountNonExpired() {
@@ -54,8 +72,6 @@ public class User implements UserDetails {
     }
 
     @Override
-    public boolean isEnabled() {
-        return true;
-    }
+    public boolean isEnabled() { return true; }
 
 }

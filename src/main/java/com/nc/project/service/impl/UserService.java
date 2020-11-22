@@ -1,6 +1,7 @@
 package com.nc.project.service.impl;
 
 import com.nc.project.dao.UserDao;
+import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.RecoveryToken;
 import com.nc.project.model.User;
 import com.nc.project.service.IUserService;
@@ -26,56 +27,44 @@ public class UserService implements IUserService, UserDetailsService {
 
     @Override
     public User createUser(User user) {
-//        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userDao.create(user);
         return user;
     }
-
     @Override
-    public User findByEmail(String email) {
+    public Optional<UserProfileDto> findByEmail(String email) {
         return userDao.findByEmail(email);
     }
 
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        User userByName = userDao.getUserByUsername(s);
-        return new org.springframework.security.core.userdetails.User(userByName.getUsername(),
-                userByName.getPassword(), userByName.getAuthorities());
+    public Optional<User> findByEmailForRecovery(String email) {
+        return userDao.findByEmailForRecovery(email);
     }
-    
+
     @Override
-    public Optional<User> getById(int id) {
-		return userDao.findById(id);
-	}
+    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        User byEmail = userDao.findByEmailForAuth(s).get();
+        return new org.springframework.security.core.userdetails.User(byEmail.getEmail(),
+                byEmail.getPassword(), byEmail.getAuthorities());
+    }
 
 	@Override
 	public void updateConfirmationToken(User user, String token) {
         RecoveryToken confToken = new RecoveryToken(token, user.getId(), new Date());
-        RecoveryToken newToken = userDao.findRecoveryTokenByUserId(user.getId());
-        if (newToken == null) {
-            userDao.addToken(confToken);
-        }
         userDao.saveToken(confToken);
         log.info("Token was updated successfully");
 
     }
 
     @Override
-    public void changeUserPassword(RecoveryToken recoveryToken, String password) {
+    public void changeUserPassword(int userId, String password) {
         String encodedPassword = bCryptPasswordEncoder.encode(password);
-        userDao.changeUserPassword(recoveryToken, encodedPassword);
+        userDao.changeUserPassword(userId, encodedPassword);
     }
 
     @Override
-    public Optional<User> getUserByRecoverPasswordToken(String token) {
-        return userDao.findUserByPasswordToken(token);
+    public Optional<Integer> getUserIdByRecoverPasswordToken(String token) {
+        return userDao.findUserIdByPasswordToken(token);
     }
-
-    @Override
-    public RecoveryToken getRecoverTokenByToken(String token) {
-        return userDao.findRecoverTokenByToken(token);
-    }
-
     @Override
     public String validatePasswordRecoverToken(String token) {
         final RecoveryToken passToken = userDao.findTokenByRecoverPasswordToken(token);
@@ -85,6 +74,7 @@ public class UserService implements IUserService, UserDetailsService {
                 : null;
     }
 
+
     private boolean isTokenFound(RecoveryToken passToken) {
         return passToken != null;
     }
@@ -93,5 +83,4 @@ public class UserService implements IUserService, UserDetailsService {
         final Calendar cal = Calendar.getInstance();
         return passToken.getExpiryDate().before(cal.getTime());
     }
-
 }
