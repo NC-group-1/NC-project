@@ -1,5 +1,6 @@
 package com.nc.project.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.nc.project.dto.UserProfileDto;
@@ -21,4 +22,6 @@ public interface IUserService {
     String validatePasswordRecoverToken(String token);
 
     Optional<UserProfileDto> findByEmail(String email);
+
+    List<UserProfileDto> getAllByPage(int page, int size);
 }
