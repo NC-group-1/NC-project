@@ -3,10 +3,9 @@ package com.nc.project.controller;
 import com.nc.project.authentification.JwtTokenUtil;
 import com.nc.project.dto.AuthRequest;
 import com.nc.project.dto.AuthResponse;
+import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.User;
-import com.nc.project.model.UserProfile;
-import com.nc.project.service.ProfileService;
-import com.nc.project.service.impl.*;
+import com.nc.project.service.impl.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +31,12 @@ public class UserRestController {
         userService.createUser(user);
     }
     
+    @GetMapping("{email}")
+    public ResponseEntity<UserProfileDto> findUserByEmail(@PathVariable String email) {
+		Optional<UserProfileDto> user = userService.findByEmail(email);
+        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @RequestMapping(path = "/auth", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
     public AuthResponse authenticate(@RequestBody AuthRequest req){

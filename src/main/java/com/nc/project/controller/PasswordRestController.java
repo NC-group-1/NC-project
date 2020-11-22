@@ -3,7 +3,6 @@ package com.nc.project.controller;
 import com.nc.project.dto.PasswordDto;
 import com.nc.project.exception.UserNotFoundException;
 import com.nc.project.model.Email;
-import com.nc.project.model.RecoveryToken;
 import com.nc.project.model.User;
 import com.nc.project.service.EmailService;
 import com.nc.project.service.impl.UserService;
@@ -29,10 +28,7 @@ public class PasswordRestController {
 
     @PostMapping("/recovery-password")
     public ResponseEntity<?> recoverPassword(@RequestBody Email email) throws UnsupportedOperationException {
-        User user = userService.findByEmail(email.getRecipients().get(0));
-        if (user == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+        User user = userService.findByEmailForRecovery(email.getRecipients().get(0)).get();
         String token = UUID.randomUUID().toString();
         try {
             userService.updateConfirmationToken(user, token);
@@ -52,10 +48,9 @@ public class PasswordRestController {
             log.error(result);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Optional<User> user = userService.getUserByRecoverPasswordToken(token);
+        Optional<Integer> user = userService.getUserIdByRecoverPasswordToken(token);
         if (user.isPresent()) {
-            RecoveryToken recoveryToken = userService.getRecoverTokenByToken(token);
-            userService.changeUserPassword(recoveryToken, passwordDto.getNewPassword());
+            userService.changeUserPassword(user.get(), passwordDto.getNewPassword());
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

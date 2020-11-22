@@ -44,8 +44,8 @@ public class EmailServiceImpl implements EmailService {
 //        mimeMessageHelper.setSubject(email.getSubject());
         mimeMessage.setSubject("Password recovery");
 //        mimeMessageHelper.setText(email.getBody());
-        mimeMessageHelper.setText("Hello, %s!<br/> \\\n" +
-                "             Your new password: <br/>\\\n" + recoverPasswordLink +
+        mimeMessageHelper.setText("Hello, %s!<br/> \n" +
+                "             Your new password: <br/>\n" + recoverPasswordLink +
                 "             %s<br/><br/>");
         Boolean isSent = false;
         try {
