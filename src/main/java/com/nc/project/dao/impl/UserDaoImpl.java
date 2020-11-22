@@ -4,6 +4,8 @@ import com.nc.project.dao.UserDao;
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.RecoveryToken;
 import com.nc.project.model.User;
+import com.nc.project.model.UserProfile;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -74,6 +76,7 @@ public class UserDaoImpl implements UserDao {
                         rs.getTimestamp("code_expire_date")
                 ));
         return Optional.of(user);
+        return user;
     }
 
     @Override
