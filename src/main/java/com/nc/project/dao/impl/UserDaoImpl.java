@@ -4,15 +4,12 @@ import com.nc.project.dao.UserDao;
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.RecoveryToken;
 import com.nc.project.model.User;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalField;
 import java.util.*;
 
 @Repository
@@ -74,6 +71,7 @@ public class UserDaoImpl implements UserDao {
                         rs.getTimestamp("code_expire_date")
                 ));
         return Optional.of(user);
+
     }
 
     @Override
