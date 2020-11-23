@@ -48,6 +48,16 @@ public class UserService implements IUserService, UserDetailsService {
     }
 
     @Override
+    public List<UserProfileDto> getAllByPage(int page, int size) {
+        return userDao.getAllByPage(page,size);
+    }
+
+    @Override
+    public void UpdateUserFromTable(UserProfileDto userProfile) {
+        userDao.UpdateUserFromTable(userProfile);
+    }
+
+    @Override
     public Optional<User> findByEmailForRecovery(String email) {
         return userDao.findByEmailForRecovery(email);
     }
