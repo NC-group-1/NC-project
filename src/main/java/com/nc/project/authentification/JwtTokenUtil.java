@@ -3,6 +3,7 @@ package com.nc.project.authentification;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -12,7 +13,10 @@ import java.util.function.Function;
 
 @Service
 public class JwtTokenUtil {
-    private final String SECRET_KEY = "NC_GROUP_1";
+    @Value("${jwt.token.secret}")
+    private String secret;
+    @Value("${jwt.token.exp}")
+    private long expiresAfter;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -24,7 +28,7 @@ public class JwtTokenUtil {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
     }
 
     public String generateToken(String username) {
@@ -33,11 +37,16 @@ public class JwtTokenUtil {
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
+        Date now = new Date();
+        Date expired = new Date(now.getTime() + expiresAfter);
+
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
+                .setExpiration(expired)
+                .signWith(SignatureAlgorithm.HS256, secret)
+                .compact();
     }
 
     public Boolean validateToken(String token, String username) {

@@ -4,10 +4,9 @@ import com.nc.project.dto.PasswordDto;
 import com.nc.project.exception.UserNotFoundException;
 import com.nc.project.model.Email;
 import com.nc.project.model.User;
-import com.nc.project.service.EmailService;
-import com.nc.project.service.impl.UserService;
+import com.nc.project.service.mail.EmailService;
+import com.nc.project.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,11 +19,14 @@ import java.util.UUID;
 @Slf4j
 @RequestMapping("") //add request mapping
 @CrossOrigin(origins = "http://localhost:4200")
-public class PasswordRestController {
-    @Autowired
-    private EmailService emailService;
-    @Autowired
-    private UserService userService;
+public class PasswordController {
+    private final EmailService emailService;
+    private final UserService userService;
+
+    public PasswordController(EmailService emailService, UserService userService) {
+        this.emailService = emailService;
+        this.userService = userService;
+    }
 
     @PostMapping("/recovery-password")
     public ResponseEntity<?> recoverPassword(@RequestBody Email email) throws UnsupportedOperationException {

@@ -1,15 +1,10 @@
-package com.nc.project.service.impl;
+package com.nc.project.service.user;
 
-import com.nc.project.dao.UserDao;
+import com.nc.project.dao.user.UserDao;
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.RecoveryToken;
 import com.nc.project.model.User;
-import com.nc.project.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +14,15 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class UserService implements IUserService, UserDetailsService {
-    @Autowired
+public class UserServiceImpl implements UserService {
+
     private UserDao userDao;
-    @Autowired
     private PasswordEncoder bCryptPasswordEncoder;
+
+    public UserServiceImpl(UserDao userDao, PasswordEncoder bCryptPasswordEncoder) {
+        this.userDao = userDao;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
 
     @Override
     public User createUser(User user) {
@@ -38,13 +37,6 @@ public class UserService implements IUserService, UserDetailsService {
     @Override
     public Optional<User> findByEmailForRecovery(String email) {
         return userDao.findByEmailForRecovery(email);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        User byEmail = userDao.findByEmailForAuth(s).get();
-        return new org.springframework.security.core.userdetails.User(byEmail.getEmail(),
-                byEmail.getPassword(), byEmail.getAuthorities());
     }
 
 	@Override

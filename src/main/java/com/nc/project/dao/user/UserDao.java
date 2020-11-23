@@ -1,4 +1,4 @@
-package com.nc.project.dao;
+package com.nc.project.dao.user;
 
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.RecoveryToken;

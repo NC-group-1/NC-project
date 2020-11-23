@@ -1,4 +1,4 @@
-package com.nc.project.service;
+package com.nc.project.service.mail;
 
 
 import com.nc.project.model.Email;
