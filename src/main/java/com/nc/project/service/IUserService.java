@@ -11,6 +11,10 @@ public interface IUserService {
 
     User createUser(User user);
 
+    Optional<UserProfileDto> updatePersonalProfile(UserProfileDto user);
+
+    Optional<UserProfileDto> findUserProfileById(int id);
+
     Optional<User> findByEmailForRecovery(String email);
 
     void updateConfirmationToken(User user, String token);
