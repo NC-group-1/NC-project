@@ -1,5 +1,6 @@
 package com.nc.project.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.nc.project.dto.UserProfileDto;
@@ -9,6 +10,10 @@ import com.nc.project.model.User;
 public interface IUserService {
 
     User createUser(User user);
+
+    Optional<UserProfileDto> updatePersonalProfile(UserProfileDto user);
+
+    Optional<UserProfileDto> findUserProfileById(int id);
 
     Optional<User> findByEmailForRecovery(String email);
 
@@ -21,4 +26,5 @@ public interface IUserService {
     String validatePasswordRecoverToken(String token);
 
     Optional<UserProfileDto> findByEmail(String email);
+
 }

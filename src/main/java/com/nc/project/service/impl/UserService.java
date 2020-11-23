@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,6 +31,17 @@ public class UserService implements IUserService, UserDetailsService {
         userDao.create(user);
         return user;
     }
+
+    @Override
+    public Optional<UserProfileDto> updatePersonalProfile(UserProfileDto user) {
+        return userDao.updatePersonalProfileById(user);
+    }
+
+    @Override
+    public Optional<UserProfileDto> findUserProfileById(int id) {
+        return userDao.findUserProfileById(id);
+    }
+
     @Override
     public Optional<UserProfileDto> findByEmail(String email) {
         return userDao.findByEmail(email);

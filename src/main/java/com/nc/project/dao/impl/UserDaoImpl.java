@@ -27,10 +27,33 @@ public class UserDaoImpl implements UserDao {
                 new Timestamp(new Date().getTime() + 60000));
     }
 
+    public Optional<UserProfileDto> updatePersonalProfileById(UserProfileDto userProfileDto) {
+        int update = jdbcTemplate.update("UPDATE usr SET name = ?, surname = ?, about_me = ? WHERE user_id = ?", userProfileDto.getName(), userProfileDto.getSurname(), userProfileDto.getAboutMe(), userProfileDto.getUserId());
+        return update > 0 ? Optional.of(userProfileDto) : Optional.empty();
+    }
+
     @Override
     public Optional<UserProfileDto> findByEmail(String email) {
-        UserProfileDto userProfile = jdbcTemplate.queryForObject("SELECT name, surname, email, role, activated, image_link, reg_date, about_me FROM usr WHERE email = ?", new Object[]{email},
+        UserProfileDto userProfile = jdbcTemplate.queryForObject("SELECT user_id, name, surname, email, role, activated, image_link, reg_date, about_me FROM usr WHERE email = ?", new Object[]{email},
                 (resultSet, i) -> new UserProfileDto(
+                        resultSet.getInt("user_id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("surname"),
+                        resultSet.getString("email"),
+                        resultSet.getString("role"),
+                        resultSet.getBoolean("activated"),
+                        resultSet.getString("image_link"),
+                        resultSet.getTimestamp("reg_date"),
+                        resultSet.getString("about_me")
+                ));
+        return Optional.of(userProfile);
+    }
+
+    @Override
+    public Optional<UserProfileDto> findUserProfileById(int id) {
+        UserProfileDto userProfile = jdbcTemplate.queryForObject("SELECT user_id, name, surname, email, role, activated, image_link, reg_date, about_me FROM usr WHERE user_id = ?", new Object[]{id},
+                (resultSet, i) -> new UserProfileDto(
+                        resultSet.getInt("user_id"),
                         resultSet.getString("name"),
                         resultSet.getString("surname"),
                         resultSet.getString("email"),
@@ -106,4 +129,5 @@ public class UserDaoImpl implements UserDao {
                         rs.getDate("code_expire_date")
                 ));
     }
+
 }
