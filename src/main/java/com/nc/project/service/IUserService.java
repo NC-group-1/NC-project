@@ -27,6 +27,8 @@ public interface IUserService {
 
     Optional<UserProfileDto> findByEmail(String email);
 
+    String getUserRoleByEmail(String email);
+
     List<UserProfileDto> getAllByPage(int page, int size);
 
     void UpdateUserFromTable(UserProfileDto userProfile);

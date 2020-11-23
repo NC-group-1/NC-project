@@ -37,6 +37,7 @@ public class UserService implements IUserService, UserDetailsService {
         return userDao.updatePersonalProfileById(user);
     }
 
+
     @Override
     public Optional<UserProfileDto> findUserProfileById(int id) {
         return userDao.findUserProfileById(id);
@@ -48,11 +49,13 @@ public class UserService implements IUserService, UserDetailsService {
     }
 
     @Override
+    public String getUserRoleByEmail(String email) {
+        return userDao.getUserRoleByEmail(email);
+      
     public List<UserProfileDto> getAllByPage(int page, int size) {
         return userDao.getAllByPage(page,size);
     }
-
-    @Override
+      
     public void UpdateUserFromTable(UserProfileDto userProfile) {
         userDao.UpdateUserFromTable(userProfile);
     }

@@ -30,6 +30,8 @@ public interface UserDao {
 
     Optional<UserProfileDto> findUserProfileById(int id);
 
+    String getUserRoleByEmail(String email);
+  
     List<UserProfileDto> getAllByPage(int page,int size);
 
     void UpdateUserFromTable(UserProfileDto userProfile);
