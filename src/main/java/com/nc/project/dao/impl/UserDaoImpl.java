@@ -67,6 +67,14 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public String getUserRoleByEmail(String email) {
+        return jdbcTemplate.queryForObject(
+                "SELECT role FROM usr WHERE email = ?",
+                new Object[]{email},
+                (rs, rowNum) -> rs.getString("role"));
+    }
+
+    @Override
     public Optional<User> findByEmailForAuth(String email) {
         User user = jdbcTemplate.queryForObject(
                 "SELECT email, pass, role, activated " +
