@@ -14,7 +14,9 @@ public interface UserDao {
     void create(User user);
 
     Optional<User> findByEmailForAuth(String email);
+
     Optional<User> findByEmailForRecovery(String email);
+
     Optional<UserProfileDto> findByEmail(String email);
     Optional<UserProfileDto> updatePersonalProfileById(UserProfileDto user);
 
@@ -29,4 +31,8 @@ public interface UserDao {
     Optional<UserProfileDto> findUserProfileById(int id);
 
     String getUserRoleByEmail(String email);
+  
+    List<UserProfileDto> getAllByPage(int page,int size);
+
+    void UpdateUserFromTable(UserProfileDto userProfile);
 }

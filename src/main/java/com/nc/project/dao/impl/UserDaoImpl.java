@@ -6,6 +6,7 @@ import com.nc.project.model.RecoveryToken;
 import com.nc.project.model.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.mediatype.hal.Jackson2HalModule;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -138,4 +139,31 @@ public class UserDaoImpl implements UserDao {
                 ));
     }
 
+    @Override
+    public List<UserProfileDto> getAllByPage(int page, int size) {
+        List<UserProfileDto> listUserProfile = jdbcTemplate.query("SELECT name, surname, email, role, activated, image_link, reg_date, about_me FROM usr LIMIT ? OFFSET ?*?",
+                new Object[]{size,size,page-1},
+                (resultSet, i) -> new UserProfileDto(
+                        resultSet.getString("name"),
+                        resultSet.getString("surname"),
+                        resultSet.getString("email"),
+                        resultSet.getString("role"),
+                        resultSet.getBoolean("activated"),
+                        resultSet.getString("image_link"),
+                        resultSet.getTimestamp("reg_date"),
+                        resultSet.getString("about_me")
+                )
+        );
+        return listUserProfile;
+    }
+
+    @Override
+    public void UpdateUserFromTable(UserProfileDto userProfile) {
+        jdbcTemplate.update("UPDATE usr SET name=?, surname=?, role=?, activated=? WHERE email=?",
+                userProfile.getName(),
+                userProfile.getSurname(),
+                userProfile.getRole(),
+                userProfile.getActivated(),
+                userProfile.getEmail());
+    }
 }

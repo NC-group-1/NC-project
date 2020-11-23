@@ -29,4 +29,7 @@ public interface IUserService {
 
     String getUserRoleByEmail(String email);
 
+    List<UserProfileDto> getAllByPage(int page, int size);
+
+    void UpdateUserFromTable(UserProfileDto userProfile);
 }
