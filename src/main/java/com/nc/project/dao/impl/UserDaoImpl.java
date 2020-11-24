@@ -144,6 +144,7 @@ public class UserDaoImpl implements UserDao {
         List<UserProfileDto> listUserProfile = jdbcTemplate.query("SELECT name, surname, email, role, activated, image_link, reg_date, about_me FROM usr LIMIT ? OFFSET ?*?",
                 new Object[]{size,size,page-1},
                 (resultSet, i) -> new UserProfileDto(
+                        resultSet.getInt("user_id"),
                         resultSet.getString("name"),
                         resultSet.getString("surname"),
                         resultSet.getString("email"),
