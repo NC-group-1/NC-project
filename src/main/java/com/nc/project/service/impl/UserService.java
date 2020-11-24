@@ -51,11 +51,13 @@ public class UserService implements IUserService, UserDetailsService {
     @Override
     public String getUserRoleByEmail(String email) {
         return userDao.getUserRoleByEmail(email);
-      
+    }
+    @Override
     public List<UserProfileDto> getAllByPage(int page, int size) {
         return userDao.getAllByPage(page,size);
     }
-      
+
+    @Override
     public void UpdateUserFromTable(UserProfileDto userProfile) {
         userDao.UpdateUserFromTable(userProfile);
     }
