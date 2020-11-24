@@ -141,7 +141,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List<UserProfileDto> getAllByPage(int page, int size) {
-        List<UserProfileDto> listUserProfile = jdbcTemplate.query("SELECT name, surname, email, role, activated, image_link, reg_date, about_me FROM usr LIMIT ? OFFSET ?*?",
+        List<UserProfileDto> listUserProfile = jdbcTemplate.query("SELECT user_id,name, surname, email, role, activated, image_link, reg_date, about_me FROM usr LIMIT ? OFFSET ?*?",
                 new Object[]{size,size,page-1},
                 (resultSet, i) -> new UserProfileDto(
                         resultSet.getInt("user_id"),
