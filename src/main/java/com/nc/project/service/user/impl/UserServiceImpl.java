@@ -1,9 +1,10 @@
-package com.nc.project.service.user;
+package com.nc.project.service.user.impl;
 
 import com.nc.project.dao.user.UserDao;
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.RecoveryToken;
 import com.nc.project.model.User;
+import com.nc.project.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

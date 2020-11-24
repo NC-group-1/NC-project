@@ -1,6 +1,7 @@
-package com.nc.project.service.mail;
+package com.nc.project.service.mail.impl;
 
 import com.nc.project.model.Email;
+import com.nc.project.service.mail.EmailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;

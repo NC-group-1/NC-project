@@ -17,7 +17,7 @@ import java.util.UUID;
 
 @RestController
 @Slf4j
-@RequestMapping("") //add request mapping
+@RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:4200")
 public class PasswordController {
     private final EmailService emailService;
