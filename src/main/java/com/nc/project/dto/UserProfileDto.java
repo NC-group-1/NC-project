@@ -11,6 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserProfileDto {
+    private int userId;
     private String name;
     private String surname;
     private String email;

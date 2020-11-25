@@ -6,6 +6,7 @@ import com.nc.project.model.User;
 
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -13,8 +14,11 @@ public interface UserDao {
     void create(User user);
 
     Optional<User> findByEmailForAuth(String email);
+
     Optional<User> findByEmailForRecovery(String email);
+
     Optional<UserProfileDto> findByEmail(String email);
+    Optional<UserProfileDto> updatePersonalProfileById(UserProfileDto user);
 
     void saveToken(RecoveryToken recoveryToken);
 
@@ -24,4 +28,11 @@ public interface UserDao {
 
     RecoveryToken findTokenByRecoverPasswordToken(String token);
 
+    Optional<UserProfileDto> findUserProfileById(int id);
+
+    String getUserRoleByEmail(String email);
+  
+    List<UserProfileDto> getAllByPage(int page,int size);
+
+    void UpdateUserFromTable(UserProfileDto userProfile);
 }
