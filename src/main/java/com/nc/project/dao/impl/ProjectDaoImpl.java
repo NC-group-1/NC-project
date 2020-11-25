@@ -22,35 +22,34 @@ public class ProjectDaoImpl implements ProjectDao {
                 project.getName(),
                 project.getLink(),
                 new Timestamp(new Date().getTime()),
-                project.getRole(),
+                project.getUser_id(),
                 false
                 );
-
     }
 
     @Override
     public List<Project> getAll() {
-        List<Project> projectList = jdbcTemplate.query("SELECT p.name, p.link, p.date, p.activate, u.role FROM project p INNER JOIN usr u ON project.user_id=usr.user_id ", new Object[]{},
+        List<Project> projectList = jdbcTemplate.query("SELECT p.project_id, p.name, p.link, p.date, p.activated, u.role FROM project p INNER JOIN usr u ON p.user_id=u.user_id", new Object[]{},
                 (resultSet, i) -> new Project(
+                        resultSet.getInt("project_id"),
                         resultSet.getString("name"),
                         resultSet.getString("link"),
                         resultSet.getTimestamp("date"),
                         resultSet.getString("role"),
-                        resultSet.getBoolean("activate")
+                        resultSet.getBoolean("activated")
                 )
         );
-
-//        List<Project> projectList = new ArrayList<>();
-//        projectList.add(new Project("name1","link1",new Timestamp(new Date().getTime()),"Admin",false));
-//        projectList.add(new Project("name2","link2",new Timestamp(new Date().getTime()),"Manager",false));
-//        projectList.add(new Project("name3","link3",new Timestamp(new Date().getTime()),"Engineer",false));
 
         return projectList;
     }
 
     @Override
     public void edit(Project project) {
-        jdbcTemplate.update("UPDATE project SET name=?, link=?, activated=?",
-                project.getName(), project.getLink(), project.getArchived());
+        jdbcTemplate.update("UPDATE project SET name=?, link=?, activated=? WHERE project_id=?",
+                project.getName(),
+                project.getLink(),
+                project.getArchived(),
+                project.getProject_id()
+        );
     }
 }
