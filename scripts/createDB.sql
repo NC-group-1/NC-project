@@ -11,7 +11,7 @@ CREATE TABLE public.usr
     reg_date timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     about_me text,
     email_code character varying(255),
-    code_expire_date timestamp with time zone,
+    code_expire_date timestamp with time zone
 );
 
 CREATE TABLE public.parameter_key
