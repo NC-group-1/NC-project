@@ -1,6 +1,7 @@
 package com.nc.project.dao.impl;
 
 import com.nc.project.dao.UserDao;
+import com.nc.project.dto.Page;
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.RecoveryToken;
 import com.nc.project.model.User;
@@ -155,6 +156,7 @@ public class UserDaoImpl implements UserDao {
                         resultSet.getString("about_me")
                 )
         );
+
         return listUserProfile;
     }
 
@@ -166,5 +168,11 @@ public class UserDaoImpl implements UserDao {
                 userProfile.getRole(),
                 userProfile.getActivated(),
                 userProfile.getEmail());
+    }
+
+    @Override
+    public Optional<Integer> getSizeOfResultSet() {
+        Integer size = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM public.usr",(rs, rowNum) -> rs.getInt("count"));
+        return Optional.of(size);
     }
 }

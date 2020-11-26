@@ -1,6 +1,7 @@
 package com.nc.project.service.impl;
 
 import com.nc.project.dao.UserDao;
+import com.nc.project.dto.Page;
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.RecoveryToken;
 import com.nc.project.model.User;
@@ -53,8 +54,8 @@ public class UserService implements IUserService, UserDetailsService {
         return userDao.getUserRoleByEmail(email);
     }
     @Override
-    public List<UserProfileDto> getAllByPage(int page, int size) {
-        return userDao.getAllByPage(page,size);
+    public Page<UserProfileDto> getAllByPage(int page, int size) {
+        return new Page(userDao.getAllByPage(page,size),userDao.getSizeOfResultSet().get());
     }
 
     @Override

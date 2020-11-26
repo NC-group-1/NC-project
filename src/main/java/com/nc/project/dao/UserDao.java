@@ -1,5 +1,6 @@
 package com.nc.project.dao;
 
+import com.nc.project.dto.Page;
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.RecoveryToken;
 import com.nc.project.model.User;
@@ -32,7 +33,9 @@ public interface UserDao {
 
     String getUserRoleByEmail(String email);
   
-    List<UserProfileDto> getAllByPage(int page,int size);
+    List<UserProfileDto> getAllByPage(int page, int size);
 
     void UpdateUserFromTable(UserProfileDto userProfile);
+
+    Optional<Integer> getSizeOfResultSet();
 }

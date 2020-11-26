@@ -1,5 +1,6 @@
 package com.nc.project.controller;
 
+import com.nc.project.dto.Page;
 import com.nc.project.dto.PasswordDto;
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.service.impl.UserService;
@@ -22,11 +23,11 @@ public class UsersListRestController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserProfileDto>> getAll(
+    public ResponseEntity<Page<UserProfileDto>> getAll(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "5") int size)
     {
-        List<UserProfileDto> userList = userService.getAllByPage(page, size);
+        Page<UserProfileDto> userList = userService.getAllByPage(page, size);
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 
