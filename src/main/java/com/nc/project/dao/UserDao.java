@@ -1,11 +1,14 @@
 package com.nc.project.dao;
 
+import com.nc.project.dto.Page;
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.RecoveryToken;
 import com.nc.project.model.User;
 
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -13,8 +16,11 @@ public interface UserDao {
     void create(User user);
 
     Optional<User> findByEmailForAuth(String email);
+
     Optional<User> findByEmailForRecovery(String email);
+
     Optional<UserProfileDto> findByEmail(String email);
+    Optional<UserProfileDto> updatePersonalProfileById(UserProfileDto user);
 
     void saveToken(RecoveryToken recoveryToken);
 
@@ -24,4 +30,13 @@ public interface UserDao {
 
     RecoveryToken findTokenByRecoverPasswordToken(String token);
 
+    Optional<UserProfileDto> findUserProfileById(int id);
+
+    String getUserRoleByEmail(String email);
+
+    List<UserProfileDto> getAllByPage(int page, int size, String filter, String orderBy,String order);
+
+    void UpdateUserFromTable(UserProfileDto userProfile);
+
+    Optional<Integer> getSizeOfResultSet(String filter);
 }

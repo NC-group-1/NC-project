@@ -26,4 +26,10 @@ public class Project {
         this.role = role;
         this.archived = archived;
     }
+    public Project(Integer project_id, String name, String link,Integer user_id) {
+        this.project_id = project_id;
+        this.name = name;
+        this.link = link;
+        this.user_id = user_id;
+    }
 }

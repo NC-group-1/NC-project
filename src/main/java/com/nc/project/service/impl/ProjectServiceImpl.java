@@ -1,6 +1,8 @@
 package com.nc.project.service.impl;
 
 import com.nc.project.dao.ProjectDao;
+import com.nc.project.dto.Page;
+import com.nc.project.dto.ProjectDto;
 import com.nc.project.model.Project;
 import com.nc.project.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +21,14 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<Project> getAll() {
-        return projectDao.getAll();
+    public Page<ProjectDto> getAllByPage(int page, int size, String filter, String orderBy, String order) {
+        if(orderBy.equals(""))
+            orderBy = "project_id";
+        if(!order.equals("DESC")){
+            order="";
+        }
+
+        return new Page(projectDao.getAllByPage(page,size,filter,orderBy,order),projectDao.getSizeOfResultSet(filter).get());
     }
 
     @Override

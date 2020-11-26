@@ -1,6 +1,7 @@
 package com.nc.project.service.impl;
 
 import com.nc.project.dao.UserDao;
+import com.nc.project.dto.Page;
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.RecoveryToken;
 import com.nc.project.model.User;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,9 +32,42 @@ public class UserService implements IUserService, UserDetailsService {
         userDao.create(user);
         return user;
     }
+
+    @Override
+    public Optional<UserProfileDto> updatePersonalProfile(UserProfileDto user) {
+        return userDao.updatePersonalProfileById(user);
+    }
+
+
+    @Override
+    public Optional<UserProfileDto> findUserProfileById(int id) {
+        return userDao.findUserProfileById(id);
+    }
+
     @Override
     public Optional<UserProfileDto> findByEmail(String email) {
         return userDao.findByEmail(email);
+    }
+
+    @Override
+    public String getUserRoleByEmail(String email) {
+        return userDao.getUserRoleByEmail(email);
+    }
+
+    @Override
+    public Page<UserProfileDto> getAllByPage(int page, int size, String filter ,String orderBy,String order) {
+        if(orderBy.equals(""))
+            orderBy = "user_id";
+        if(!order.equals("DESC")){
+            order="";
+        }
+
+        return new Page(userDao.getAllByPage(page,size,filter,orderBy,order),userDao.getSizeOfResultSet(filter).get());
+    }
+
+    @Override
+    public void UpdateUserFromTable(UserProfileDto userProfile) {
+        userDao.UpdateUserFromTable(userProfile);
     }
 
     @Override
