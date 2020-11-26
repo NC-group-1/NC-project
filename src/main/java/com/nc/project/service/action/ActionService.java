@@ -18,4 +18,6 @@ public interface ActionService {
     Action editAction(Action action);
 
     void deleteAction(int id);
+
+    List<String> getActionTypes();
 }

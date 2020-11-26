@@ -60,4 +60,9 @@ public class ActionController {
         actionService.deleteAction(id);
         return new ResponseEntity(HttpStatus.OK);
     }
+
+    @GetMapping("/types")
+    public ResponseEntity<List<String>> getActionTypes() {
+        return new ResponseEntity<>(actionService.getActionTypes(), HttpStatus.OK);
+    }
 }

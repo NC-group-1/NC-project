@@ -4,13 +4,16 @@ import com.nc.project.dao.action.ActionDao;
 import com.nc.project.dto.Page;
 import com.nc.project.model.Action;
 import com.nc.project.model.ParameterKey;
+import com.nc.project.model.util.ActionType;
 import com.nc.project.service.action.ActionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -52,7 +55,7 @@ public class ActionServiceImpl implements ActionService {
         Page resultPage = new Page();
 
         if (numberOfElements.get() > size * page) {
-            resultPage.setList(actionDao.findAllActionsByPage(size, size * (page - 1)));
+            resultPage.setList(actionDao.findAllActionsByPage(size, size * (page)));
             resultPage.setSize(numberOfElements.get());
         }
         return resultPage;
@@ -67,5 +70,10 @@ public class ActionServiceImpl implements ActionService {
     @Override
     public void deleteAction(int id) {
         actionDao.delete(id);
+    }
+
+    @Override
+    public List<String> getActionTypes() {
+        return Arrays.stream(ActionType.values()).map(Enum::name).collect(Collectors.toList());
     }
 }

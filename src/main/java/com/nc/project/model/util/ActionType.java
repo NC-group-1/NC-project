@@ -1,5 +1,12 @@
 package com.nc.project.model.util;
 
 public enum ActionType {
-    FirstType
+    Click,
+    DoubleClick,
+    KeyDown,
+    KeyUp,
+    MoveToElement,
+    SendKeys,
+    FindElementById,
+    FindElementByXpath
 }
