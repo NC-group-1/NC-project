@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("user/get_user_list/")
+@RequestMapping("user/")
 public class UsersListRestController {
 
     private final UserService userService;
@@ -22,7 +22,7 @@ public class UsersListRestController {
         this.userService = userService;
     }
 
-    @GetMapping("{pageIndex}/{pageSize}")
+    @GetMapping("get_user_list/{pageIndex}/{pageSize}")
     public ResponseEntity<Page<UserProfileDto>> getAll(
             @PathVariable int pageSize,
             @PathVariable int pageIndex,

@@ -142,9 +142,10 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List<UserProfileDto> getAllByPage(int page, int size,String filter ,String orderBy, String order) {
-        String query = "SELECT user_id,name, surname, email," +
+        String query = String.format("SELECT user_id,name, surname, email," +
                 " role, activated, image_link, reg_date, about_me " +
-                "FROM usr WHERE name LIKE ? ORDER BY "+ orderBy +" "+ order+" LIMIT ? OFFSET ?*?";
+                "FROM usr WHERE name LIKE ? ORDER BY %s %s LIMIT ? OFFSET ?*?",orderBy,order);
+
 
         List<UserProfileDto> listUserProfile = jdbcTemplate.query(query,
                 new Object[]{filter +"%", size, size, page-1},
