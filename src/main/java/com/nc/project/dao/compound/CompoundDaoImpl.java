@@ -12,7 +12,6 @@ import java.util.List;
 
 @Repository
 public class CompoundDaoImpl implements CompoundDao {
-    private SimpleJdbcInsert actionInsert;
     private final QueryService queryService;
     private final JdbcTemplate jdbcTemplate;
 
@@ -29,8 +28,6 @@ public class CompoundDaoImpl implements CompoundDao {
                 compound.getActionId(),
                 compound.getOrderNum(),
                 compound.getKey().toString());
-        int id = actionInsert.executeAndReturnKey(parameters).intValue();
-        compound.setCompoundId(id);
         return compound;
     }
 

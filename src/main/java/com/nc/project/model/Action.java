@@ -17,11 +17,4 @@ public class Action {
     private ActionType type;
     private ParameterKey key;
 
-    Action(int id, String name, String description, ActionType type){
-        this.id=id;
-        this.name=name;
-        this.description=description;
-        this.type=type;
-    }
-
 }

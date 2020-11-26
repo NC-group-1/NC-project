@@ -37,7 +37,6 @@ public class UserServiceImpl implements UserService {
         return userDao.updatePersonalProfileById(user);
     }
 
-
     @Override
     public Optional<UserProfileDto> findUserProfileById(int id) {
         return userDao.findUserProfileById(id);
@@ -52,9 +51,10 @@ public class UserServiceImpl implements UserService {
     public String getUserRoleByEmail(String email) {
         return userDao.getUserRoleByEmail(email);
     }
+
     @Override
     public List<UserProfileDto> getAllByPage(int page, int size) {
-        return userDao.getAllByPage(page,size);
+        return userDao.getAllByPage(page, size);
     }
 
     @Override
@@ -67,8 +67,8 @@ public class UserServiceImpl implements UserService {
         return userDao.findByEmailForRecovery(email);
     }
 
-	@Override
-	public void updateConfirmationToken(User user, String token) {
+    @Override
+    public void updateConfirmationToken(User user, String token) {
         RecoveryToken confToken = new RecoveryToken(token, user.getId(), new Date());
         userDao.saveToken(confToken);
         log.info("Token was updated successfully");
@@ -85,6 +85,7 @@ public class UserServiceImpl implements UserService {
     public Optional<Integer> getUserIdByRecoverPasswordToken(String token) {
         return userDao.findUserIdByPasswordToken(token);
     }
+
     @Override
     public String validatePasswordRecoverToken(String token) {
         final RecoveryToken passToken = userDao.findTokenByRecoverPasswordToken(token);

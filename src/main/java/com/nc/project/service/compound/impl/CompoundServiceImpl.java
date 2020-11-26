@@ -1,8 +1,8 @@
-package com.nc.project.service.library.impl;
+package com.nc.project.service.compound.impl;
 
 import com.nc.project.dao.compound.CompoundDao;
 import com.nc.project.model.Compound;
-import com.nc.project.service.library.CompoundService;
+import com.nc.project.service.compound.CompoundService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
