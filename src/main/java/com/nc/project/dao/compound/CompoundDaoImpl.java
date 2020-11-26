@@ -1,5 +1,7 @@
 package com.nc.project.dao.compound;
 
+import com.nc.project.dao.action.ActionRowMapper;
+import com.nc.project.model.Action;
 import com.nc.project.model.Compound;
 import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -47,6 +49,13 @@ public class CompoundDaoImpl implements CompoundDao {
     public List<Compound> findAllCompounds() {
         String sql = queryService.getQuery("compound.findAll");
         return jdbcTemplate.query(sql, new CompoundRowMapper());
+    }
+
+    @Override
+    public List<Compound> findAllCompoundsByPage(int size, int number) {
+        String sql = queryService.getQuery("compound.findAll");
+        return jdbcTemplate.query(sql,
+                new CompoundRowMapper());
     }
 
     @Override

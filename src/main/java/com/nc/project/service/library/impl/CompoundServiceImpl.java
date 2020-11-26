@@ -1,6 +1,7 @@
 package com.nc.project.service.library.impl;
 
 import com.nc.project.dao.compound.CompoundDao;
+import com.nc.project.model.Action;
 import com.nc.project.model.Compound;
 import com.nc.project.service.library.CompoundService;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,12 @@ public class CompoundServiceImpl implements CompoundService {
     @Override
     public Compound getCompoundById(int id) {
         return compoundDao.findActionById(id);
+    }
+
+    @Override
+    public List<Compound> getAllCompoundByPage(int page, int size) {
+        int number = size * (page - 1);
+        return compoundDao.findAllCompoundsByPage(size, number);
     }
 
     @Override
