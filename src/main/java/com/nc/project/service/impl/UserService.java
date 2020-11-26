@@ -53,9 +53,16 @@ public class UserService implements IUserService, UserDetailsService {
     public String getUserRoleByEmail(String email) {
         return userDao.getUserRoleByEmail(email);
     }
+
     @Override
-    public Page<UserProfileDto> getAllByPage(int page, int size) {
-        return new Page(userDao.getAllByPage(page,size),userDao.getSizeOfResultSet().get());
+    public Page<UserProfileDto> getAllByPage(int page, int size, String filter ,String orderBy,String order) {
+        if(orderBy.equals(""))
+            orderBy = "user_id";
+        if(!order.equals("DESC")){
+            order="";
+        }
+
+        return new Page(userDao.getAllByPage(page,size,filter,orderBy,order),userDao.getSizeOfResultSet(filter).get());
     }
 
     @Override

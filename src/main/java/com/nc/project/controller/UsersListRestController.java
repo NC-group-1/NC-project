@@ -25,9 +25,15 @@ public class UsersListRestController {
     @GetMapping
     public ResponseEntity<Page<UserProfileDto>> getAll(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "5") int size)
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "") String filter,
+            @RequestParam(defaultValue = "") String orderBy,
+            @RequestParam(defaultValue = "") String order
+            )
     {
-        Page<UserProfileDto> userList = userService.getAllByPage(page, size);
+
+        Page<UserProfileDto> userList = userService.getAllByPage(page, size,filter,orderBy,order);
+
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 

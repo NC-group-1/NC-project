@@ -7,6 +7,7 @@ import com.nc.project.model.User;
 
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,10 +33,10 @@ public interface UserDao {
     Optional<UserProfileDto> findUserProfileById(int id);
 
     String getUserRoleByEmail(String email);
-  
-    List<UserProfileDto> getAllByPage(int page, int size);
+
+    List<UserProfileDto> getAllByPage(int page, int size, String filter, String orderBy,String order);
 
     void UpdateUserFromTable(UserProfileDto userProfile);
 
-    Optional<Integer> getSizeOfResultSet();
+    Optional<Integer> getSizeOfResultSet(String filter);
 }

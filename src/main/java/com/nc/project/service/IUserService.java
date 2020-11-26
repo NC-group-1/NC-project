@@ -30,7 +30,7 @@ public interface IUserService {
 
     String getUserRoleByEmail(String email);
 
-    Page<UserProfileDto> getAllByPage(int page, int size);
+    Page<UserProfileDto> getAllByPage(int page, int size, String filter, String orderBy, String order);
 
     void UpdateUserFromTable(UserProfileDto userProfile);
 }

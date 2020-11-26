@@ -141,9 +141,13 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<UserProfileDto> getAllByPage(int page, int size) {
-        List<UserProfileDto> listUserProfile = jdbcTemplate.query("SELECT user_id,name, surname, email, role, activated, image_link, reg_date, about_me FROM usr LIMIT ? OFFSET ?*?",
-                new Object[]{size,size,page-1},
+    public List<UserProfileDto> getAllByPage(int page, int size,String filter ,String orderBy, String order) {
+        String query = "SELECT user_id,name, surname, email," +
+                " role, activated, image_link, reg_date, about_me " +
+                "FROM usr WHERE name LIKE ? ORDER BY "+ orderBy +" "+ order+" LIMIT ? OFFSET ?*?";
+
+        List<UserProfileDto> listUserProfile = jdbcTemplate.query(query,
+                new Object[]{filter +"%", size, size, page-1},
                 (resultSet, i) -> new UserProfileDto(
                         resultSet.getInt("user_id"),
                         resultSet.getString("name"),
@@ -171,8 +175,10 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Optional<Integer> getSizeOfResultSet() {
-        Integer size = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM public.usr",(rs, rowNum) -> rs.getInt("count"));
+    public Optional<Integer> getSizeOfResultSet(String filter) {
+        Integer size = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM public.usr WHERE name LIKE ?",
+                new Object[]{filter +"%"},
+                (rs, rowNum) -> rs.getInt("count"));
         return Optional.of(size);
     }
 }
