@@ -1,18 +1,28 @@
 package com.nc.project.service.library;
 
+import com.nc.project.dto.Page;
+import com.nc.project.model.Action;
 import com.nc.project.model.Compound;
 
 import java.util.List;
 
 public interface CompoundService {
 
-    Compound createCompound(Compound compound);
+    Action createCompound(Action action);
 
-    Compound getCompoundById(int id);
+    Action getCompoundById(int id);
 
-    List<Compound> getAllCompounds();
+    List<Action> getAllCompounds();
 
-    Compound editCompound(Compound compound);
+    Action editCompound(Action compound);
 
-    void deleteCompound(Compound deleteCompound);
+    void deleteCompound(Action deleteCompound);
+
+    List<Action> getActionsOfCompound(int compoundId);
+
+    void postActionInCompound(Compound compound);
+
+    void deleteActionFromCompound(Compound compound);
+
+    Page<Action> getCompoundsByPage(int page, int size);
 }

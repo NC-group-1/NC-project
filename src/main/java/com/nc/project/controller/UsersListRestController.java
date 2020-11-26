@@ -2,7 +2,7 @@ package com.nc.project.controller;
 
 import com.nc.project.dto.PasswordDto;
 import com.nc.project.dto.UserProfileDto;
-import com.nc.project.service.impl.UserService;
+import com.nc.project.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

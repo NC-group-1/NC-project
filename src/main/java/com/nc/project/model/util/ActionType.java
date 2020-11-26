@@ -1,5 +1,5 @@
 package com.nc.project.model.util;
 
 public enum ActionType {
-    FirstType
+    FIRST_TYPE, COMPOUND
 }

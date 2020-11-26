@@ -1,5 +1,6 @@
 package com.nc.project.dao.compound;
 
+import com.nc.project.model.Action;
 import com.nc.project.model.Compound;
 import com.nc.project.model.ParameterKey;
 import org.springframework.jdbc.core.RowMapper;
