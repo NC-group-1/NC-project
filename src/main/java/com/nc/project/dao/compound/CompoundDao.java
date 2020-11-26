@@ -1,5 +1,6 @@
 package com.nc.project.dao.compound;
 
+import com.nc.project.dto.Page;
 import com.nc.project.model.Action;
 import com.nc.project.model.Compound;
 
@@ -7,16 +8,23 @@ import java.util.List;
 
 public interface CompoundDao {
 
-    Compound createCompound(Compound compound);
+    Action createCompound(Action compound);
 
-    Compound findActionById(int id);
+    Action findCompoundById(int id);
 
-    List<Compound> findAllCompounds();
+    List<Action> findAllCompounds();
 
-    List<Compound> findAllCompoundsByPage(int size, int number);
-
-    Compound editCompound(Compound compound);
+    Action editCompound(Action compound);
 
     void removeCompound(int id);
 
+    List<Action> getActionsOfCompound(int compoundId);
+
+    void postActionInCompound(Compound compound);
+
+    void deleteActionFromCompound(Compound compound);
+
+    List<Action> getCompoundsByPage(int page, int size);
+
+    Integer getNumberOfCompounds();
 }
