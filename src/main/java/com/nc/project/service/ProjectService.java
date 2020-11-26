@@ -10,4 +10,6 @@ public interface ProjectService {
     void createProject(Project project);
     Page<ProjectDto> getAllByPage(int page, int size, String filter, String orderBy, String order);
     void editProject(Project project);
+    List<Project> getAllByPage(int page, int size);
+    Integer getNumPages(int size);
 }
