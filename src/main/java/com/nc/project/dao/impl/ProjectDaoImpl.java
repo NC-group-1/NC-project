@@ -52,4 +52,30 @@ public class ProjectDaoImpl implements ProjectDao {
                 project.getProject_id()
         );
     }
+
+    @Override
+    public List<Project> getAllByPage(int page, int size) {
+        List<Project> listProject = jdbcTemplate.query("SELECT p.project_id, p.name, p.link, p.date, p.activated, u.role FROM project p INNER JOIN usr u ON p.user_id=u.user_id LIMIT ? OFFSET ?*?",
+                new Object[]{size,size,page},
+                (resultSet, i) -> new Project(
+                        resultSet.getInt("project_id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("link"),
+                        resultSet.getTimestamp("date"),
+                        resultSet.getString("role"),
+                        resultSet.getBoolean("activated")
+                )
+        );
+        return listProject;
+    }
+
+    @Override
+    public Integer getNumPages(int size) {
+        Integer numProjects = jdbcTemplate.queryForObject("SELECT COUNT(*) AS count FROM project",
+                new Object[]{},
+                Integer.class
+        );
+
+        return numProjects;
+    }
 }

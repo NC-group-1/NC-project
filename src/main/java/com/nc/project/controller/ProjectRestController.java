@@ -22,18 +22,33 @@ public class ProjectRestController {
         projectService.createProject(project);
     }
 
-    @GetMapping
-    public ResponseEntity<List<Project>> getAll() {
-        List<Project> projectList = projectService.getAll();
-        return new ResponseEntity<>(projectList, HttpStatus.OK);
-    }
+//    @GetMapping
+//    public ResponseEntity<List<Project>> getAll() {
+//        List<Project> projectList = projectService.getAll();
+//        return new ResponseEntity<>(projectList, HttpStatus.OK);
+//    }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     @ResponseStatus(value = HttpStatus.OK)
     public void editProjectByName(@RequestBody Project project) {
         projectService.editProject(project);
     }
 
+    @GetMapping("/get_project_list/{page}/{size}")
+    public ResponseEntity<List<Project>> getPaginatedProjects(
+            @PathVariable int page,
+            @PathVariable int size)
+    {
+        System.out.println(page + " " + size);
+        List<Project> projectList = projectService.getAllByPage(page, size);
+        return new ResponseEntity<>(projectList, HttpStatus.OK);
+    }
 
+    @GetMapping("/get_number/{size}")
+    public ResponseEntity<Integer> getNumberOfProjects(@PathVariable int size)
+    {
+        Integer numPages = projectService.getNumPages(size);
+        return new ResponseEntity<>(numPages, HttpStatus.OK);
+    }
 
 }

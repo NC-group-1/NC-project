@@ -8,4 +8,6 @@ public interface ProjectService {
     void createProject(Project project);
     List<Project> getAll();
     void editProject(Project project);
+    List<Project> getAllByPage(int page, int size);
+    Integer getNumPages(int size);
 }

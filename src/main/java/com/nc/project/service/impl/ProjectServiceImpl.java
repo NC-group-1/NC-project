@@ -27,4 +27,14 @@ public class ProjectServiceImpl implements ProjectService {
     public void editProject(Project project) {
         projectDao.edit(project);
     }
+
+    @Override
+    public List<Project> getAllByPage(int page, int size) {
+        return projectDao.getAllByPage(page, size);
+    }
+
+    @Override
+    public Integer getNumPages(int size) {
+        return projectDao.getNumPages(size);
+    }
 }

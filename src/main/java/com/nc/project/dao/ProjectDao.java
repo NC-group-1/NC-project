@@ -8,4 +8,6 @@ public interface ProjectDao {
     void create(Project project);
     List<Project> getAll();
     void edit(Project project);
+    List<Project> getAllByPage(int page, int size);
+    Integer getNumPages(int size);
 }
