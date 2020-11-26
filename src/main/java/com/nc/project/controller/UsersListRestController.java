@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/users/list")
+@RequestMapping("user/get_user_list/")
 public class UsersListRestController {
 
     private final UserService userService;
@@ -22,17 +22,17 @@ public class UsersListRestController {
         this.userService = userService;
     }
 
-    @GetMapping
+    @GetMapping("{pageIndex}/{pageSize}")
     public ResponseEntity<Page<UserProfileDto>> getAll(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "5") int size,
+            @PathVariable int pageSize,
+            @PathVariable int pageIndex,
             @RequestParam(defaultValue = "") String filter,
             @RequestParam(defaultValue = "") String orderBy,
             @RequestParam(defaultValue = "") String order
             )
     {
 
-        Page<UserProfileDto> userList = userService.getAllByPage(page, size,filter,orderBy,order);
+        Page<UserProfileDto> userList = userService.getAllByPage(pageIndex, pageSize,filter,orderBy,order);
 
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
