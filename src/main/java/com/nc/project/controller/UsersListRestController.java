@@ -37,7 +37,7 @@ public class UsersListRestController {
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping("/update")
     @ResponseStatus(value = HttpStatus.OK)
     public void update(
             @RequestBody UserProfileDto userProfileDto)

@@ -36,7 +36,7 @@ public interface UserDao {
 
     List<UserProfileDto> getAllByPage(int page, int size, String filter, String orderBy,String order);
 
-    void UpdateUserFromTable(UserProfileDto userProfile);
+    void updateUserFromTable(UserProfileDto userProfile);
 
     Optional<Integer> getSizeOfResultSet(String filter);
 }

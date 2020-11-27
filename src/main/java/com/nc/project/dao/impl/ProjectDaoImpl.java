@@ -32,7 +32,7 @@ public class ProjectDaoImpl implements ProjectDao {
         String query = String.format("SELECT p.project_id, p.name, p.link, p.date, p.activated, u.name username " +
                 "FROM project p INNER JOIN usr u ON p.user_id=u.user_id WHERE p.name LIKE ? ORDER BY %s %s LIMIT ? OFFSET ?*?",orderBy,order);
         List<ProjectDto> projectList = jdbcTemplate.query(query,
-                new Object[]{filter +"%", size, size, page-1},
+                new Object[]{"%"+filter +"%", size, size, page-1},
                 (resultSet, i) -> new ProjectDto(
                         resultSet.getInt("project_id"),
                         resultSet.getString("name"),
@@ -59,7 +59,7 @@ public class ProjectDaoImpl implements ProjectDao {
     @Override
     public Optional<Integer> getSizeOfResultSet(String filter) {
         Integer size = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM project WHERE name LIKE ?",
-                new Object[]{filter +"%"},
+                new Object[]{"%"+filter +"%"},
                 (rs, rowNum) -> rs.getInt("count"));
         return Optional.of(size);
     }

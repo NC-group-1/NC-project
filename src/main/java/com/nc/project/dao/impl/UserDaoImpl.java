@@ -148,7 +148,7 @@ public class UserDaoImpl implements UserDao {
 
 
         List<UserProfileDto> listUserProfile = jdbcTemplate.query(query,
-                new Object[]{filter +"%", size, size, page-1},
+                new Object[]{"%"+filter +"%", size, size, page-1},
                 (resultSet, i) -> new UserProfileDto(
                         resultSet.getInt("user_id"),
                         resultSet.getString("name"),
@@ -166,19 +166,19 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void UpdateUserFromTable(UserProfileDto userProfile) {
-        jdbcTemplate.update("UPDATE usr SET name=?, surname=?, role=?, activated=? WHERE email=?",
+    public void updateUserFromTable(UserProfileDto userProfile) {
+        jdbcTemplate.update("UPDATE usr SET name=?, surname=?, activated=?,email=? WHERE user_id=?",
                 userProfile.getName(),
                 userProfile.getSurname(),
-                userProfile.getRole(),
                 userProfile.getActivated(),
-                userProfile.getEmail());
+                userProfile.getEmail(),
+                userProfile.getUserId());
     }
 
     @Override
     public Optional<Integer> getSizeOfResultSet(String filter) {
         Integer size = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM public.usr WHERE name LIKE ?",
-                new Object[]{filter +"%"},
+                new Object[]{"%"+filter +"%"},
                 (rs, rowNum) -> rs.getInt("count"));
         return Optional.of(size);
     }
