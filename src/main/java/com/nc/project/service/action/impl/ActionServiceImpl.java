@@ -37,6 +37,7 @@ public class ActionServiceImpl implements ActionService {
 
         if (key != null) {
             key = parameterKeyDao.create(key);
+            System.out.println(key);
             action.setKey(key);
         }
         return actionDao.create(action);
@@ -68,6 +69,13 @@ public class ActionServiceImpl implements ActionService {
 
     @Override
     public Action editAction(Action action) {
+        System.out.println(action);
+        ParameterKey key = action.getKey();
+        if (key != null) {
+            key = parameterKeyDao.create(key);
+            System.out.println(key);
+            action.setKey(key);
+        }
         return actionDao.update(action);
     }
 

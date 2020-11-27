@@ -10,7 +10,7 @@ public class ParameterKeyRowMapper implements RowMapper<ParameterKey> {
     @Override
     public ParameterKey mapRow(ResultSet resultSet, int i) throws SQLException {
         ParameterKey paramKey = new ParameterKey();
-        paramKey.setId(resultSet.getInt("id"));
+        paramKey.setId(resultSet.getInt("parameter_key_id"));
         paramKey.setKey(resultSet.getString("key"));
 
         return paramKey;

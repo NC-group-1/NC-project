@@ -24,12 +24,21 @@ public class ActionDaoImpl implements ActionDao {
     public Action create(Action action) {
         String sql = queryService.getQuery("action.create");
         SqlParameterSource parameters = new BeanPropertySqlParameterSource(action);
-        jdbcTemplate.update(sql,
-                action.getName(),
-                action.getDescription(),
-                action.getKey().getKey(),
-                action.getType().toString()
-        );
+        if(action.getKey() != null) {
+            jdbcTemplate.update(sql,
+                    action.getName(),
+                    action.getDescription(),
+                    action.getType().toString(),
+                    action.getKey().getId()
+            );
+        } else {
+            jdbcTemplate.update(sql,
+                    action.getName(),
+                    action.getDescription(),
+                    action.getType().toString(),
+                    null
+            );
+        }
         return action;
     }
 
@@ -79,12 +88,23 @@ public class ActionDaoImpl implements ActionDao {
     @Override
     public Action update(Action action) {
         String sql = queryService.getQuery("action.edit");
-        jdbcTemplate.update(sql,
-                 action.getName(),
-                 action.getDescription(),
-                 action.getType().toString(),
-                 action.getKey().getKey()
-        );
+        if(action.getKey() != null) {
+            jdbcTemplate.update(sql,
+                    action.getName(),
+                    action.getDescription(),
+                    action.getType().toString(),
+                    action.getKey().getId(),
+                    action.getId()
+            );
+        } else {
+            jdbcTemplate.update(sql,
+                    action.getName(),
+                    action.getDescription(),
+                    action.getType().toString(),
+                    null,
+                    action.getId()
+            );
+        }
 
         return action;
 
