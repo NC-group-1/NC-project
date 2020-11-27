@@ -1,16 +1,14 @@
 package com.nc.project.controller;
 
+
 import com.nc.project.dto.Page;
-import com.nc.project.dto.PasswordDto;
 import com.nc.project.dto.UserProfileDto;
-import com.nc.project.service.impl.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.nc.project.service.user.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("user/")

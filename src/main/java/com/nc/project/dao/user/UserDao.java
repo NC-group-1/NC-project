@@ -1,4 +1,4 @@
-package com.nc.project.dao;
+package com.nc.project.dao.user;
 
 import com.nc.project.dto.Page;
 import com.nc.project.dto.UserProfileDto;
@@ -20,6 +20,7 @@ public interface UserDao {
     Optional<User> findByEmailForRecovery(String email);
 
     Optional<UserProfileDto> findByEmail(String email);
+
     Optional<UserProfileDto> updatePersonalProfileById(UserProfileDto user);
 
     void saveToken(RecoveryToken recoveryToken);

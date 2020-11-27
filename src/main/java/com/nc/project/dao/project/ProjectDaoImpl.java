@@ -1,26 +1,29 @@
-package com.nc.project.dao.impl;
+package com.nc.project.dao.project;
 
-import com.nc.project.dao.ProjectDao;
 import com.nc.project.dto.ProjectDto;
 import com.nc.project.model.Project;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public class ProjectDaoImpl implements ProjectDao {
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+
+    private final JdbcTemplate jdbcTemplate;
+    private final QueryService queryService;
+
+    public ProjectDaoImpl(JdbcTemplate jdbcTemplate, QueryService queryService) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.queryService = queryService;
+    }
 
     @Override
     public void create(Project project) {
-        jdbcTemplate.update("INSERT INTO project (name, link, user_id ) VALUES (?,?,?)",
+        String sql = queryService.getQuery("project.create");
+        jdbcTemplate.update(sql,
                 project.getName(),
                 project.getLink(),
                 project.getUser_id()
@@ -29,8 +32,8 @@ public class ProjectDaoImpl implements ProjectDao {
 
     @Override
     public List<ProjectDto> getAllByPage(int page, int size, String filter, String orderBy,String order) {
-        String query = String.format("SELECT p.project_id, p.name, p.link, p.date, p.activated, u.name username " +
-                "FROM project p INNER JOIN usr u ON p.user_id=u.user_id WHERE p.name LIKE ? ORDER BY %s %s LIMIT ? OFFSET ?*?",orderBy,order);
+        String query = queryService.getQuery("project.getAllByPage");
+        query = String.format(query,orderBy,order);
         List<ProjectDto> projectList = jdbcTemplate.query(query,
                 new Object[]{"%"+filter +"%", size, size, page-1},
                 (resultSet, i) -> new ProjectDto(
@@ -48,7 +51,8 @@ public class ProjectDaoImpl implements ProjectDao {
 
     @Override
     public void edit(Project project) {
-        jdbcTemplate.update("UPDATE project SET name=?, link=?, activated=? WHERE project_id=?",
+        String sql = queryService.getQuery("project.edit");
+        jdbcTemplate.update(sql,
                 project.getName(),
                 project.getLink(),
                 project.getArchived(),
@@ -58,7 +62,8 @@ public class ProjectDaoImpl implements ProjectDao {
 
     @Override
     public Optional<Integer> getSizeOfResultSet(String filter) {
-        Integer size = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM project WHERE name LIKE ?",
+        String sql = queryService.getQuery("project.getSizeOfResultSet");
+        Integer size = jdbcTemplate.queryForObject(sql,
                 new Object[]{"%"+filter +"%"},
                 (rs, rowNum) -> rs.getInt("count"));
         return Optional.of(size);

@@ -5,9 +5,7 @@ import com.nc.project.dto.AuthRequest;
 import com.nc.project.dto.AuthResponse;
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.User;
-import com.nc.project.service.impl.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Role;
+import com.nc.project.service.user.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,18 +13,21 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
 public class UserRestController {
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final UserService userService;
+    private final JwtTokenUtil jwtTokenUtil;
+    private final AuthenticationManager authenticationManager;
+
+    public UserRestController(UserService userService, JwtTokenUtil jwtTokenUtil,
+                              AuthenticationManager authenticationManager) {
+        this.userService = userService;
+        this.jwtTokenUtil = jwtTokenUtil;
+        this.authenticationManager = authenticationManager;
+    }
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.OK)

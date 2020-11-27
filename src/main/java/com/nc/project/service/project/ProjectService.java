@@ -1,4 +1,4 @@
-package com.nc.project.service;
+package com.nc.project.service.project;
 
 import com.nc.project.dto.Page;
 import com.nc.project.dto.ProjectDto;

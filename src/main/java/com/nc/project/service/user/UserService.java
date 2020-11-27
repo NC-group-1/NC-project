@@ -1,4 +1,4 @@
-package com.nc.project.service;
+package com.nc.project.service.user;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,7 +8,7 @@ import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.RecoveryToken;
 import com.nc.project.model.User;
 
-public interface IUserService {
+public interface UserService {
 
     User createUser(User user);
 

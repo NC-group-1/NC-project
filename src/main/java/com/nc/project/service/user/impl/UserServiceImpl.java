@@ -1,16 +1,13 @@
-package com.nc.project.service.impl;
+package com.nc.project.service.user.impl;
 
-import com.nc.project.dao.UserDao;
+
 import com.nc.project.dto.Page;
+import com.nc.project.dao.user.UserDao;
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.RecoveryToken;
 import com.nc.project.model.User;
-import com.nc.project.service.IUserService;
+import com.nc.project.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,11 +17,15 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class UserService implements IUserService, UserDetailsService {
-    @Autowired
+public class UserServiceImpl implements UserService {
+
     private UserDao userDao;
-    @Autowired
     private PasswordEncoder bCryptPasswordEncoder;
+
+    public UserServiceImpl(UserDao userDao, PasswordEncoder bCryptPasswordEncoder) {
+        this.userDao = userDao;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
 
     @Override
     public User createUser(User user) {
@@ -36,7 +37,6 @@ public class UserService implements IUserService, UserDetailsService {
     public Optional<UserProfileDto> updatePersonalProfile(UserProfileDto user) {
         return userDao.updatePersonalProfileById(user);
     }
-
 
     @Override
     public Optional<UserProfileDto> findUserProfileById(int id) {
@@ -55,13 +55,12 @@ public class UserService implements IUserService, UserDetailsService {
 
     @Override
     public Page<UserProfileDto> getAllByPage(int page, int size, String filter ,String orderBy,String order) {
-        if(orderBy.equals(""))
+        if (orderBy.equals(""))
             orderBy = "user_id";
-        if(!order.equals("DESC")){
-            order="";
+        if (!order.equals("DESC")) {
+            order = "";
         }
-
-        return new Page(userDao.getAllByPage(page,size,filter,orderBy,order),userDao.getSizeOfResultSet(filter).get());
+        return new Page(userDao.getAllByPage(page, size, filter, orderBy, order), userDao.getSizeOfResultSet(filter).get());
     }
 
     @Override
@@ -75,14 +74,7 @@ public class UserService implements IUserService, UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        User byEmail = userDao.findByEmailForAuth(s).get();
-        return new org.springframework.security.core.userdetails.User(byEmail.getEmail(),
-                byEmail.getPassword(), byEmail.getAuthorities());
-    }
-
-	@Override
-	public void updateConfirmationToken(User user, String token) {
+    public void updateConfirmationToken(User user, String token) {
         RecoveryToken confToken = new RecoveryToken(token, user.getId(), new Date());
         userDao.saveToken(confToken);
         log.info("Token was updated successfully");
@@ -99,6 +91,7 @@ public class UserService implements IUserService, UserDetailsService {
     public Optional<Integer> getUserIdByRecoverPasswordToken(String token) {
         return userDao.findUserIdByPasswordToken(token);
     }
+
     @Override
     public String validatePasswordRecoverToken(String token) {
         final RecoveryToken passToken = userDao.findTokenByRecoverPasswordToken(token);

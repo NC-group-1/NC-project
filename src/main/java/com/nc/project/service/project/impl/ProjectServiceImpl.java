@@ -1,14 +1,12 @@
-package com.nc.project.service.impl;
+package com.nc.project.service.project.impl;
 
-import com.nc.project.dao.ProjectDao;
+import com.nc.project.dao.project.ProjectDao;
 import com.nc.project.dto.Page;
 import com.nc.project.dto.ProjectDto;
 import com.nc.project.model.Project;
-import com.nc.project.service.ProjectService;
+import com.nc.project.service.project.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {

@@ -1,4 +1,4 @@
-package com.nc.project.dao;
+package com.nc.project.dao.project;
 
 import com.nc.project.dto.ProjectDto;
 import com.nc.project.model.Project;
