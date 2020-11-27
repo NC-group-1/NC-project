@@ -1,6 +1,7 @@
 package com.nc.project.service.action.impl;
 
 import com.nc.project.dao.action.ActionDao;
+import com.nc.project.dao.parameterKey.ParameterKeyDao;
 import com.nc.project.dto.Page;
 import com.nc.project.model.Action;
 import com.nc.project.model.ParameterKey;
@@ -19,24 +20,27 @@ import java.util.stream.Collectors;
 @Service
 public class ActionServiceImpl implements ActionService {
     private final ActionDao actionDao;
+    private final ParameterKeyDao parameterKeyDao;
 
-    public ActionServiceImpl(ActionDao actionDao) {
+    public ActionServiceImpl(ActionDao actionDao, ParameterKeyDao parameterKeyDao) {
         this.actionDao = actionDao;
+        this.parameterKeyDao = parameterKeyDao;
     }
-    //rewrite
+
     @Override
     public Action createAction(Action action) {
         if (action.getName() == null) {
             log.info("Action not exists");
             throw new NoSuchElementException("Action not found");
         }
-        Action createdAction = actionDao.create(action);
-        if (action.getKey() == null) {
-            ParameterKey paramKey = new ParameterKey();
-            createdAction.setKey(paramKey);
-        }
+        ParameterKey key = action.getKey();
 
-        return createdAction;
+        if (key != null) {
+            key = parameterKeyDao.create(key);
+            action.setKey(key);
+        }
+        return actionDao.create(action);
+
     }
 
     @Override
@@ -51,12 +55,12 @@ public class ActionServiceImpl implements ActionService {
 
     @Override
     public Page getAllActionsByPage(int page, int size) {
-        Optional<Integer> numberOfElements = actionDao.findNumberOfElements();
+        int numberOfElements = actionDao.findNumberOfElements();
         Page resultPage = new Page();
 
-        if (numberOfElements.get() > size * page) {
+        if (numberOfElements > size * page) {
             resultPage.setList(actionDao.findAllActionsByPage(size, size * (page)));
-            resultPage.setSize(numberOfElements.get());
+            resultPage.setSize(numberOfElements);
         }
         return resultPage;
 
