@@ -45,8 +45,8 @@ public class ActionController {
 
     @GetMapping("/")
     public ResponseEntity<List<Action>> getActionByName(@RequestParam(name="name") String name) {
-        List<Action> action = actionService.getActionByName(name);
-        return new ResponseEntity<>(action, HttpStatus.OK);
+        List<Action> actions = actionService.getActionByName(name);
+        return new ResponseEntity<>(actions, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
