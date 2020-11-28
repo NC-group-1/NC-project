@@ -69,8 +69,8 @@ public class CompoundServiceImpl implements CompoundService {
     public Page<Action> getCompoundsByPage(int page, int size) {
         int numberOfCompounds = compoundDao.getNumberOfCompounds();
         Page<Action> pageOfCompounds = new Page<>();
-        if (numberOfCompounds > size * page) {
-            pageOfCompounds.setList(compoundDao.getCompoundsByPage(size, size * page));
+        if (numberOfCompounds >= size * page) {
+            pageOfCompounds.setList(compoundDao.getCompoundsByPage(size, (size * page)-size));
             pageOfCompounds.setSize(numberOfCompounds);
         }
         return pageOfCompounds;
