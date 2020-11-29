@@ -24,21 +24,14 @@ public class ActionDaoImpl implements ActionDao {
     public Action create(Action action) {
         String sql = queryService.getQuery("action.create");
         SqlParameterSource parameters = new BeanPropertySqlParameterSource(action);
-        if(action.getKey() != null) {
-            jdbcTemplate.update(sql,
-                    action.getName(),
-                    action.getDescription(),
-                    action.getType().toString(),
-                    action.getKey().getId()
-            );
-        } else {
-            jdbcTemplate.update(sql,
-                    action.getName(),
-                    action.getDescription(),
-                    action.getType().toString(),
-                    null
-            );
-        }
+        Integer keyId = null;
+        if(action.getKey() != null) keyId = action.getKey().getId();
+        jdbcTemplate.update(sql,
+                action.getName(),
+                action.getDescription(),
+                action.getType().toString(),
+                keyId
+        );
         return action;
     }
 
@@ -88,24 +81,15 @@ public class ActionDaoImpl implements ActionDao {
     @Override
     public Action update(Action action) {
         String sql = queryService.getQuery("action.edit");
-        if(action.getKey() != null) {
-            jdbcTemplate.update(sql,
-                    action.getName(),
-                    action.getDescription(),
-                    action.getType().toString(),
-                    action.getKey().getId(),
-                    action.getId()
-            );
-        } else {
-            jdbcTemplate.update(sql,
-                    action.getName(),
-                    action.getDescription(),
-                    action.getType().toString(),
-                    null,
-                    action.getId()
-            );
-        }
-
+        Integer keyId = null;
+        if(action.getKey() != null) keyId = action.getKey().getId();
+        jdbcTemplate.update(sql,
+                action.getName(),
+                action.getDescription(),
+                action.getType().toString(),
+                keyId,
+                action.getId()
+        );
         return action;
 
     }
