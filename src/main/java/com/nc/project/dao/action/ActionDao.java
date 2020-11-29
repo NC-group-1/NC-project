@@ -13,8 +13,8 @@ public interface ActionDao extends GenericDao<Action, Integer> {
 
     List<Action> findAllActionsByPage(int limit, int offset);
 
-    Action setActionName(int id, String name);
+    Action setActionName(Integer id, String name);
 
-    Action setActionDescription(int id, String description);
+    Action setActionDescription(Integer id, String description);
 
 }

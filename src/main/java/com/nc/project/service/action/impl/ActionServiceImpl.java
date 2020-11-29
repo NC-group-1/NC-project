@@ -33,19 +33,20 @@ public class ActionServiceImpl implements ActionService {
             log.info("Action not exists");
             throw new NoSuchElementException("Action not found");
         }
+
         ParameterKey key = action.getKey();
 
         if (key != null) {
             key = parameterKeyDao.create(key);
-            System.out.println(key);
             action.setKey(key);
         }
+
         return actionDao.create(action);
 
     }
 
     @Override
-    public Optional<Action> getActionById(int id) {
+    public Optional<Action> getActionById(Integer id) {
         return actionDao.findById(id);
     }
 
@@ -60,7 +61,7 @@ public class ActionServiceImpl implements ActionService {
         Page resultPage = new Page();
 
         if (numberOfElements > size * page) {
-            resultPage.setList(actionDao.findAllActionsByPage(size, size * (page)));
+            resultPage.setList(actionDao.findAllActionsByPage(size, size * page));
             resultPage.setSize(numberOfElements);
         }
         return resultPage;
@@ -80,7 +81,7 @@ public class ActionServiceImpl implements ActionService {
     }
 
     @Override
-    public void deleteAction(int id) {
+    public void deleteAction(Integer id) {
         actionDao.delete(id);
     }
 

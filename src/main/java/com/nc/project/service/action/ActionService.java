@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface ActionService {
     Action createAction(Action action);
 
-    Optional<Action> getActionById(int id);
+    Optional<Action> getActionById(Integer id);
 
     List<Action> getActionByName(String name);
 
@@ -17,7 +17,7 @@ public interface ActionService {
 
     Action editAction(Action action);
 
-    void deleteAction(int id);
+    void deleteAction(Integer id);
 
     List<String> getActionTypes();
 }

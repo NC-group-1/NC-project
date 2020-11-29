@@ -10,6 +10,6 @@ import org.springframework.data.annotation.Id;
 @AllArgsConstructor
 public class ParameterKey {
     @Id
-    private int id;
+    private Integer id;
     private String key;
 }
