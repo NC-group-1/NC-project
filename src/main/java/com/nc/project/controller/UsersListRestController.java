@@ -1,5 +1,7 @@
 package com.nc.project.controller;
 
+
+import com.nc.project.dto.Page;
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.service.user.UserService;
 import org.springframework.http.HttpStatus;
@@ -9,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users/list")
+@RequestMapping("user/")
 public class UsersListRestController {
 
     private final UserService userService;
@@ -18,16 +20,22 @@ public class UsersListRestController {
         this.userService = userService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<UserProfileDto>> getAll(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "5") int size)
+    @GetMapping("get_user_list/{pageIndex}/{pageSize}")
+    public ResponseEntity<Page<UserProfileDto>> getAll(
+            @PathVariable int pageSize,
+            @PathVariable int pageIndex,
+            @RequestParam(defaultValue = "") String filter,
+            @RequestParam(defaultValue = "") String orderBy,
+            @RequestParam(defaultValue = "") String order
+            )
     {
-        List<UserProfileDto> userList = userService.getAllByPage(page, size);
+
+        Page<UserProfileDto> userList = userService.getAllByPage(pageIndex, pageSize,filter,orderBy,order);
+
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping("/update")
     @ResponseStatus(value = HttpStatus.OK)
     public void update(
             @RequestBody UserProfileDto userProfileDto)

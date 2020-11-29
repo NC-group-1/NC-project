@@ -1,5 +1,7 @@
 package com.nc.project.service.user.impl;
 
+
+import com.nc.project.dto.Page;
 import com.nc.project.dao.user.UserDao;
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.RecoveryToken;
@@ -11,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -53,13 +54,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserProfileDto> getAllByPage(int page, int size) {
-        return userDao.getAllByPage(page, size);
+    public Page<UserProfileDto> getAllByPage(int page, int size, String filter ,String orderBy,String order) {
+        if (orderBy.equals(""))
+            orderBy = "user_id";
+        if (!order.equals("DESC")) {
+            order = "";
+        }
+        return new Page(userDao.getAllByPage(page, size, filter, orderBy, order), userDao.getSizeOfResultSet(filter).get());
     }
 
     @Override
     public void UpdateUserFromTable(UserProfileDto userProfile) {
-        userDao.UpdateUserFromTable(userProfile);
+        userDao.updateUserFromTable(userProfile);
     }
 
     @Override
