@@ -3,8 +3,6 @@ package com.nc.project.dao.action;
 import com.nc.project.model.Action;
 import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,7 +21,6 @@ public class ActionDaoImpl implements ActionDao {
     @Override
     public Action create(Action action) {
         String sql = queryService.getQuery("action.create");
-        SqlParameterSource parameters = new BeanPropertySqlParameterSource(action);
         Integer keyId = null;
         if(action.getKey() != null) keyId = action.getKey().getId();
         jdbcTemplate.update(sql,
@@ -63,7 +60,7 @@ public class ActionDaoImpl implements ActionDao {
     }
 
     @Override
-    public Action setActionName(int id, String name) {
+    public Action setActionName(Integer id, String name) {
         String sql = queryService.getQuery("action.setActionName");
         jdbcTemplate.update(sql,
                 id, name);
@@ -71,7 +68,7 @@ public class ActionDaoImpl implements ActionDao {
     }
 
     @Override
-    public Action setActionDescription(int id, String description) {
+    public Action setActionDescription(Integer id, String description) {
         String sql = queryService.getQuery("action.setActionDescription");
         jdbcTemplate.update(sql,
                 id, description);

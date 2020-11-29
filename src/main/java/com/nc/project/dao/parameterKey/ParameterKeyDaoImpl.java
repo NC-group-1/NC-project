@@ -29,7 +29,7 @@ public class ParameterKeyDaoImpl implements ParameterKeyDao {
     @Override
     public ParameterKey create(ParameterKey key) {
         String sql = queryService.getQuery("parameterKey.create");
-        SqlParameterSource parameters = new BeanPropertySqlParameterSource(key);
+        // SqlParameterSource parameters = new BeanPropertySqlParameterSource(key);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(
                 connection -> {
@@ -77,6 +77,7 @@ public class ParameterKeyDaoImpl implements ParameterKeyDao {
                 preparedStatement -> preparedStatement.setString(1, name),
                 new ParameterKeyRowMapper()
         );
+
         return keys.isEmpty() ? null : keys;
     }
 }

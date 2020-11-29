@@ -13,7 +13,7 @@ public class ActionRowMapper implements RowMapper<Action> {
     @Override
     public Action mapRow(ResultSet resultSet, int i) throws SQLException {
         ParameterKey paramKey = new ParameterKey();
-        paramKey.setId(resultSet.getInt("parameter_key_id"));
+        paramKey.setId(resultSet.getObject("parameter_key_id", Integer.class));
         paramKey.setKey(resultSet.getString("key"));
 
         Action action = new Action();
