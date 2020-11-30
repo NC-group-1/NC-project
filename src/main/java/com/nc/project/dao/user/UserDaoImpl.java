@@ -81,6 +81,12 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public Integer getUserIdByEmail(String email) {
+        String sql = queryService.getQuery("user.getUserIdByEmail");
+        return jdbcTemplate.queryForObject(sql, new Object[]{email}, (resultSet, i) -> resultSet.getInt("user_id"));
+    }
+
+    @Override
     public Optional<User> findByEmailForRecovery(String email) {
         String sql = queryService.getQuery("user.findByEmailForRecovery");
         User user = jdbcTemplate.queryForObject(
@@ -93,7 +99,6 @@ public class UserDaoImpl implements UserDao {
                         rs.getTimestamp("code_expire_date")
                 ));
         return Optional.of(user);
-
     }
 
     @Override

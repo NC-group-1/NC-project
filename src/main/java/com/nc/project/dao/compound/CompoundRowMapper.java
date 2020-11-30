@@ -15,7 +15,7 @@ public class CompoundRowMapper implements RowMapper<Compound> {
                 resultSet.getInt("action_id"),
                 resultSet.getString("name"),
                 resultSet.getString("description"),
-                ActionType.Compound
+                ActionType.COMPOUND
         );
     }
 }

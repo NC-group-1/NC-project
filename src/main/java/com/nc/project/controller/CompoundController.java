@@ -4,7 +4,8 @@ import com.nc.project.dto.Page;
 import com.nc.project.model.Action;
 import com.nc.project.model.ActionOfCompound;
 import com.nc.project.model.Compound;
-import com.nc.project.service.library.CompoundService;
+
+import com.nc.project.service.compound.CompoundService;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 

@@ -34,4 +34,5 @@ public interface UserService {
 
     void UpdateUserFromTable(UserProfileDto userProfile);
 
+    Integer getUserIdByEmail(String username);
 }
