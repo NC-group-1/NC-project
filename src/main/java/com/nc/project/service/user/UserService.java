@@ -33,4 +33,7 @@ public interface UserService {
     Page<UserProfileDto> getAllByPage(int page, int size, String filter, String orderBy, String order);
 
     void UpdateUserFromTable(UserProfileDto userProfile);
+
+    Optional<String> addLinkToEmail(String link, String pathToEmail);
+
 }
