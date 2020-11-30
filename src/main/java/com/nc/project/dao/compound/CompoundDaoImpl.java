@@ -1,18 +1,17 @@
 package com.nc.project.dao.compound;
 
-import com.nc.project.dto.Page;
 import com.nc.project.model.Action;
+import com.nc.project.model.ActionOfCompound;
 import com.nc.project.model.Compound;
+import com.nc.project.model.ParameterKey;
 import com.nc.project.model.util.ActionType;
 import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public class CompoundDaoImpl implements CompoundDao {
@@ -25,44 +24,31 @@ public class CompoundDaoImpl implements CompoundDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    //rewrite
     @Override
-    public Action createCompound(Action compound) {
+    public Compound createCompound(Compound compound) {
         String sql = queryService.getQuery("compound.create");
-        SqlParameterSource parameters = new BeanPropertySqlParameterSource(compound);
         jdbcTemplate.update(sql,
                 compound.getName(),
                 compound.getDescription(),
-                ActionType.FIRST_TYPE.toString()
+                compound.getActionsId(),
+                compound.getActionsOrder(),
+                compound.getActionsKeys()
         );
-//        int id = actionInsert.executeAndReturnKey(parameters).intValue();
-//        compound.setId(id);
         return compound;
     }
 
     @Override
-    public Action findCompoundById(int id) {
+    public Compound findCompoundById(int id) {
         String sql = queryService.getQuery("compound.findById");
-        Optional<Action> compoundAsAction = jdbcTemplate.queryForObject(sql,
+        return jdbcTemplate.queryForObject(sql,
                 new Object[]{id},
-                (resultSet, i) -> Optional.of(new Action(
-                        resultSet.getInt("action_id"),
-                        resultSet.getString("name"),
-                        resultSet.getString("description"),
-                        ActionType.FIRST_TYPE
-                )));
-        return compoundAsAction.orElse(new Action());
+                new CompoundRowMapper());
     }
 
     @Override
-    public List<Action> findAllCompounds() {
+    public List<Compound> findAllCompounds() {
         String sql = queryService.getQuery("compound.findAll");
-        return jdbcTemplate.query(sql, (resultSet, i) -> new Action(
-                resultSet.getInt("action_id"),
-                resultSet.getString("name"),
-                resultSet.getString("description"),
-                ActionType.FIRST_TYPE
-        ));
+        return jdbcTemplate.query(sql, new CompoundRowMapper());
     }
 
     @Override
@@ -83,47 +69,65 @@ public class CompoundDaoImpl implements CompoundDao {
     }
 
     @Override
-    public List<Action> getActionsOfCompound(int compoundId) {
+    public List<ActionOfCompound> getActionsOfCompound(int compoundId) {
         String sql = queryService.getQuery("compound.findCompoundActions");
-        return jdbcTemplate.query(sql, new Object[]{compoundId}, (resultSet, i) -> new Action(
-                resultSet.getInt("id"),
-                resultSet.getString("name"),
-                resultSet.getString("description"),
-                ActionType.FIRST_TYPE
-        ));
-    }
-
-    @Override
-    public void postActionInCompound(Compound compound) {
-        String sql = queryService.getQuery("compound.addActionToCompound");
-        jdbcTemplate.update(sql,
-                compound.getActionId(),
-                compound.getCompoundId(),
-                compound.getOrderNum(),
-                compound.getKey().getKey()
+        return jdbcTemplate.query(sql, new Object[]{compoundId}, (resultSet, i) ->
+            new ActionOfCompound(
+                new Action(
+                    resultSet.getInt("action_id"),
+                    resultSet.getString("name"),
+                    resultSet.getString("description"),
+                    ActionType.valueOf(resultSet.getString("type"))
+                ),
+                resultSet.getInt("order_num"),
+                new ParameterKey(
+                    resultSet.getInt("pk_id"),
+                    resultSet.getString("key")
+                )
+            )
         );
     }
 
     @Override
-    public void deleteActionFromCompound(Compound compound) {
+    public void postActionInCompound(ActionOfCompound compound, int compoundId) {
+
+        String sql = compound.getKey() != null
+                ? queryService.getQuery("compound.addActionToCompound")
+                : queryService.getQuery("compound.addActionWithKeyNull");
+        jdbcTemplate.update(sql,
+                compound.getKey() != null ? compound.getKey().getKey() : null,
+                compound.getAction().getId(),
+                compoundId,
+                compound.getOrderNum()
+        );
+    }
+
+    @Override
+    public void deleteActionFromCompound(int actionId, int compoundId) {
         String sql = queryService.getQuery("compound.deleteActionFromCompound");
-        jdbcTemplate.update(sql, compound.getActionId(), compound.getCompoundId());
+        jdbcTemplate.update(sql, actionId, compoundId);
     }
 
     @Override
-    public List<Action> getCompoundsByPage(int limit, int offset) {
-        String sql = queryService.getQuery("compound.findByPage");
-        return jdbcTemplate.query(sql, new Object[]{limit, offset}, (resultSet, i) -> new Action(
-                resultSet.getInt("action_id"),
-                resultSet.getString("name"),
-                resultSet.getString("description"),
-                ActionType.COMPOUND
-        ));
+    public List<Compound> getCompoundsByPage(int limit, int offset, String filterName, String filterDescription, String orderByWithDirection) {
+//        String sql = queryService.getQuery("compound.findByPage");
+        String sql = "SELECT DISTINCT action.action_id, name, description FROM" +
+                " action INNER JOIN compound_action ON action.action_id = compound_action.compound_id" +
+                " WHERE lower(name) LIKE lower(concat('%',?::varchar,'%'))" +
+                " AND lower(description) LIKE lower(concat('%',?::varchar,'%'))" +
+                " ORDER BY " + orderByWithDirection + " LIMIT ? OFFSET ?;";
+        return jdbcTemplate.query(sql, new Object[]{filterName, filterDescription, limit, offset}, new CompoundRowMapper());
     }
 
     @Override
-    public Integer getNumberOfCompounds() {
+    public Integer getNumberOfCompounds(String name, String description) {
         String sql = queryService.getQuery("compound.getNumberOfCompounds");
-        return jdbcTemplate.queryForObject(sql, (resultSet, i) -> resultSet.getInt("count"));
+        return jdbcTemplate.queryForObject(sql, new Object[]{name, description}, (resultSet, i) -> resultSet.getInt("count"));
+    }
+
+    @Override
+    public void editActionsOrderInCompound(Action[] actions, int compoundId) {
+        String sql = queryService.getQuery("compound.changeOrder");
+        jdbcTemplate.update(sql, Arrays.stream(actions).map(Action::getId).toArray(Integer[]::new), compoundId);
     }
 }

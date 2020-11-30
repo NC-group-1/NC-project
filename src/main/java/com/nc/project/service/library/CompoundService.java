@@ -2,27 +2,34 @@ package com.nc.project.service.library;
 
 import com.nc.project.dto.Page;
 import com.nc.project.model.Action;
+import com.nc.project.model.ActionOfCompound;
 import com.nc.project.model.Compound;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
 public interface CompoundService {
 
-    Action createCompound(Action action);
+    Action createCompound(Compound compound);
 
-    Action getCompoundById(int id);
+    Compound getCompoundById(int id);
 
-    List<Action> getAllCompounds();
+    List<Compound> getAllCompounds();
 
     Action editCompound(Action compound);
 
-    void deleteCompound(Action deleteCompound);
+    void deleteCompound(int compoundId);
 
-    List<Action> getActionsOfCompound(int compoundId);
+    List<ActionOfCompound> getActionsOfCompound(int compoundId);
 
-    void postActionInCompound(Compound compound);
+    void postActionInCompound(ActionOfCompound actionOfCompound, int compoundId);
 
-    void deleteActionFromCompound(Compound compound);
+    void deleteActionFromCompound(int actionId, int compoundId);
 
-    Page<Action> getCompoundsByPage(int page, int size);
+//    Page<Compound> getCompoundsByPage(int page, int size);
+
+    void editActionsOrderInCompound(Action[] actions, int compoundId);
+
+    Page<Compound> getCompoundsByPage(Integer page, Integer size, String filterName, String filterDescription, String orderBy, String direction);
 }
