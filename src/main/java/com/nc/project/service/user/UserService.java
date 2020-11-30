@@ -3,6 +3,7 @@ package com.nc.project.service.user;
 import java.util.List;
 import java.util.Optional;
 
+import com.nc.project.dto.Page;
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.RecoveryToken;
 import com.nc.project.model.User;
@@ -29,7 +30,8 @@ public interface UserService {
 
     String getUserRoleByEmail(String email);
 
-    List<UserProfileDto> getAllByPage(int page, int size);
+    Page<UserProfileDto> getAllByPage(int page, int size, String filter, String orderBy, String order);
 
     void UpdateUserFromTable(UserProfileDto userProfile);
+
 }

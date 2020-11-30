@@ -1,5 +1,7 @@
 package com.nc.project.service.user.impl;
 
+
+import com.nc.project.dto.Page;
 import com.nc.project.dao.user.UserDao;
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.RecoveryToken;
@@ -11,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -37,7 +38,6 @@ public class UserServiceImpl implements UserService {
         return userDao.updatePersonalProfileById(user);
     }
 
-
     @Override
     public Optional<UserProfileDto> findUserProfileById(int id) {
         return userDao.findUserProfileById(id);
@@ -52,14 +52,20 @@ public class UserServiceImpl implements UserService {
     public String getUserRoleByEmail(String email) {
         return userDao.getUserRoleByEmail(email);
     }
+
     @Override
-    public List<UserProfileDto> getAllByPage(int page, int size) {
-        return userDao.getAllByPage(page,size);
+    public Page<UserProfileDto> getAllByPage(int page, int size, String filter ,String orderBy,String order) {
+        if (orderBy.equals(""))
+            orderBy = "user_id";
+        if (!order.equals("DESC")) {
+            order = "";
+        }
+        return new Page(userDao.getAllByPage(page, size, filter, orderBy, order), userDao.getSizeOfResultSet(filter).get());
     }
 
     @Override
     public void UpdateUserFromTable(UserProfileDto userProfile) {
-        userDao.UpdateUserFromTable(userProfile);
+        userDao.updateUserFromTable(userProfile);
     }
 
     @Override
@@ -67,8 +73,8 @@ public class UserServiceImpl implements UserService {
         return userDao.findByEmailForRecovery(email);
     }
 
-	@Override
-	public void updateConfirmationToken(User user, String token) {
+    @Override
+    public void updateConfirmationToken(User user, String token) {
         RecoveryToken confToken = new RecoveryToken(token, user.getId(), new Date());
         userDao.saveToken(confToken);
         log.info("Token was updated successfully");
@@ -85,6 +91,7 @@ public class UserServiceImpl implements UserService {
     public Optional<Integer> getUserIdByRecoverPasswordToken(String token) {
         return userDao.findUserIdByPasswordToken(token);
     }
+
     @Override
     public String validatePasswordRecoverToken(String token) {
         final RecoveryToken passToken = userDao.findTokenByRecoverPasswordToken(token);
@@ -94,7 +101,6 @@ public class UserServiceImpl implements UserService {
                 : null;
     }
 
-
     private boolean isTokenFound(RecoveryToken passToken) {
         return passToken != null;
     }
@@ -103,4 +109,5 @@ public class UserServiceImpl implements UserService {
         final Calendar cal = Calendar.getInstance();
         return passToken.getExpiryDate().before(cal.getTime());
     }
+
 }

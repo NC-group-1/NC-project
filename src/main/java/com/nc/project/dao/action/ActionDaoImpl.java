@@ -3,16 +3,13 @@ package com.nc.project.dao.action;
 import com.nc.project.model.Action;
 import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class ActionDaoImpl implements ActionDao {
-    private SimpleJdbcInsert actionInsert;
     private final QueryService queryService;
     private final JdbcTemplate jdbcTemplate;
 
@@ -22,60 +19,91 @@ public class ActionDaoImpl implements ActionDao {
     }
 
     @Override
-    public Action createAction(Action action) {
+    public Action create(Action action) {
         String sql = queryService.getQuery("action.create");
-        SqlParameterSource parameters = new BeanPropertySqlParameterSource(action);
+        Integer keyId = null;
+        if(action.getKey() != null) keyId = action.getKey().getId();
         jdbcTemplate.update(sql,
                 action.getName(),
                 action.getDescription(),
                 action.getType().toString(),
-                action.getKey().toString());
-        int id = actionInsert.executeAndReturnKey(parameters).intValue();
-        action.setId(id);
-        return action;
-    }
-
-    @Override
-    public Action getActionByKey(String key) {
-        String sql = queryService.getQuery("action.findByKey");
-        List<Action> actions = jdbcTemplate.query(sql,
-                preparedStatement -> preparedStatement.setString(1, key),
-                new ActionRowMapper());
-        return actions.isEmpty() ? null : actions.get(0);
-    }
-
-    @Override
-    public List<Action> findAllActionsByPage(int size, int number) {
-        String sql = queryService.getQuery("action.findAll");
-        return jdbcTemplate.query(sql,
-                new ActionRowMapper());
-    }
-
-    @Override
-    public Action editAction(Action action) {
-        String sql = queryService.getQuery("action.edit");
-        jdbcTemplate.update(sql,
-                 action.getName(),
-                 action.getDescription(),
-                 action.getType().toString(),
-                 action.getKey().toString()
+                keyId
         );
+        return action;
+    }
 
+    @Override
+    public List<Action> getActionByName(String name) {
+        String sql = queryService.getQuery("action.findByName");
+        List<Action> actions = jdbcTemplate.query(sql,
+                preparedStatement -> preparedStatement.setString(1, name),
+                new ActionRowMapper()
+        );
+        return actions.isEmpty() ? null : actions;
+    }
+
+    @Override
+    public int findNumberOfElements() {
+        String sql = queryService.getQuery("action.findNumberOfElements");
+        return jdbcTemplate.queryForObject(sql,
+                (resultSet, i) -> resultSet.getInt("count"));
+    }
+
+    @Override
+    public List<Action> findAllActionsByPage(int limit, int offset) {
+        String sql = queryService.getQuery("action.findAllByPage");
+        return jdbcTemplate.query(sql,
+                preparedStatement -> {
+                    preparedStatement.setInt(1, limit);
+                    preparedStatement.setInt(2, offset);
+                }, new ActionRowMapper());
+    }
+
+    @Override
+    public Action setActionName(Integer id, String name) {
+        String sql = queryService.getQuery("action.setActionName");
+        jdbcTemplate.update(sql,
+                id, name);
+        return this.findById(id).get();
+    }
+
+    @Override
+    public Action setActionDescription(Integer id, String description) {
+        String sql = queryService.getQuery("action.setActionDescription");
+        jdbcTemplate.update(sql,
+                id, description);
+        return this.findById(id).get();
+    }
+
+    @Override
+    public Action update(Action action) {
+        String sql = queryService.getQuery("action.edit");
+        Integer keyId = null;
+        if(action.getKey() != null) keyId = action.getKey().getId();
+        jdbcTemplate.update(sql,
+                action.getName(),
+                action.getDescription(),
+                action.getType().toString(),
+                keyId,
+                action.getId()
+        );
         return action;
 
     }
 
     @Override
-    public Action findActionById(int id) {
+    public Optional<Action> findById(Integer id) {
         String sql = queryService.getQuery("action.findById");
         List<Action> actions = jdbcTemplate.query(sql,
                 preparedStatement -> preparedStatement.setInt(1, id),
-                new ActionRowMapper());
-        return actions.isEmpty() ? null : actions.get(0);
+                new ActionRowMapper()
+        );
+
+        return Optional.ofNullable(actions.get(0));
     }
 
     @Override
-    public void removeAction(int id) {
+    public void delete(Integer id) {
         String sql = queryService.getQuery("action.deleteById");
         jdbcTemplate.update(sql, id);
     }

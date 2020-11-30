@@ -1,4 +1,4 @@
-package com.nc.project.service.library;
+package com.nc.project.service.compound;
 
 import com.nc.project.dto.Page;
 import com.nc.project.model.Action;

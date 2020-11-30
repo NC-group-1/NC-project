@@ -6,6 +6,6 @@ import com.nc.project.model.Email;
 import javax.mail.MessagingException;
 
 public interface EmailService {
-    Boolean sendSimpleMessage(Email email);
-    Boolean sendMessageWithAttachment(Email email, String recoverPasswordLink) throws MessagingException;
+    Boolean sendSimpleMessage(String to, String subject, String body);
+    Boolean sendMessageWithAttachment(String to, String subject, String body) throws MessagingException;
 }

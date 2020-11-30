@@ -1,8 +1,8 @@
 package com.nc.project.service.mail.impl;
 
-import com.nc.project.model.Email;
 import com.nc.project.service.mail.EmailService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -14,6 +14,8 @@ import javax.mail.internet.MimeMessage;
 @Service
 @Slf4j
 public class EmailServiceImpl implements EmailService {
+    @Value("${spring.mail.username}")
+    private String from;
 
     private final JavaMailSender javaMailSender;
 
@@ -22,12 +24,13 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public Boolean sendSimpleMessage(Email email) {
+    public Boolean sendSimpleMessage(String to, String subject, String body) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
 
-        simpleMailMessage.setTo(String.join(",", email.getRecipients()));
-        simpleMailMessage.setSubject(email.getSubject());
-        simpleMailMessage.setText(email.getBody());
+        simpleMailMessage.setFrom(from);
+        simpleMailMessage.setTo(to);
+        simpleMailMessage.setSubject(subject);
+        simpleMailMessage.setText(body);
         boolean isSent = false;
         try{
             javaMailSender.send(simpleMailMessage);
@@ -39,18 +42,17 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public Boolean sendMessageWithAttachment(Email email, String recoverPasswordLink) throws MessagingException {
+    public Boolean sendMessageWithAttachment(String to, String subject, String body) throws MessagingException {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
 
-        mimeMessageHelper.setTo(String.join(",", email.getRecipients()));
-//        mimeMessageHelper.setSubject(email.getSubject());
-        mimeMessage.setSubject("Password recovery");
-//        mimeMessageHelper.setText(email.getBody());
-        mimeMessageHelper.setText("Hello, %s!<br/> \n" +
-                "             Your new password: <br/>\n" + recoverPasswordLink +
-                "             %s<br/><br/>");
-        Boolean isSent = false;
+        mimeMessageHelper.setFrom(from);
+        mimeMessageHelper.setTo(to);
+        mimeMessageHelper.setSubject(subject);
+        mimeMessageHelper.setText(body, "text/html");
+
+        boolean isSent = false;
         try {
             javaMailSender.send(mimeMessage);
             isSent = true;

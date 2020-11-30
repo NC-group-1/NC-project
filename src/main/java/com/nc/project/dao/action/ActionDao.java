@@ -1,21 +1,20 @@
 package com.nc.project.dao.action;
 
+import com.nc.project.dao.GenericDao;
 import com.nc.project.model.Action;
 
 import java.util.List;
 
-public interface ActionDao {
+public interface ActionDao extends GenericDao<Action, Integer> {
 
-    Action createAction(Action action);
+    List<Action> getActionByName(String name);
 
-    Action getActionByKey(String key);
+    int findNumberOfElements();
 
-    List<Action> findAllActionsByPage(int size, int number);
+    List<Action> findAllActionsByPage(int limit, int offset);
 
-    Action editAction(Action action);
+    Action setActionName(Integer id, String name);
 
-    Action findActionById(int id);
-
-    void removeAction(int id);
+    Action setActionDescription(Integer id, String description);
 
 }
