@@ -32,6 +32,8 @@ public interface UserService {
 
     void UpdateUserFromTable(UserProfileDto userProfile);
 
+    Integer getUserIdByEmail(String username);
+  
     Optional<String> addLinkToEmail(String link, String pathToEmail);
 
 }

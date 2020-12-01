@@ -67,10 +67,10 @@ public class UserRestController {
     @ResponseStatus(value = HttpStatus.OK)
     public AuthResponse authenticate(@RequestBody AuthRequest req) throws MessagingException {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(req.getUsername(), req.getPassword()));
-        String token = jwtTokenUtil.generateToken(req.getUsername(), userService.getUserRoleByEmail(req.getUsername()));
+        String token = jwtTokenUtil.generateToken(req.getUsername(), userService.getUserRoleByEmail(req.getUsername()), userService.getUserIdByEmail(req.getUsername()));
 
-        String link = "http://localhost:4200/auth?" + token;
-        emailService.sendMessageWithAttachment(req.getUsername(), subject, String.format(body, link));
+//        String link = "http://localhost:4200/auth?" + token;
+//        emailService.sendMessageWithAttachment(req.getUsername(), subject, String.format(body, link));
 
         return new AuthResponse(token);
     }
