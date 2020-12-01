@@ -69,6 +69,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Integer getUserIdByEmail(String email) {
+        return userDao.getUserIdByEmail(email);
+    }
+
+    @Override
     public Optional<User> findByEmailForRecovery(String email) {
         return userDao.findByEmailForRecovery(email);
     }
@@ -101,7 +106,6 @@ public class UserServiceImpl implements UserService {
                 : null;
     }
 
-
     private boolean isTokenFound(RecoveryToken passToken) {
         return passToken != null;
     }
@@ -110,4 +114,5 @@ public class UserServiceImpl implements UserService {
         final Calendar cal = Calendar.getInstance();
         return passToken.getExpiryDate().before(cal.getTime());
     }
+
 }

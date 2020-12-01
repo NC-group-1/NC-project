@@ -33,4 +33,6 @@ public interface UserService {
     Page<UserProfileDto> getAllByPage(int page, int size, String filter, String orderBy, String order);
 
     void UpdateUserFromTable(UserProfileDto userProfile);
+
+    Integer getUserIdByEmail(String username);
 }
