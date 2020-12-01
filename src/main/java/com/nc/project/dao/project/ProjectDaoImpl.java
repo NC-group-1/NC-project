@@ -26,7 +26,7 @@ public class ProjectDaoImpl implements ProjectDao {
         jdbcTemplate.update(sql,
                 project.getName(),
                 project.getLink(),
-                project.getUser_id()
+                project.getRole()
                 );
     }
 
@@ -41,7 +41,7 @@ public class ProjectDaoImpl implements ProjectDao {
                         resultSet.getString("name"),
                         resultSet.getString("link"),
                         resultSet.getTimestamp("date"),
-                        resultSet.getString("username"),
+                        resultSet.getString("role"),
                         resultSet.getBoolean("activated")
                 )
         );

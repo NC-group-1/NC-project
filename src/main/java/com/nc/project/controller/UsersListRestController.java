@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("user/")
+@RequestMapping("/user")
 public class UsersListRestController {
 
     private final UserService userService;
@@ -35,7 +35,7 @@ public class UsersListRestController {
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     @ResponseStatus(value = HttpStatus.OK)
     public void update(
             @RequestBody UserProfileDto userProfileDto)

@@ -1,6 +1,4 @@
 package com.nc.project.controller;
-
-
 import com.nc.project.dto.Page;
 import com.nc.project.dto.ProjectDto;
 import com.nc.project.model.Project;
@@ -19,6 +17,7 @@ public class ProjectRestController {
     @PostMapping
     @ResponseStatus(value = HttpStatus.OK)
     public void create(@RequestBody Project project) {
+        System.out.println(project);
         projectService.createProject(project);
     }
 
@@ -37,7 +36,7 @@ public class ProjectRestController {
         return new ResponseEntity<>(projectList, HttpStatus.OK);
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     @ResponseStatus(value = HttpStatus.OK)
     public void editProjectByName(@RequestBody Project project) {
         projectService.editProject(project);
