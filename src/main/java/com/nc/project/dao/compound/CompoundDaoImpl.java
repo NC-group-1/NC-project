@@ -72,19 +72,19 @@ public class CompoundDaoImpl implements CompoundDao {
     public List<ActionOfCompound> getActionsOfCompound(int compoundId) {
         String sql = queryService.getQuery("compound.findCompoundActions");
         return jdbcTemplate.query(sql, new Object[]{compoundId}, (resultSet, i) ->
-            new ActionOfCompound(
-                new Action(
-                    resultSet.getInt("action_id"),
-                    resultSet.getString("name"),
-                    resultSet.getString("description"),
-                    ActionType.valueOf(resultSet.getString("type"))
-                ),
-                resultSet.getInt("order_num"),
-                new ParameterKey(
-                    resultSet.getInt("pk_id"),
-                    resultSet.getString("key")
+                new ActionOfCompound(
+                        new Action(
+                                resultSet.getInt("action_id"),
+                                resultSet.getString("name"),
+                                resultSet.getString("description"),
+                                ActionType.valueOf(resultSet.getString("type"))
+                        ),
+                        resultSet.getInt("order_num"),
+                        new ParameterKey(
+                                resultSet.getInt("pk_id"),
+                                resultSet.getString("key")
+                        )
                 )
-            )
         );
     }
 
@@ -130,4 +130,20 @@ public class CompoundDaoImpl implements CompoundDao {
         String sql = queryService.getQuery("compound.changeOrder");
         jdbcTemplate.update(sql, Arrays.stream(actions).map(Action::getId).toArray(Integer[]::new), compoundId);
     }
+
+    @Override
+    public void changeActions(ActionOfCompound[] actions, Integer compoundId) {
+        String sql = queryService.getQuery("compound.changeActions");
+        jdbcTemplate.update(sql,
+                compoundId,
+                Arrays.stream(actions).map(actionOfCompound -> actionOfCompound.getAction().getId()).toArray(Integer[]::new),
+                compoundId,
+                Arrays.stream(actions).map(ActionOfCompound::getOrderNum).toArray(Integer[]::new),
+                Arrays.stream(actions).map(actionOfCompound -> ParameterKey.checkValid(actionOfCompound.getKey())
+                        ? actionOfCompound.getKey().getId()
+                        : ParameterKey.checkValid(actionOfCompound.getAction().getKey())
+                        ? actionOfCompound.getAction().getKey().getId() :
+                        null).toArray(Integer[]::new));
+    }
+
 }

@@ -32,4 +32,6 @@ public interface CompoundService {
     void editActionsOrderInCompound(Action[] actions, int compoundId);
 
     Page<Compound> getCompoundsByPage(Integer page, Integer size, String filterName, String filterDescription, String orderBy, String direction);
+
+    void changeActions(ActionOfCompound[] actions, Integer compoundId);
 }

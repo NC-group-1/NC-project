@@ -20,4 +20,6 @@ public interface ActionService {
     void deleteAction(Integer id);
 
     List<String> getActionTypes();
+
+    Page<Action> getAllActionsByPage(int page, int size, int targetId);
 }

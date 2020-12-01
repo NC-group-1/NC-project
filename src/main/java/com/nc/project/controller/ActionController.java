@@ -35,6 +35,13 @@ public class ActionController {
         Page<Action> resultPage = actionService.getAllActionsByPage(page, size);
         return new ResponseEntity<>(resultPage, HttpStatus.OK);
     }
+    @GetMapping("/compounds/{targetId}")
+    public ResponseEntity<Page<Action>> getActionPageWithoutTarget(@PathVariable int targetId,
+                                                                   @RequestParam(name = "page", defaultValue = "0") int page,
+                                                                   @RequestParam(name = "size", defaultValue = "10") int size) {
+        Page<Action> resultPage = actionService.getAllActionsByPage(page, size, targetId);
+        return new ResponseEntity<>(resultPage, HttpStatus.OK);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Action> getAction(@PathVariable int id) {
