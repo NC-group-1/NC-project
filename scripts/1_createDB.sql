@@ -48,8 +48,8 @@ CREATE TABLE public.data_set
 );
 CREATE TABLE public.compound_action
 (
-    action_id integer REFERENCES action NOT NULL,
-    compound_id integer REFERENCES action NOT NULL,
+    action_id integer REFERENCES action ON DELETE CASCADE NOT NULL,
+    compound_id integer REFERENCES action ON DELETE CASCADE NOT NULL,
     order_num integer NOT NULL,
     parameter_key_id integer REFERENCES parameter_key
 );

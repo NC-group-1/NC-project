@@ -6,7 +6,6 @@ import com.nc.project.model.User;
 import com.nc.project.service.mail.EmailService;
 import com.nc.project.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,11 +19,8 @@ import java.util.UUID;
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:4200")
 public class PasswordController {
-    @Value("${email.recovery.body}")
-    private String body;
-
-    @Value("${email.recovery.subject}")
-    private String subject;
+    private String SUBJECT = "Recovery Password";
+    private String PATH_TO_ATTACHMENT = "src/main/resources/mail/recovery-password.html";
 
     private final EmailService emailService;
     private final UserService userService;
@@ -42,7 +38,7 @@ public class PasswordController {
             userService.updateConfirmationToken(user, token);
             String recoverPasswordLink = "http://localhost:4200/password/change?token=" + token;
 
-            emailService.sendMessageWithAttachment(email, subject, String.format(body, recoverPasswordLink));
+            emailService.sendMessageWithAttachment(email, SUBJECT, recoverPasswordLink, PATH_TO_ATTACHMENT);
         } catch (UserNotFoundException | MessagingException e) {
             System.out.println("User not found" + e.getMessage());
         }
