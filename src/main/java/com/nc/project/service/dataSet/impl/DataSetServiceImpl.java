@@ -50,7 +50,7 @@ public class DataSetServiceImpl implements DataSetService {
 
     @Override
     public DataSetGeneralInfoDto update(DataSetGeneralInfoDto entity) {
-        return dataSetDao.create(entity);
+        return dataSetDao.update(entity);
     }
 
     @Override
