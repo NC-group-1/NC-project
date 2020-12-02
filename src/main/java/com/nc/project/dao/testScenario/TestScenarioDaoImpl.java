@@ -22,9 +22,25 @@ public class TestScenarioDaoImpl implements TestScenarioDao {
     }
 
     @Override
-    public void create(TestScenario testScenario) {
-        String sql = "";
-        jdbcTemplate.update(sql
+    public Optional<Integer> create(TestScenario testScenario) {
+        String sql = queryService.getQuery("testScenario.create");
+        Integer id =jdbcTemplate.queryForObject(sql,new Object[]{
+                testScenario.getName(),
+                testScenario.getUserId(),
+                testScenario.getProjectId(),
+                testScenario.getDescription()},
+                (rs, rowNum) -> rs.getInt("test_scenario_id")
+        );
+        return Optional.of(id);
+    }
+
+    @Override
+    public void addActionOrCompound(int action_compound_id, int ts_id, int order_num) {
+        String sql = queryService.getQuery("testScenario.addActionOrCompound");
+        jdbcTemplate.update(sql,
+                action_compound_id,
+                ts_id,
+                order_num
         );
     }
 
@@ -47,7 +63,13 @@ public class TestScenarioDaoImpl implements TestScenarioDao {
 
     @Override
     public void edit(TestScenario testScenario) {
-
+        String sql = queryService.getQuery("testScenario.edit");
+        jdbcTemplate.update(sql,
+                testScenario.getName(),
+                testScenario.getDescription(),
+                testScenario.isActive(),
+                testScenario.getTest_scenario_id()
+        );
     }
 
     @Override
@@ -83,5 +105,20 @@ public class TestScenarioDaoImpl implements TestScenarioDao {
                 new Object[]{"%"+filter +"%",projectId},
                 (rs, rowNum) -> rs.getInt("count"));
         return Optional.of(size);
+    }
+
+    @Override
+    public Optional<Boolean> checkForTestCaseOnIt(int testScenarioId) {
+        String sql = queryService.getQuery("testScenario.checkForTestCaseOnIt");
+        Boolean res =jdbcTemplate.queryForObject(sql,
+                new Object[]{testScenarioId},
+                (rs, rowNum) -> rs.getBoolean("case"));
+        return Optional.of(res);
+    }
+
+    @Override
+    public void dropActionOrCompound(int testScenarioId) {
+        String sql = queryService.getQuery("testScenario.dropActionOrCompound");
+        jdbcTemplate.update(sql,testScenarioId);
     }
 }
