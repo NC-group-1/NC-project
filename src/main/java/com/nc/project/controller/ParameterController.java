@@ -22,25 +22,25 @@ public class ParameterController {
     }
 
     @PostMapping
-    public ResponseEntity<Parameter> createDataSet(@RequestBody Parameter entity) {
+    public ResponseEntity<Parameter> createParameter(@RequestBody Parameter entity) {
         Parameter createdDataSet = parameterService.create(entity);
         return new ResponseEntity<>(createdDataSet, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Parameter> editDataSet(@RequestBody Parameter entity) {
+    public ResponseEntity<Parameter> editParameter(@RequestBody Parameter entity) {
         Parameter updatedDataSet = parameterService.update(entity);
         return new ResponseEntity<>(updatedDataSet, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteDataSet(@PathVariable int id) {
+    public ResponseEntity deleteParameter(@PathVariable int id) {
         parameterService.delete(id);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Parameter> getDataSet(@PathVariable int id) {
+    public ResponseEntity<Parameter> getParameter(@PathVariable int id) {
         Optional<Parameter> entity =  parameterService.findById(id);
         return entity.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
