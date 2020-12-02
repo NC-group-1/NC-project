@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/test_scenario")
+@RequestMapping("api/test_scenario")
 public class TestScenarioRestController {
     private final TestScenarioService testScenarioService;
 
@@ -25,7 +25,7 @@ public class TestScenarioRestController {
         testScenarioService.createTestScenario(testScenario);
     }
 
-    @GetMapping("get_list")
+    @GetMapping("/list")
     public ResponseEntity<Page<TestScenarioDto>> getAll(
             @RequestParam(defaultValue = "5") int pageSize,
             @RequestParam(defaultValue = "1") int pageIndex,
