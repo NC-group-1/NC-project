@@ -12,4 +12,6 @@ public interface TestScenarioDao {
     List<TestScenarioDto> getAllByPage(int page, int size, String filter, String orderBy, String order);
     void edit(TestScenario testScenario);
     Optional<Integer> getSizeOfResultSet(String filter);
+    List<TestScenarioDto> getAllByPageAndProject(int page, int size, String filter, String orderBy, String order,int projectId);
+    Optional<Integer> getSizeOfProjectResultSet(String filter,int projectId);
 }

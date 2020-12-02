@@ -5,10 +5,12 @@ import com.nc.project.dto.TestScenarioDto;
 import com.nc.project.model.TestScenario;
 import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class TestScenarioDaoImpl implements TestScenarioDao {
 
     private final JdbcTemplate jdbcTemplate;
@@ -53,6 +55,32 @@ public class TestScenarioDaoImpl implements TestScenarioDao {
         String sql = queryService.getQuery("testScenario.getSizeOfResultSet");
         Integer size = jdbcTemplate.queryForObject(sql,
                 new Object[]{"%"+filter +"%"},
+                (rs, rowNum) -> rs.getInt("count"));
+        return Optional.of(size);
+    }
+
+    @Override
+    public List<TestScenarioDto> getAllByPageAndProject(int page, int size, String filter, String orderBy, String order, int projectId) {
+        String query = queryService.getQuery("testScenario.getAllByPageAndProject");
+        query = String.format(query,orderBy,order);
+        List<TestScenarioDto> testScenarioList = jdbcTemplate.query(query,
+                new Object[]{"%"+filter +"%",projectId, size, size, page-1},
+                (resultSet, i) -> new TestScenarioDto(
+                        resultSet.getInt("test_scenario_id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("description"),
+                        resultSet.getString("username")
+                )
+        );
+
+        return testScenarioList;
+    }
+
+    @Override
+    public Optional<Integer> getSizeOfProjectResultSet(String filter, int projectId) {
+        String sql = queryService.getQuery("testScenario.getSizeOfProjectResultSet");
+        Integer size = jdbcTemplate.queryForObject(sql,
+                new Object[]{"%"+filter +"%",projectId},
                 (rs, rowNum) -> rs.getInt("count"));
         return Optional.of(size);
     }
