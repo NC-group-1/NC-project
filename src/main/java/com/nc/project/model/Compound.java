@@ -37,6 +37,10 @@ public class Compound extends Action{
     }
     @JsonIgnore
     public Integer[] getActionsKeys() {
-        return Arrays.stream(this.actions).map(actionOfCompound -> actionOfCompound.getKey() != null ? actionOfCompound.getKey().getId() : null).toArray(Integer[]::new);
+        return Arrays.stream(actions).map(actionOfCompound -> ParameterKey.checkValid(actionOfCompound.getKey())
+                ? actionOfCompound.getKey().getId()
+                : ParameterKey.checkValid(actionOfCompound.getAction().getKey())
+                ? actionOfCompound.getAction().getKey().getId() :
+                null).toArray(Integer[]::new);
     }
 }

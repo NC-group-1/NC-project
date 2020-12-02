@@ -96,4 +96,9 @@ public class CompoundServiceImpl implements CompoundService {
         }
         return pageOfCompounds;
     }
+
+    @Override
+    public void changeActions(ActionOfCompound[] actions, Integer compoundId) {
+        compoundDao.changeActions(actions, compoundId);
+    }
 }

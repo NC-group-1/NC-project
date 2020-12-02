@@ -17,4 +17,5 @@ public interface ActionDao extends GenericDao<Action, Integer> {
 
     Action setActionDescription(Integer id, String description);
 
+    List<Action> findAllActionsByPage(int size, int i, int targetId);
 }

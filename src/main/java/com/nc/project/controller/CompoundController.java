@@ -65,7 +65,7 @@ public class CompoundController {
         compoundService.deleteActionFromCompound(actionId, compoundId);
     }
     @PutMapping("actions/{compoundId}")
-    public void changeOrder(@RequestBody Action[] actions, @PathVariable int compoundId){
-        compoundService.editActionsOrderInCompound(actions, compoundId);
+    public void changeActions(@RequestBody ActionOfCompound[] actions, @PathVariable int compoundId){
+        compoundService.changeActions(actions, compoundId);
     }
 }

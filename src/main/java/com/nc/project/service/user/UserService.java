@@ -1,12 +1,10 @@
 package com.nc.project.service.user;
 
-import java.util.List;
-import java.util.Optional;
-
 import com.nc.project.dto.Page;
 import com.nc.project.dto.UserProfileDto;
-import com.nc.project.model.RecoveryToken;
 import com.nc.project.model.User;
+
+import java.util.Optional;
 
 public interface UserService {
 
@@ -35,4 +33,7 @@ public interface UserService {
     void UpdateUserFromTable(UserProfileDto userProfile);
 
     Integer getUserIdByEmail(String username);
+  
+    Optional<String> addLinkToEmail(String link, String pathToEmail);
+
 }

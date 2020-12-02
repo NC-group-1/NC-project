@@ -31,4 +31,6 @@ public interface CompoundDao {
     Integer getNumberOfCompounds(String name, String description);
 
     void editActionsOrderInCompound(Action[] actions, int compoundId);
+
+    void changeActions(ActionOfCompound[] actions, Integer compoundId);
 }
