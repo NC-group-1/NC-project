@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -65,12 +64,6 @@ public class DataSetController {
     @GetMapping("/{id}")
     public ResponseEntity<DataSetGeneralInfoDto> getDataSet(@PathVariable int id) {
         Optional<DataSetGeneralInfoDto> entity = dataSetService.findById(id);
-        return entity.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/parameters/{id}")
-    public ResponseEntity<Parameter> getParameter(@PathVariable int id) {
-        Optional<Parameter> entity =  parameterService.findById(id);
         return entity.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
