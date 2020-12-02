@@ -58,6 +58,7 @@ CREATE TABLE public.parameter
 (
     parameter_id serial PRIMARY KEY,
     value character varying(255) NOT NULL,
+    activated boolean NOT NULL DEFAULT false,
     parameter_key_id integer REFERENCES parameter_key NOT NULL,
     data_set_id integer REFERENCES data_set NOT NULL
 );
