@@ -83,6 +83,7 @@ CREATE TABLE public.test_sc_action
 CREATE TABLE public.test_case
 (
     test_case_id serial PRIMARY KEY,
+    parent_test_case_id integer REFERENCES test_case,
     name character varying(127) NOT NULL,
     creation_date timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     start_date timestamp with time zone,
@@ -90,7 +91,7 @@ CREATE TABLE public.test_case
     status character varying(30) NOT NULL,
     description text NOT NULL,
     recurring_time interval,
-    retries integer DEFAULT 0,
+    iterations_amount integer DEFAULT 0,
     project_id integer REFERENCES project NOT NULL,
     creator_id integer REFERENCES usr NOT NULL,
     starter_id integer REFERENCES usr,
