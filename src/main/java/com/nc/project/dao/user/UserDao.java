@@ -40,4 +40,6 @@ public interface UserDao {
     void updateUserFromTable(UserProfileDto userProfile);
 
     Optional<Integer> getSizeOfResultSet(String filter);
+
+    Integer getUserIdByEmail(String email);
 }

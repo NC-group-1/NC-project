@@ -88,4 +88,16 @@ public class ActionServiceImpl implements ActionService {
     public List<String> getActionTypes() {
         return Arrays.stream(ActionType.values()).map(Enum::name).collect(Collectors.toList());
     }
+
+    @Override
+    public Page<Action> getAllActionsByPage(int page, int size, int targetId) {
+        int numberOfElements = actionDao.findNumberOfElements();
+        Page<Action> resultPage = new Page<>();
+
+        if (numberOfElements > size * page) {
+            resultPage.setList(actionDao.findAllActionsByPage(size, size * page, targetId));
+            resultPage.setSize(numberOfElements);
+        }
+        return resultPage;
+    }
 }

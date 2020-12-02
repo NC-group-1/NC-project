@@ -5,7 +5,9 @@ import com.nc.project.dto.AuthRequest;
 import com.nc.project.dto.AuthResponse;
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.User;
+import com.nc.project.service.mail.EmailService;
 import com.nc.project.service.user.UserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,20 +15,30 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import javax.mail.MessagingException;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
 public class UserRestController {
+    @Value("${email.verification.body}")
+    private String body;
+
+    @Value("${email.verification.subject}")
+    private String subject;
+
     private final UserService userService;
     private final JwtTokenUtil jwtTokenUtil;
     private final AuthenticationManager authenticationManager;
+    private EmailService emailService;
 
     public UserRestController(UserService userService, JwtTokenUtil jwtTokenUtil,
-                              AuthenticationManager authenticationManager) {
+                              AuthenticationManager authenticationManager,
+                              EmailService emailService) {
         this.userService = userService;
         this.jwtTokenUtil = jwtTokenUtil;
         this.authenticationManager = authenticationManager;
+        this.emailService = emailService;
     }
 
     @PostMapping
@@ -53,9 +65,13 @@ public class UserRestController {
     }
     @RequestMapping(path = "/auth", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
-    public AuthResponse authenticate(@RequestBody AuthRequest req){
+    public AuthResponse authenticate(@RequestBody AuthRequest req) throws MessagingException {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(req.getUsername(), req.getPassword()));
-        String token = jwtTokenUtil.generateToken(req.getUsername(), userService.getUserRoleByEmail(req.getUsername()));
+        String token = jwtTokenUtil.generateToken(req.getUsername(), userService.getUserRoleByEmail(req.getUsername()), userService.getUserIdByEmail(req.getUsername()));
+
+//        String link = "http://localhost:4200/auth?" + token;
+//        emailService.sendMessageWithAttachment(req.getUsername(), subject, String.format(body, link));
+
         return new AuthResponse(token);
     }
 }

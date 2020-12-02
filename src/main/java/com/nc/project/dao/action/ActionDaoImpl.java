@@ -76,6 +76,17 @@ public class ActionDaoImpl implements ActionDao {
     }
 
     @Override
+    public List<Action> findAllActionsByPage(int limit, int offset, int targetId) {
+        String sql = queryService.getQuery("action.findAllByPageWithoutTarget");
+        return jdbcTemplate.query(sql,
+                preparedStatement -> {
+                    preparedStatement.setInt(1, targetId);
+                    preparedStatement.setInt(2, limit);
+                    preparedStatement.setInt(3, offset);
+                }, new ActionRowMapper());
+    }
+
+    @Override
     public Action update(Action action) {
         String sql = queryService.getQuery("action.edit");
         Integer keyId = null;

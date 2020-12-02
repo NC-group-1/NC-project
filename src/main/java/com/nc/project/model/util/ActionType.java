@@ -8,5 +8,6 @@ public enum ActionType {
     MOVE_TO_ELEMENT,
     SEND_KEYS,
     FIND_ELEMENT_BY_ID,
-    FIND_ELEMENT_BY_XPATH
+    FIND_ELEMENT_BY_XPATH,
+    COMPOUND
 }

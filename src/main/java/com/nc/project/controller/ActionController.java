@@ -30,10 +30,16 @@ public class ActionController {
     }
 
     @GetMapping
-    public ResponseEntity<Page> getActionPage(@RequestParam(name = "page") int page,
-                                              @RequestParam(name = "size") int size) {
-        Page resultPage = actionService.getAllActionsByPage(page, size);
-
+    public ResponseEntity<Page<Action>> getActionPage(@RequestParam(name = "page", defaultValue = "0") int page,
+                                              @RequestParam(name = "size", defaultValue = "10") int size) {
+        Page<Action> resultPage = actionService.getAllActionsByPage(page, size);
+        return new ResponseEntity<>(resultPage, HttpStatus.OK);
+    }
+    @GetMapping("/compounds/{targetId}")
+    public ResponseEntity<Page<Action>> getActionPageWithoutTarget(@PathVariable int targetId,
+                                                                   @RequestParam(name = "page", defaultValue = "0") int page,
+                                                                   @RequestParam(name = "size", defaultValue = "10") int size) {
+        Page<Action> resultPage = actionService.getAllActionsByPage(page, size, targetId);
         return new ResponseEntity<>(resultPage, HttpStatus.OK);
     }
 
@@ -56,7 +62,7 @@ public class ActionController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteAction(@RequestBody int id) {
+    public ResponseEntity deleteAction(@PathVariable int id) {
         actionService.deleteAction(id);
         return new ResponseEntity(HttpStatus.OK);
     }

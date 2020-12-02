@@ -11,6 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
@@ -69,6 +73,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Integer getUserIdByEmail(String email) {
+        return userDao.getUserIdByEmail(email);
+    }
+
+    @Override
     public Optional<User> findByEmailForRecovery(String email) {
         return userDao.findByEmailForRecovery(email);
     }
@@ -101,7 +110,6 @@ public class UserServiceImpl implements UserService {
                 : null;
     }
 
-
     private boolean isTokenFound(RecoveryToken passToken) {
         return passToken != null;
     }
@@ -110,4 +118,24 @@ public class UserServiceImpl implements UserService {
         final Calendar cal = Calendar.getInstance();
         return passToken.getExpiryDate().before(cal.getTime());
     }
+
+    @Override
+    public Optional<String> addLinkToEmail(String link, String pathToEmail) {
+        File file = new File(pathToEmail);
+
+        StringBuilder htmlStringBuilder = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+
+            while (reader.ready()) {
+                htmlStringBuilder.append(reader.readLine());
+            }
+            return Optional.of(String.format(htmlStringBuilder.toString(), link));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
+
+    }
+
 }
