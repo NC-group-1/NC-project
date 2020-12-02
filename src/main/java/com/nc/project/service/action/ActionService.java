@@ -13,11 +13,13 @@ public interface ActionService {
 
     List<Action> getActionByName(String name);
 
-    Page getAllActionsByPage(int page, int size);
+    Page<Action> getAllActionsByPage(int page, int size);
 
     Action editAction(Action action);
 
     void deleteAction(Integer id);
 
     List<String> getActionTypes();
+
+    Page<Action> getAllActionsByPage(int page, int size, int targetId);
 }
