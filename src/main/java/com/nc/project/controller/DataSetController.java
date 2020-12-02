@@ -2,6 +2,7 @@ package com.nc.project.controller;
 
 import com.nc.project.dto.DataSetGeneralInfoDto;
 import com.nc.project.dto.Page;
+import com.nc.project.model.Action;
 import com.nc.project.model.Parameter;
 import com.nc.project.service.dataSet.DataSetService;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -38,5 +40,29 @@ public class DataSetController {
     public ResponseEntity<List<Parameter>> getParametersByDataSetId (@PathVariable int id) {
         List<Parameter> resultList = dataSetService.getParametersByDataSetId(id);
         return new ResponseEntity<>(resultList, HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<DataSetGeneralInfoDto> createDataSet(@RequestBody DataSetGeneralInfoDto entity) {
+        DataSetGeneralInfoDto createdDataSet = dataSetService.create(entity);
+        return new ResponseEntity<>(createdDataSet, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<DataSetGeneralInfoDto> editDataSet(@RequestBody DataSetGeneralInfoDto entity) {
+        DataSetGeneralInfoDto updatedDataSet = dataSetService.update(entity);
+        return new ResponseEntity<>(updatedDataSet, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteDataSet(@PathVariable int id) {
+        dataSetService.delete(id);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DataSetGeneralInfoDto> getDataSet(@PathVariable int id) {
+        Optional<DataSetGeneralInfoDto> entity = dataSetService.findById(id);
+        return entity.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

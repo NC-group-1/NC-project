@@ -37,4 +37,24 @@ public class DataSetServiceImpl implements DataSetService {
     public List<Parameter> getParametersByDataSetId(int id) {
         return parameterDao.getAllByDataSetId(id);
     }
+
+    @Override
+    public DataSetGeneralInfoDto create(DataSetGeneralInfoDto entity) {
+        return dataSetDao.create(entity);
+    }
+
+    @Override
+    public Optional<DataSetGeneralInfoDto> findById(Integer id) {
+        return dataSetDao.findById(id);
+    }
+
+    @Override
+    public DataSetGeneralInfoDto update(DataSetGeneralInfoDto entity) {
+        return dataSetDao.create(entity);
+    }
+
+    @Override
+    public void delete(Integer id) {
+        dataSetDao.delete(id);
+    }
 }
