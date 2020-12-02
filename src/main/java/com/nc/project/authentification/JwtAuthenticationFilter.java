@@ -1,5 +1,6 @@
 package com.nc.project.authentification;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,10 +37,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 username = jwtTokenUtil.extractUsername(jwtToken);
             } catch (IllegalArgumentException e) {
                 System.out.println("Cannot get Jwt Token");
+            } catch (ExpiredJwtException e) {
+                System.out.println("Access Jwt Token has expired");
             }
         } else {
             logger.warn("Jwt Token does not begin with Bearer String");
         }
+
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
             if (jwtTokenUtil.validateToken(jwtToken, userDetails.getUsername())) {

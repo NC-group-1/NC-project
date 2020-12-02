@@ -1,30 +1,36 @@
 package com.nc.project.dao.compound;
 
-import com.nc.project.dto.Page;
 import com.nc.project.model.Action;
+import com.nc.project.model.ActionOfCompound;
 import com.nc.project.model.Compound;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
 public interface CompoundDao {
 
-    Action createCompound(Action compound);
+    Compound createCompound(Compound compound);
 
-    Action findCompoundById(int id);
+    Compound findCompoundById(int id);
 
-    List<Action> findAllCompounds();
+    List<Compound> findAllCompounds();
 
     Action editCompound(Action compound);
 
     void removeCompound(int id);
 
-    List<Action> getActionsOfCompound(int compoundId);
+    List<ActionOfCompound> getActionsOfCompound(int compoundId);
 
-    void postActionInCompound(Compound compound);
+    void postActionInCompound(ActionOfCompound compound, int compoundId);
 
-    void deleteActionFromCompound(Compound compound);
+    void deleteActionFromCompound(int actionId, int compoundId);
 
-    List<Action> getCompoundsByPage(int page, int size);
+    List<Compound> getCompoundsByPage(int limit, int offset, String filterName, String filterDescription, String orderByWithDirection);
 
-    Integer getNumberOfCompounds();
+    Integer getNumberOfCompounds(String name, String description);
+
+    void editActionsOrderInCompound(Action[] actions, int compoundId);
+
+    void changeActions(ActionOfCompound[] actions, Integer compoundId);
 }

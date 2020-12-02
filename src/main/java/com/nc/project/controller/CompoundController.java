@@ -2,8 +2,11 @@ package com.nc.project.controller;
 
 import com.nc.project.dto.Page;
 import com.nc.project.model.Action;
+import com.nc.project.model.ActionOfCompound;
 import com.nc.project.model.Compound;
-import com.nc.project.service.library.CompoundService;
+
+import com.nc.project.service.compound.CompoundService;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,37 +25,47 @@ public class CompoundController {
 //        return compoundService.getAllCompounds();
 //    }
     @GetMapping
-    public Page<Action> getCompounds(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size){
-        return compoundService.getCompoundsByPage(page, size);
+    public Page<Compound> getCompounds(@RequestParam(defaultValue = "0") Integer page,
+                                       @RequestParam(defaultValue = "10") Integer size,
+                                       @RequestParam(defaultValue = "") String name,
+                                       @RequestParam(defaultValue = "") String description,
+                                       @RequestParam(defaultValue = "name") String orderBy,
+                                       @RequestParam(defaultValue = "ASC") String direction){
+        return compoundService.getCompoundsByPage(page, size, name, description, orderBy, direction);
     }
 
     @PostMapping
-    public Action postCompound(@RequestBody Action compoundAsAction){
-        return compoundService.createCompound(compoundAsAction);
+    public Action postCompound(@RequestBody Compound compound){
+        return compoundService.createCompound(compound);
     }
     @GetMapping("{id}")
-    public Action getCompoundById(@PathVariable int id){
+    public Compound getCompoundById(@PathVariable int id){
         return compoundService.getCompoundById(id);
     }
     @PutMapping("update")
     public Action updateCompound(@RequestBody Action compoundAsAction){
         return compoundService.editCompound(compoundAsAction);
     }
-    @DeleteMapping("update")
-    public void deleteCompound(@RequestBody Action compoundAsAction){
-        compoundService.deleteCompound(compoundAsAction);
+    @DeleteMapping("delete/{compoundId}")
+    public void deleteCompound(@PathVariable int compoundId){
+        compoundService.deleteCompound(compoundId);
     }
 
-    @GetMapping("action/{id}")
-    public List<Action> getActionsOfCompound(@PathVariable int id){
-        return compoundService.getActionsOfCompound(id);
+    @GetMapping("actions/{compoundId}")
+    public List<ActionOfCompound> getActionsOfCompound(@PathVariable int compoundId){
+        return compoundService.getActionsOfCompound(compoundId);
     }
-    @PostMapping("action")
-    public void postActionInCompound(@RequestBody Compound compound){
-        compoundService.postActionInCompound(compound);
+    @PostMapping("actions/{compoundId}")
+    public void postActionInCompound(@RequestBody ActionOfCompound action, @PathVariable int compoundId){
+        compoundService.postActionInCompound(action, compoundId);
     }
-    @DeleteMapping("action")
-    public void removeActionFromCompound(@RequestBody Compound compound){
-        compoundService.deleteActionFromCompound(compound);
+
+    @DeleteMapping("actions/{compoundId}")
+    public void removeActionFromCompound(@RequestBody int actionId, @PathVariable int compoundId){
+        compoundService.deleteActionFromCompound(actionId, compoundId);
+    }
+    @PutMapping("actions/{compoundId}")
+    public void changeActions(@RequestBody ActionOfCompound[] actions, @PathVariable int compoundId){
+        compoundService.changeActions(actions, compoundId);
     }
 }

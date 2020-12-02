@@ -1,9 +1,10 @@
 package com.nc.project.dao.user;
 
+
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.RecoveryToken;
 import com.nc.project.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -16,73 +17,59 @@ import java.util.UUID;
 @Repository
 public class UserDaoImpl implements UserDao {
     private final JdbcTemplate jdbcTemplate;
+    private final QueryService queryService;
 
-    public UserDaoImpl(JdbcTemplate jdbcTemplate) {
+    public UserDaoImpl(JdbcTemplate jdbcTemplate, QueryService queryService) {
         this.jdbcTemplate = jdbcTemplate;
+        this.queryService = queryService;
     }
 
     @Override
     public void create(User user) {
-        jdbcTemplate.update("INSERT INTO usr (email, role, reg_date, email_code, code_expire_date) VALUES (?,?,?,?,?)",
+        String sql = queryService.getQuery("user.create");
+        jdbcTemplate.update(sql,
                 user.getEmail(),
                 user.getRole(),
-                new Timestamp(new Date().getTime()),
                 UUID.randomUUID().toString(),
                 new Timestamp(new Date().getTime() + 60000));
     }
 
     public Optional<UserProfileDto> updatePersonalProfileById(UserProfileDto userProfileDto) {
-        int update = jdbcTemplate.update("UPDATE usr SET name = ?, surname = ?, about_me = ? WHERE user_id = ?", userProfileDto.getName(), userProfileDto.getSurname(), userProfileDto.getAboutMe(), userProfileDto.getUserId());
+        String sql = queryService.getQuery("user.updatePersonalProfileById");
+        int update = jdbcTemplate.update(sql, userProfileDto.getName(), userProfileDto.getSurname(), userProfileDto.getAboutMe(), userProfileDto.getUserId());
         return update > 0 ? Optional.of(userProfileDto) : Optional.empty();
     }
 
     @Override
     public Optional<UserProfileDto> findByEmail(String email) {
-        UserProfileDto userProfile = jdbcTemplate.queryForObject("SELECT user_id, name, surname, email, role, activated, image_link, reg_date, about_me FROM usr WHERE email = ?", new Object[]{email},
-                (resultSet, i) -> new UserProfileDto(
-                        resultSet.getInt("user_id"),
-                        resultSet.getString("name"),
-                        resultSet.getString("surname"),
-                        resultSet.getString("email"),
-                        resultSet.getString("role"),
-                        resultSet.getBoolean("activated"),
-                        resultSet.getString("image_link"),
-                        resultSet.getTimestamp("reg_date"),
-                        resultSet.getString("about_me")
-                ));
+        String sql = queryService.getQuery("user.findByEmail");
+        UserProfileDto userProfile = jdbcTemplate.queryForObject(sql, new Object[]{email},
+                new UserRowMapper());
         return Optional.of(userProfile);
     }
 
     @Override
     public Optional<UserProfileDto> findUserProfileById(int id) {
-        UserProfileDto userProfile = jdbcTemplate.queryForObject("SELECT user_id, name, surname, email, role, activated, image_link, reg_date, about_me FROM usr WHERE user_id = ?", new Object[]{id},
-                (resultSet, i) -> new UserProfileDto(
-                        resultSet.getInt("user_id"),
-                        resultSet.getString("name"),
-                        resultSet.getString("surname"),
-                        resultSet.getString("email"),
-                        resultSet.getString("role"),
-                        resultSet.getBoolean("activated"),
-                        resultSet.getString("image_link"),
-                        resultSet.getTimestamp("reg_date"),
-                        resultSet.getString("about_me")
-                ));
+        String sql = queryService.getQuery("user.findUserProfileById");
+        UserProfileDto userProfile = jdbcTemplate.queryForObject(sql, new Object[]{id},
+                new UserRowMapper());
         return Optional.of(userProfile);
     }
 
     @Override
     public String getUserRoleByEmail(String email) {
+        String sql = queryService.getQuery("user.getUserRoleByEmail");
         return jdbcTemplate.queryForObject(
-                "SELECT role FROM usr WHERE email = ?",
+                sql,
                 new Object[]{email},
                 (rs, rowNum) -> rs.getString("role"));
     }
 
     @Override
     public Optional<User> findByEmailForAuth(String email) {
+        String sql = queryService.getQuery("user.findByEmailForAuth");
         User user = jdbcTemplate.queryForObject(
-                "SELECT email, pass, role, activated " +
-                        "FROM usr WHERE email = ?",
+                sql,
                 new Object[]{email},
                 (rs, rowNum) -> new User(
                         rs.getString("email"),
@@ -94,10 +81,16 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public Integer getUserIdByEmail(String email) {
+        String sql = queryService.getQuery("user.getUserIdByEmail");
+        return jdbcTemplate.queryForObject(sql, new Object[]{email}, (resultSet, i) -> resultSet.getInt("user_id"));
+    }
+
+    @Override
     public Optional<User> findByEmailForRecovery(String email) {
+        String sql = queryService.getQuery("user.findByEmailForRecovery");
         User user = jdbcTemplate.queryForObject(
-                "SELECT user_id, email, email_code, code_expire_date " +
-                        "FROM usr WHERE email = ?",
+                sql,
                 new Object[]{email},
                 (rs, rowNum) -> new User(
                         rs.getInt("user_id"),
@@ -106,24 +99,26 @@ public class UserDaoImpl implements UserDao {
                         rs.getTimestamp("code_expire_date")
                 ));
         return Optional.of(user);
-
     }
 
     @Override
     public void saveToken(RecoveryToken recoveryToken) {
-        this.jdbcTemplate.update("UPDATE usr SET email_code=?, code_expire_date=? WHERE user_id=?",
+        String sql = queryService.getQuery("user.saveToken");
+        this.jdbcTemplate.update(sql,
                 recoveryToken.getToken(), new Timestamp(new Date().getTime() + 60000), recoveryToken.getUser_id());
     }
 
     @Override
     public void changeUserPassword(int userId, String password) {
-        this.jdbcTemplate.update("UPDATE usr SET pass=? WHERE user_id=?", password, userId);
+        String sql = queryService.getQuery("user.changeUserPassword");
+        this.jdbcTemplate.update(sql, password, userId);
     }
 
     @Override
     public Optional<Integer> findUserIdByPasswordToken(String token) {
+        String sql = queryService.getQuery("user.findUserIdByPasswordToken");
         Integer userId = jdbcTemplate.queryForObject(
-                "SELECT user_id FROM usr WHERE email_code = ?",
+                sql,
                 new Object[]{token},
                 (rs, rowNum) -> rs.getInt("user_id"));
         return Optional.of(userId);
@@ -131,9 +126,9 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public RecoveryToken findTokenByRecoverPasswordToken(String token) {
+        String sql = queryService.getQuery("user.findTokenByRecoverPasswordToken");
         return jdbcTemplate.queryForObject(
-                "SELECT user_id, email_code, code_expire_date " +
-                        "FROM usr WHERE email_code = ?",
+                sql,
                 new Object[]{token},
                 (rs, rowNum) -> new RecoveryToken(
                         rs.getString("email_code"),
@@ -143,31 +138,33 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<UserProfileDto> getAllByPage(int page, int size) {
-        List<UserProfileDto> listUserProfile = jdbcTemplate.query("SELECT user_id,name, surname, email, role, activated, image_link, reg_date, about_me FROM usr LIMIT ? OFFSET ?*?",
-                new Object[]{size,size,page-1},
-                (resultSet, i) -> new UserProfileDto(
-                        resultSet.getInt("user_id"),
-                        resultSet.getString("name"),
-                        resultSet.getString("surname"),
-                        resultSet.getString("email"),
-                        resultSet.getString("role"),
-                        resultSet.getBoolean("activated"),
-                        resultSet.getString("image_link"),
-                        resultSet.getTimestamp("reg_date"),
-                        resultSet.getString("about_me")
-                )
+    public List<UserProfileDto> getAllByPage(int page, int size,String filter ,String orderBy, String order) {
+        String query = queryService.getQuery("user.getAllByPage");
+        query = String.format(query,orderBy,order);
+        List<UserProfileDto> listUserProfile = jdbcTemplate.query(query,
+                new Object[]{"%"+filter +"%", size, size, page-1},
+                new UserRowMapper()
         );
         return listUserProfile;
     }
 
     @Override
-    public void UpdateUserFromTable(UserProfileDto userProfile) {
-        jdbcTemplate.update("UPDATE usr SET name=?, surname=?, role=?, activated=? WHERE email=?",
+    public void updateUserFromTable(UserProfileDto userProfile) {
+        String sql = queryService.getQuery("user.updateUserFromTable");
+        jdbcTemplate.update(sql,
                 userProfile.getName(),
                 userProfile.getSurname(),
-                userProfile.getRole(),
                 userProfile.getActivated(),
-                userProfile.getEmail());
+                userProfile.getEmail(),
+                userProfile.getUserId());
+    }
+
+    @Override
+    public Optional<Integer> getSizeOfResultSet(String filter) {
+        String sql = queryService.getQuery("user.getSizeOfResultSet");
+        Integer size = jdbcTemplate.queryForObject(sql,
+                new Object[]{"%"+filter +"%"},
+                (rs, rowNum) -> rs.getInt("count"));
+        return Optional.of(size);
     }
 }
