@@ -31,7 +31,7 @@ public class UserDaoImpl implements UserDao {
                 user.getEmail(),
                 user.getRole(),
                 UUID.randomUUID().toString(),
-                new Timestamp(new Date().getTime() + 60000));
+                new Timestamp(new Date().getTime() + 720000));
     }
 
     public Optional<UserProfileDto> updatePersonalProfileById(UserProfileDto userProfileDto) {
@@ -88,6 +88,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Optional<User> findByEmailForRecovery(String email) {
+        System.out.println(email);
         String sql = queryService.getQuery("user.findByEmailForRecovery");
         User user = jdbcTemplate.queryForObject(
                 sql,
