@@ -35,7 +35,7 @@ public class ProjectDaoImpl implements ProjectDao {
         String query = queryService.getQuery("project.getAllByPage");
         query = String.format(query,orderBy,order);
         List<ProjectDto> projectList = jdbcTemplate.query(query,
-                new Object[]{"%"+filter +"%", size, size, page-1},
+                new Object[]{"%"+filter +"%","%"+filter +"%", size, size, page-1},
                 (resultSet, i) -> new ProjectDto(
                         resultSet.getInt("project_id"),
                         resultSet.getString("name"),
