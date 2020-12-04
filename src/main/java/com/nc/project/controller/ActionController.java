@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +16,18 @@ import java.util.Optional;
 @RequestMapping("/api/actions")
 @CrossOrigin(origins = "http://localhost:4200")
 public class ActionController {
+
+    private final List<String> allowedTableNames = new ArrayList<String>() {{
+        add("name");
+        add("description");
+        add("type");
+        add("key");
+    }};
+
+    private final List<String> allowedOrders = new ArrayList<String>() {{
+        add("ASC");
+        add("DESC");
+    }};
 
     private final ActionService actionService;
 
@@ -44,6 +56,9 @@ public class ActionController {
             @RequestParam(name = "filterTable",defaultValue = "name") String filterTable,
             @RequestParam(name = "orderBy",defaultValue = "name") String orderBy,
             @RequestParam(name = "order", defaultValue = "ASC") String order) {
+        if(!allowedTableNames.contains(filterTable) ||
+                !allowedTableNames.contains(orderBy) ||
+                !allowedOrders.contains(order)) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         Page<Action> resultPage = actionService.getAllActionsByPage(page, size, filter, filterTable, orderBy, order);
         return new ResponseEntity<>(resultPage, HttpStatus.OK);
     }
