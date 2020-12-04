@@ -13,7 +13,7 @@ public interface ActionService {
 
     List<Action> getActionByName(String name);
 
-    Page<Action> getAllActionsByPage(int page, int size);
+    // Page<Action> getAllActionsByPage(int page, int size);
 
     Action editAction(Action action);
 

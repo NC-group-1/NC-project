@@ -55,7 +55,7 @@ public class ActionServiceImpl implements ActionService {
         return actionDao.getActionByName(name);
     }
 
-    @Override
+    /*
     public Page getAllActionsByPage(int page, int size) {
         int numberOfElements = actionDao.findNumberOfElements();
         Page resultPage = new Page();
@@ -67,6 +67,7 @@ public class ActionServiceImpl implements ActionService {
         return resultPage;
 
     }
+     */
 
     @Override
     public Action editAction(Action action) {

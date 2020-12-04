@@ -41,14 +41,17 @@ public class ActionController {
         return new ResponseEntity<>(createdAction, HttpStatus.CREATED);
     }
 
-    @GetMapping
-    public ResponseEntity<Page<Action>> getActionPage(@RequestParam(name = "page", defaultValue = "0") int page,
-                                              @RequestParam(name = "size", defaultValue = "10") int size) {
-        Page<Action> resultPage = actionService.getAllActionsByPage(page, size);
+    @Deprecated
+    @GetMapping("/oldPage")
+    public ResponseEntity<Page<Action>> getActionPage(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
+        Page<Action> resultPage = actionService.getAllActionsByPage(page, size,
+                "", "name", "name", "ASC");
         return new ResponseEntity<>(resultPage, HttpStatus.OK);
     }
 
-    @GetMapping("/filter")
+    @GetMapping
     public ResponseEntity<Page<Action>> getActionPageWithFilter(
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size,

@@ -1,6 +1,5 @@
 package com.nc.project.dao.action;
 
-import com.nc.project.dto.DataSetGeneralInfoDto;
 import com.nc.project.model.Action;
 import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -60,7 +59,7 @@ public class ActionDaoImpl implements ActionDao {
         return size == null? 0:size;
     }
 
-    @Override
+    /*
     public List<Action> findAllActionsByPage(int limit, int offset) {
         String sql = queryService.getQuery("action.findAllByPage");
         return jdbcTemplate.query(sql,
@@ -69,6 +68,7 @@ public class ActionDaoImpl implements ActionDao {
                     preparedStatement.setInt(2, offset);
                 }, new ActionRowMapper());
     }
+     */
 
     @Override
     public Action setActionName(Integer id, String name) {
