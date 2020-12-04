@@ -17,4 +17,10 @@ public interface TestScenarioDao {
     Optional<Integer> getSizeOfProjectResultSet(String filter,int projectId);
     Optional<Boolean> checkForTestCaseOnIt(int testScenarioId);
     void dropActionOrCompound(int testScenarioId);
+
+    void delete(int testScenarioId);
+
+    void makeUnactivated(int testScenarioId);
+
+    Optional<TestScenario> getById(int id);
 }

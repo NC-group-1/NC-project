@@ -5,6 +5,7 @@ import com.nc.project.dto.Page;
 import com.nc.project.dto.TestScenarioDto;
 import com.nc.project.model.TestScenario;
 import com.nc.project.service.testScenario.TestScenarioService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -55,5 +56,21 @@ public class TestScenarioServiceImpl implements TestScenarioService {
         }else
             testScenarioDao.edit(testScenario);
 
+    }
+
+    @Override
+    public void deleteTestScenario(int testScenarioId) {
+        if(!testScenarioDao.checkForTestCaseOnIt(testScenarioId).get()){
+            testScenarioDao.dropActionOrCompound(testScenarioId);
+            testScenarioDao.delete(testScenarioId);
+        }else{
+            testScenarioDao.makeUnactivated(testScenarioId);
+        }
+    }
+
+    @Override
+    public TestScenario getTestScenarioById(int id) {
+        TestScenario testScenario=testScenarioDao.getById(id).get();
+        return testScenario;
     }
 }

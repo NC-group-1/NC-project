@@ -91,7 +91,7 @@ public class TestScenarioDaoImpl implements TestScenarioDao {
                         resultSet.getInt("test_scenario_id"),
                         resultSet.getString("name"),
                         resultSet.getString("description"),
-                        resultSet.getString("username")
+                        resultSet.getString("role")
                 )
         );
 
@@ -120,5 +120,36 @@ public class TestScenarioDaoImpl implements TestScenarioDao {
     public void dropActionOrCompound(int testScenarioId) {
         String sql = queryService.getQuery("testScenario.dropActionOrCompound");
         jdbcTemplate.update(sql,testScenarioId);
+    }
+
+    @Override
+    public void delete(int testScenarioId) {
+        String sql = queryService.getQuery("testScenario.deleteById");
+        jdbcTemplate.update(sql, testScenarioId);
+    }
+
+    @Override
+    public void makeUnactivated(int testScenarioId) {
+        String sql = queryService.getQuery("testScenario.makeUnactivated");
+        jdbcTemplate.update(sql, testScenarioId);
+    }
+
+    @Override
+    public Optional<TestScenario> getById(int id) {
+        String sql = queryService.getQuery("testScenario.findById");
+        TestScenario ts = jdbcTemplate.queryForObject(sql,
+                new Object[]{id},
+                (rs, rowNum) -> new TestScenario(
+                        id,
+                        rs.getString("name"),
+                        rs.getString("description"),
+                        rs.getInt("user_id"),
+                        rs.getString("user_name"),
+                        rs.getInt("project_id"),
+                        rs.getString("project_name"),
+                        rs.getBoolean("activated")
+                )
+        );
+        return Optional.of(ts);
     }
 }

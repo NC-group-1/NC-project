@@ -11,6 +11,6 @@ public class TestScenarioDto {
     private int test_scenario_id;
     private String name;
     private String description;
-    private String creatorName;
+    private String role;
 }
 
