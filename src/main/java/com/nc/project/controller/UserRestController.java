@@ -33,6 +33,7 @@ public class UserRestController {
     @PostMapping
     @ResponseStatus(value = HttpStatus.OK)
     public void register(@RequestBody User user){
+        System.out.println(user);
         userService.createUser(user);
     }
 
