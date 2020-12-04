@@ -22,4 +22,11 @@ public interface ActionService {
     List<String> getActionTypes();
 
     Page<Action> getAllActionsByPage(int page, int size, int targetId);
+
+    Page<Action> getAllActionsByPage(int page,
+                                     int size,
+                                     String filter,
+                                     String filterTable,
+                                     String orderBy,
+                                     String order);
 }

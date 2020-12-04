@@ -1,5 +1,6 @@
 package com.nc.project.dao.action;
 
+import com.nc.project.dto.DataSetGeneralInfoDto;
 import com.nc.project.model.Action;
 import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -50,6 +51,16 @@ public class ActionDaoImpl implements ActionDao {
     }
 
     @Override
+    public int findNumberOfElements(String filter, String filterTable) {
+        String query = queryService.getQuery("action.findNumberOfElementsWithFilter");
+        query = String.format(query,filterTable);
+        Integer size = jdbcTemplate.queryForObject(query,
+                new Object[]{"%"+filter+"%"},
+                (rs, rowNum) -> rs.getInt("count"));
+        return size == null? 0:size;
+    }
+
+    @Override
     public List<Action> findAllActionsByPage(int limit, int offset) {
         String sql = queryService.getQuery("action.findAllByPage");
         return jdbcTemplate.query(sql,
@@ -84,6 +95,16 @@ public class ActionDaoImpl implements ActionDao {
                     preparedStatement.setInt(2, limit);
                     preparedStatement.setInt(3, offset);
                 }, new ActionRowMapper());
+    }
+
+    @Override
+    public List<Action> findAllActionsByPage(int limit, int offset, String filter, String filterTable, String orderBy, String order) {
+        String query = queryService.getQuery("action.findAllByPageWithFilter");
+        query = String.format(query,filterTable,orderBy,order);
+        return jdbcTemplate.query(query,
+                new Object[]{"%" + filter + "%", limit, offset},
+                new ActionRowMapper()
+        );
     }
 
     @Override

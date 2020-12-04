@@ -100,4 +100,21 @@ public class ActionServiceImpl implements ActionService {
         }
         return resultPage;
     }
+
+    @Override
+    public Page<Action> getAllActionsByPage(int page,
+                                            int size,
+                                            String filter,
+                                            String filterTable,
+                                            String orderBy,
+                                            String order) {
+        int numberOfElements = actionDao.findNumberOfElements(filter, filterTable);
+        Page<Action> resultPage = new Page<>();
+        if (numberOfElements > size * page) {
+            resultPage.setList(actionDao.findAllActionsByPage(size, size * page,
+                    filter,filterTable,orderBy,order));
+            resultPage.setSize(numberOfElements);
+        }
+        return resultPage;
+    }
 }

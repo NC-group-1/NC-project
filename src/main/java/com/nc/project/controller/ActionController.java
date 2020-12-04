@@ -35,6 +35,19 @@ public class ActionController {
         Page<Action> resultPage = actionService.getAllActionsByPage(page, size);
         return new ResponseEntity<>(resultPage, HttpStatus.OK);
     }
+
+    @GetMapping("/filter")
+    public ResponseEntity<Page<Action>> getActionPageWithFilter(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size,
+            @RequestParam(name = "filter") String filter,
+            @RequestParam(name = "filterTable",defaultValue = "name") String filterTable,
+            @RequestParam(name = "orderBy",defaultValue = "name") String orderBy,
+            @RequestParam(name = "order", defaultValue = "ASC") String order) {
+        Page<Action> resultPage = actionService.getAllActionsByPage(page, size, filter, filterTable, orderBy, order);
+        return new ResponseEntity<>(resultPage, HttpStatus.OK);
+    }
+
     @GetMapping("/compounds/{targetId}")
     public ResponseEntity<Page<Action>> getActionPageWithoutTarget(@PathVariable int targetId,
                                                                    @RequestParam(name = "page", defaultValue = "0") int page,
