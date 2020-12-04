@@ -13,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import javax.mail.MessagingException;
 import java.util.Optional;
 
 @RestController
@@ -32,6 +33,7 @@ public class UserRestController {
     @PostMapping
     @ResponseStatus(value = HttpStatus.OK)
     public void register(@RequestBody User user){
+        System.out.println(user);
         userService.createUser(user);
     }
 
@@ -53,9 +55,9 @@ public class UserRestController {
     }
     @RequestMapping(path = "/auth", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
-    public AuthResponse authenticate(@RequestBody AuthRequest req){
+    public AuthResponse authenticate(@RequestBody AuthRequest req) throws MessagingException {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(req.getUsername(), req.getPassword()));
-        String token = jwtTokenUtil.generateToken(req.getUsername(), userService.getUserRoleByEmail(req.getUsername()));
+        String token = jwtTokenUtil.generateToken(req.getUsername(), userService.getUserRoleByEmail(req.getUsername()), userService.getUserIdByEmail(req.getUsername()));
         return new AuthResponse(token);
     }
 }

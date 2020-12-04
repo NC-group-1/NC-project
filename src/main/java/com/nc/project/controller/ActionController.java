@@ -1,13 +1,15 @@
 package com.nc.project.controller;
 
+import com.nc.project.dto.Page;
 import com.nc.project.model.Action;
-import com.nc.project.service.library.ActionService;
+import com.nc.project.service.action.ActionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -28,33 +30,45 @@ public class ActionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Action>> getActionPage(@RequestParam(name = "page") int page,
-                                                      @RequestParam(name = "size") int size) {
-        List<Action> actions = actionService.getAllActionsByPage(page, size);
-        return new ResponseEntity<>(actions, HttpStatus.OK);
+    public ResponseEntity<Page<Action>> getActionPage(@RequestParam(name = "page", defaultValue = "0") int page,
+                                              @RequestParam(name = "size", defaultValue = "10") int size) {
+        Page<Action> resultPage = actionService.getAllActionsByPage(page, size);
+        return new ResponseEntity<>(resultPage, HttpStatus.OK);
+    }
+    @GetMapping("/compounds/{targetId}")
+    public ResponseEntity<Page<Action>> getActionPageWithoutTarget(@PathVariable int targetId,
+                                                                   @RequestParam(name = "page", defaultValue = "0") int page,
+                                                                   @RequestParam(name = "size", defaultValue = "10") int size) {
+        Page<Action> resultPage = actionService.getAllActionsByPage(page, size, targetId);
+        return new ResponseEntity<>(resultPage, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Action> getAction(@PathVariable int id) {
-        Action action = actionService.getActionById(id);
-        return new ResponseEntity<>(action, HttpStatus.OK);
+        Optional<Action> action = actionService.getActionById(id);
+        return action.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/")
-    public ResponseEntity<Action> getActionByKey(@RequestParam(name="key") String key) {
-        Action action = actionService.getActionByKey(key);
-        return new ResponseEntity<>(action, HttpStatus.OK);
+    public ResponseEntity<List<Action>> getActionByName(@RequestParam(name="name") String name) {
+        List<Action> actions = actionService.getActionByName(name);
+        return new ResponseEntity<>(actions, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Action> editAction(@RequestBody Action action) {
         Action updatedAction = actionService.editAction(action);
-        return new ResponseEntity<>(updatedAction, HttpStatus.CREATED);
+        return new ResponseEntity<>(updatedAction, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteAction(@RequestBody int id) {
+    public ResponseEntity deleteAction(@PathVariable int id) {
         actionService.deleteAction(id);
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @GetMapping("/types")
+    public ResponseEntity<List<String>> getActionTypes() {
+        return new ResponseEntity<>(actionService.getActionTypes(), HttpStatus.OK);
     }
 }

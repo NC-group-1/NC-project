@@ -2,7 +2,6 @@ package com.nc.project.controller;
 
 import com.nc.project.dto.PasswordDto;
 import com.nc.project.exception.UserNotFoundException;
-import com.nc.project.model.Email;
 import com.nc.project.model.User;
 import com.nc.project.service.mail.EmailService;
 import com.nc.project.service.user.UserService;
@@ -20,6 +19,9 @@ import java.util.UUID;
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:4200")
 public class PasswordController {
+    private String SUBJECT = "Recovery Password";
+    private String PATH_TO_ATTACHMENT = "src/main/resources/mail/recovery-password.html";
+
     private final EmailService emailService;
     private final UserService userService;
 
@@ -29,13 +31,14 @@ public class PasswordController {
     }
 
     @PostMapping("/recovery-password")
-    public ResponseEntity<?> recoverPassword(@RequestBody Email email) throws UnsupportedOperationException {
-        User user = userService.findByEmailForRecovery(email.getRecipients().get(0)).get();
+    public ResponseEntity<?> recoverPassword(@RequestBody String email) {
+        User user = userService.findByEmailForRecovery(email).get();
         String token = UUID.randomUUID().toString();
         try {
             userService.updateConfirmationToken(user, token);
             String recoverPasswordLink = "http://localhost:4200/password/change?token=" + token;
-            emailService.sendMessageWithAttachment(email, recoverPasswordLink);
+
+            emailService.sendMessageWithAttachment(email, SUBJECT, recoverPasswordLink, PATH_TO_ATTACHMENT);
         } catch (UserNotFoundException | MessagingException e) {
             System.out.println("User not found" + e.getMessage());
         }

@@ -35,8 +35,9 @@ public class JwtTokenUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(String username, String role) {
+    public String generateToken(String username, String role, int id) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", id);
         claims.put("role", role);
         return createToken(claims, username);
     }
