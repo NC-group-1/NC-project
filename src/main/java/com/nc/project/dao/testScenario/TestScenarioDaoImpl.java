@@ -2,7 +2,9 @@ package com.nc.project.dao.testScenario;
 
 import com.nc.project.dto.ProjectDto;
 import com.nc.project.dto.TestScenarioDto;
+import com.nc.project.model.Project;
 import com.nc.project.model.TestScenario;
+import com.nc.project.model.User;
 import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -26,8 +28,8 @@ public class TestScenarioDaoImpl implements TestScenarioDao {
         String sql = queryService.getQuery("testScenario.create");
         Integer id =jdbcTemplate.queryForObject(sql,new Object[]{
                 testScenario.getName(),
-                testScenario.getUserId(),
-                testScenario.getProjectId(),
+                testScenario.getUser().getId(),
+                testScenario.getProject().getProject_id(),
                 testScenario.getDescription()},
                 (rs, rowNum) -> rs.getInt("test_scenario_id")
         );
@@ -143,10 +145,14 @@ public class TestScenarioDaoImpl implements TestScenarioDao {
                         id,
                         rs.getString("name"),
                         rs.getString("description"),
-                        rs.getInt("user_id"),
-                        rs.getString("user_name"),
-                        rs.getInt("project_id"),
-                        rs.getString("project_name"),
+                        new User(rs.getInt("user_id"),
+                                rs.getString("user_email"),
+                                rs.getString("user_name"),
+                                rs.getString("user_surname")),
+                        new Project(rs.getInt("project_id"),
+                                rs.getString("project_name"),
+                                rs.getString("project_link"),
+                                rs.getTimestamp("project_date")),
                         rs.getBoolean("activated")
                 )
         );

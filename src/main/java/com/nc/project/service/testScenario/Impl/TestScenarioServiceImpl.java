@@ -5,7 +5,6 @@ import com.nc.project.dto.Page;
 import com.nc.project.dto.TestScenarioDto;
 import com.nc.project.model.TestScenario;
 import com.nc.project.service.testScenario.TestScenarioService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -70,7 +69,6 @@ public class TestScenarioServiceImpl implements TestScenarioService {
 
     @Override
     public TestScenario getTestScenarioById(int id) {
-        TestScenario testScenario=testScenarioDao.getById(id).get();
-        return testScenario;
+        return testScenarioDao.getById(id).get();
     }
 }

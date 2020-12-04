@@ -1,5 +1,6 @@
 package com.nc.project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,22 +19,20 @@ public class TestScenario {
     private int test_scenario_id;
     private String name;
     private String description;
-    private int userId;
-    private String userName;
-    private int projectId;
-    private String projectName;
+
+    private User user;
+
+    private Project project;
     private ArrayList<Integer> action_compound_id;
     private ArrayList<Action> actions;
     private boolean active = true;
 
-    public TestScenario(int test_scenario_id, String name, String description, int userId, String userName, int projectId, String projectName , boolean active) {
+    public TestScenario(int test_scenario_id, String name, String description, User user, Project project , boolean active) {
         this.test_scenario_id = test_scenario_id;
         this.name = name;
         this.description = description;
-        this.userId = userId;
-        this.userName = userName;
-        this.projectId = projectId;
-        this.projectName = projectName;
+        this.user = user;
+        this.project = project;
         this.active = active;
     }
 }

@@ -1,5 +1,6 @@
 package com.nc.project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -43,7 +44,13 @@ public class User implements UserDetails {
         this.emailCode = emailCode;
         this.codeExpireDate = codeExpireDate;
     }
-
+    public User(int id, String email, String name,String surname) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
+        this.surname = surname;
+    }
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(role));
