@@ -9,7 +9,6 @@ import org.springframework.data.annotation.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ParameterKey {
-    @Id
     private Integer id;
     private String key;
 

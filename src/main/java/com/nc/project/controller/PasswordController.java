@@ -20,7 +20,7 @@ import java.util.UUID;
 @CrossOrigin(origins = "http://localhost:4200")
 public class PasswordController {
     private String SUBJECT = "Recovery Password";
-    private String PATH_TO_ATTACHMENT = "src/main/resources/mail/recovery-password.html";
+    private String PATH_TO_ATTACHMENT = "src/main/resources/email/recovery-password.html";
 
     private final EmailService emailService;
     private final UserService userService;
