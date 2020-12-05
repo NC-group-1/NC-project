@@ -43,7 +43,7 @@ public class TestScenarioRestController {
 
         return new ResponseEntity<>(testScenarioList, HttpStatus.OK);
     }
-    @PostMapping("/update")
+    @PutMapping("/update")
     @ResponseStatus(value = HttpStatus.OK)
     public void editProjectByName(@RequestBody TestScenario testScenario) {
         testScenarioService.editTestScenario(testScenario);
