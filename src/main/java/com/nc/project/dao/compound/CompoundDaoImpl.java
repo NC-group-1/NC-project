@@ -110,12 +110,7 @@ public class CompoundDaoImpl implements CompoundDao {
 
     @Override
     public List<Compound> getCompoundsByPage(int limit, int offset, String filterName, String filterDescription, String orderByWithDirection) {
-//        String sql = queryService.getQuery("compound.findByPage");
-        String sql = "SELECT DISTINCT action.action_id, name, description FROM" +
-                " action INNER JOIN compound_action ON action.action_id = compound_action.compound_id" +
-                " WHERE lower(name) LIKE lower(concat('%',?::varchar,'%'))" +
-                " AND lower(description) LIKE lower(concat('%',?::varchar,'%'))" +
-                " ORDER BY " + orderByWithDirection + " LIMIT ? OFFSET ?;";
+        String sql = String.format(queryService.getQuery("compound.findByPage"), orderByWithDirection);
         return jdbcTemplate.query(sql, new Object[]{filterName, filterDescription, limit, offset}, new CompoundRowMapper());
     }
 
@@ -142,8 +137,8 @@ public class CompoundDaoImpl implements CompoundDao {
                 Arrays.stream(actions).map(actionOfCompound -> ParameterKey.checkValid(actionOfCompound.getKey())
                         ? actionOfCompound.getKey().getId()
                         : ParameterKey.checkValid(actionOfCompound.getAction().getKey())
-                        ? actionOfCompound.getAction().getKey().getId() :
-                        null).toArray(Integer[]::new));
+                        ? actionOfCompound.getAction().getKey().getId()
+                        : null).toArray(Integer[]::new));
     }
 
 }
