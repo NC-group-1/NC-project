@@ -10,6 +10,7 @@ import java.util.Optional;
 public interface TestScenarioDao {
     Optional<Integer> create(TestScenario testScenario);
     void addActionOrCompound(int action_compound_id,int ts_id,int order_num);
+    void addManyActionOrCompound(int action_compound_id,int ts_id,int order_num);
     List<TestScenarioDto> getAllByPage(int page, int size, String filter, String orderBy, String order);
     void edit(TestScenario testScenario);
     Optional<Integer> getSizeOfResultSet(String filter);

@@ -69,6 +69,8 @@ public class TestScenarioServiceImpl implements TestScenarioService {
 
     @Override
     public TestScenario getTestScenarioById(int id) {
-        return testScenarioDao.getById(id).get();
+        TestScenario testScenario = testScenarioDao.getById(id).get();
+        //testScenario.setActions();
+        return testScenario;
     }
 }

@@ -28,21 +28,35 @@ public class TestScenarioRestController {
         testScenarioService.createTestScenario(testScenario);
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<Page<TestScenarioDto>> getAll(
+    @GetMapping("list/{projectId}")
+    public ResponseEntity<Page<TestScenarioDto>> getAllByProject(
             @RequestParam(defaultValue = "5") int pageSize,
-            @RequestParam(defaultValue = "1") int pageIndex,
+            @RequestParam(defaultValue = "0") int pageIndex,
             @RequestParam(defaultValue = "") String filter,
             @RequestParam(defaultValue = "") String orderBy,
             @RequestParam(defaultValue = "") String order,
-            @RequestParam(defaultValue = "0") int projectId
+            @PathVariable int projectId
     )
     {
 
         Page<TestScenarioDto> testScenarioList = testScenarioService.getAllByPage(pageIndex, pageSize,filter,orderBy,order,projectId);
-
         return new ResponseEntity<>(testScenarioList, HttpStatus.OK);
     }
+
+    @GetMapping("/list")
+    public ResponseEntity<Page<TestScenarioDto>> getAll(
+            @RequestParam(defaultValue = "5") int pageSize,
+            @RequestParam(defaultValue = "0") int pageIndex,
+            @RequestParam(defaultValue = "") String filter,
+            @RequestParam(defaultValue = "") String orderBy,
+            @RequestParam(defaultValue = "") String order
+    )
+    {
+
+        Page<TestScenarioDto> testScenarioList = testScenarioService.getAllByPage(pageIndex, pageSize,filter,orderBy,order,0);
+        return new ResponseEntity<>(testScenarioList, HttpStatus.OK);
+    }
+
     @PutMapping("/update")
     @ResponseStatus(value = HttpStatus.OK)
     public void editProjectByName(@RequestBody TestScenario testScenario) {

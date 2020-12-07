@@ -12,5 +12,6 @@ public class TestScenarioDto {
     private String name;
     private String description;
     private String role;
+    private int user_id;
 }
 

@@ -21,10 +21,9 @@ public class TestScenario {
     private String description;
 
     private User user;
-
     private Project project;
     private ArrayList<Integer> action_compound_id;
-    private ArrayList<Action> actions;
+    private List<TestScenarioComponent> actions;
     private boolean active = true;
 
     public TestScenario(int test_scenario_id, String name, String description, User user, Project project , boolean active) {
@@ -35,4 +34,9 @@ public class TestScenario {
         this.project = project;
         this.active = active;
     }
+
+//    public ArrayList<Integer> getAction_compound_id() {
+//        if (action_compound_id == null) &&()
+//        return action_compound_id;
+//    }
 }

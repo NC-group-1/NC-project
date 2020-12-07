@@ -47,16 +47,22 @@ public class TestScenarioDaoImpl implements TestScenarioDao {
     }
 
     @Override
+    public void addManyActionOrCompound(int action_compound_id, int ts_id, int order_num) {
+        String sql = queryService.getQuery("testScenario.addManyActionOrCompound");
+    }
+
+    @Override
     public List<TestScenarioDto> getAllByPage(int page, int size, String filter, String orderBy, String order) {
         String query = queryService.getQuery("testScenario.getAllByPage");
         query = String.format(query,orderBy,order);
         List<TestScenarioDto> testScenarioList = jdbcTemplate.query(query,
-                new Object[]{"%"+filter +"%", size, size, page-1},
+                new Object[]{"%"+filter +"%", size, size, page},
                 (resultSet, i) -> new TestScenarioDto(
                         resultSet.getInt("test_scenario_id"),
                         resultSet.getString("name"),
                         resultSet.getString("description"),
-                        resultSet.getString("username")
+                        resultSet.getString("role"),
+                        resultSet.getInt("user_id")
                 )
         );
 
@@ -88,12 +94,13 @@ public class TestScenarioDaoImpl implements TestScenarioDao {
         String query = queryService.getQuery("testScenario.getAllByPageAndProject");
         query = String.format(query,orderBy,order);
         List<TestScenarioDto> testScenarioList = jdbcTemplate.query(query,
-                new Object[]{"%"+filter +"%",projectId, size, size, page-1},
+                new Object[]{"%"+filter +"%",projectId, size, size, page},
                 (resultSet, i) -> new TestScenarioDto(
                         resultSet.getInt("test_scenario_id"),
                         resultSet.getString("name"),
                         resultSet.getString("description"),
-                        resultSet.getString("role")
+                        resultSet.getString("role"),
+                        resultSet.getInt("user_id")
                 )
         );
 
