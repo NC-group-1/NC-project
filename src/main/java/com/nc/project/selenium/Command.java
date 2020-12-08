@@ -1,8 +1,8 @@
 package com.nc.project.selenium;
 
-import java.util.Optional;
+import com.nc.project.model.util.TestingStatus;
 
 @FunctionalInterface
 public interface Command {
-    Optional<String> perform(String parameter);
+    TestingStatus perform(String parameter, String actionKey);
 }

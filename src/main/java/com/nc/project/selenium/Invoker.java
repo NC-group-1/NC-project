@@ -1,10 +1,10 @@
 package com.nc.project.selenium;
 
 import com.nc.project.model.util.ActionType;
+import com.nc.project.model.util.TestingStatus;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public class Invoker {
 
@@ -22,7 +22,7 @@ public class Invoker {
         //TODO map all selenium actions with their action types
     }
 
-    public Optional<String> invoke(ActionType type, String parameter) {
-        return this.actionTypeCommandMap.get(type).perform(parameter);
+    public TestingStatus invoke(ActionType type, String parameter, String actionKey) {
+        return this.actionTypeCommandMap.get(type).perform(parameter, actionKey);
     }
 }

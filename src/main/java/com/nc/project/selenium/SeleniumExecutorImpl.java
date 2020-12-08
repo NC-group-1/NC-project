@@ -1,79 +1,96 @@
 package com.nc.project.selenium;
 
+import com.nc.project.model.util.TestingStatus;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import java.util.Optional;
-
 public class SeleniumExecutorImpl implements Executor{
 
     private final WebDriver driver;
+    private final Context context;
     private WebElement currentWebElement;
 
-    public SeleniumExecutorImpl(WebDriver driver) {
+    public SeleniumExecutorImpl(WebDriver driver, Context context) {
         this.driver = driver;
+        this.context = context;
     }
 
     //TODO implement other selenium actions
 
     @Override
-    public Optional<String> sendKeys(String parameter) {
+    public TestingStatus compareWithActionResult(String parameter, String actionKey) {
+        return TestingStatus.PASSED;
+    }
+
+    @Override
+    public TestingStatus compareWithString(String parameter, String actionKey) {
+
+        return TestingStatus.PASSED;
+    }
+
+    @Override
+    public TestingStatus switchTab(String parameter, String actionKey) {
+        return TestingStatus.PASSED;
+    }
+
+    @Override
+    public TestingStatus sendKeys(String parameter, String actionKey) {
         currentWebElement.sendKeys(parameter);
-        return Optional.empty();
+        return TestingStatus.PASSED;
     }
 
     @Override
-    public Optional<String> click(String parameter) {
+    public TestingStatus click(String parameter, String actionKey) {
         currentWebElement.click();
-        return Optional.empty();
+        return TestingStatus.PASSED;
     }
 
     @Override
-    public Optional<String> findElementByCssSelector(String parameter) {
+    public TestingStatus findElementByCssSelector(String parameter, String actionKey) {
         currentWebElement = driver.findElement(By.cssSelector(parameter));
-        return Optional.empty();
+        return TestingStatus.PASSED;
     }
 
     @Override
-    public Optional<String> findElementById(String parameter) {
+    public TestingStatus findElementById(String parameter, String actionKey) {
         currentWebElement = driver.findElement(By.id(parameter));
-        return Optional.empty();
+        return TestingStatus.PASSED;
     }
 
     @Override
-    public Optional<String> findElementByLinkText(String parameter) {
+    public TestingStatus findElementByLinkText(String parameter, String actionKey) {
         currentWebElement = driver.findElement(By.linkText(parameter));
-        return Optional.empty();
+        return TestingStatus.PASSED;
     }
 
     @Override
-    public Optional<String> findElementByPartialLinkText(String parameter) {
+    public TestingStatus findElementByPartialLinkText(String parameter, String actionKey) {
         currentWebElement = driver.findElement(By.partialLinkText(parameter));
-        return Optional.empty();
+        return TestingStatus.PASSED;
     }
 
     @Override
-    public Optional<String> findElementByName(String parameter) {
+    public TestingStatus findElementByName(String parameter, String actionKey) {
         currentWebElement = driver.findElement(By.name(parameter));
-        return Optional.empty();
+        return TestingStatus.PASSED;
     }
 
     @Override
-    public Optional<String> findElementByTagName(String parameter) {
+    public TestingStatus findElementByTagName(String parameter, String actionKey) {
         currentWebElement = driver.findElement(By.tagName(parameter));
-        return Optional.empty();
+        return TestingStatus.PASSED;
     }
 
     @Override
-    public Optional<String> findElementByXpath(String parameter) {
+    public TestingStatus findElementByXpath(String parameter, String actionKey) {
         currentWebElement = driver.findElement(By.xpath(parameter));
-        return Optional.empty();
+        return TestingStatus.PASSED;
     }
 
     @Override
-    public Optional<String> findElementByClassName(String parameter) {
+    public TestingStatus findElementByClassName(String parameter, String actionKey) {
         currentWebElement = driver.findElement(By.className(parameter));
-        return Optional.empty();
+        return TestingStatus.PASSED;
     }
 }
