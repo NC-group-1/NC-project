@@ -55,7 +55,7 @@ public class ActionServiceImpl implements ActionService {
         return actionDao.getActionByName(name);
     }
 
-    @Override
+    /*
     public Page getAllActionsByPage(int page, int size) {
         int numberOfElements = actionDao.findNumberOfElements();
         Page resultPage = new Page();
@@ -67,6 +67,7 @@ public class ActionServiceImpl implements ActionService {
         return resultPage;
 
     }
+     */
 
     @Override
     public Action editAction(Action action) {
@@ -96,6 +97,23 @@ public class ActionServiceImpl implements ActionService {
 
         if (numberOfElements > size * page) {
             resultPage.setList(actionDao.findAllActionsByPage(size, size * page, targetId));
+            resultPage.setSize(numberOfElements);
+        }
+        return resultPage;
+    }
+
+    @Override
+    public Page<Action> getAllActionsByPage(int page,
+                                            int size,
+                                            String filter,
+                                            String filterTable,
+                                            String orderBy,
+                                            String order) {
+        int numberOfElements = actionDao.findNumberOfElements(filter, filterTable);
+        Page<Action> resultPage = new Page<>();
+        if (numberOfElements > size * page) {
+            resultPage.setList(actionDao.findAllActionsByPage(size, size * page,
+                    filter,filterTable,orderBy,order));
             resultPage.setSize(numberOfElements);
         }
         return resultPage;

@@ -1,6 +1,5 @@
 package com.nc.project.controller;
 
-
 import com.nc.project.dto.Page;
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.service.user.UserService;

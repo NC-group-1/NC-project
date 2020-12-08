@@ -11,11 +11,20 @@ public interface ActionDao extends GenericDao<Action, Integer> {
 
     int findNumberOfElements();
 
-    List<Action> findAllActionsByPage(int limit, int offset);
+    int findNumberOfElements(String filter, String filterTable);
+
+    //List<Action> findAllActionsByPage(int limit, int offset);
 
     Action setActionName(Integer id, String name);
 
     Action setActionDescription(Integer id, String description);
 
     List<Action> findAllActionsByPage(int size, int i, int targetId);
+
+    List<Action> findAllActionsByPage(int limit,
+                                      int offset,
+                                      String filter,
+                                      String filterTable,
+                                      String orderBy,
+                                      String order);
 }
