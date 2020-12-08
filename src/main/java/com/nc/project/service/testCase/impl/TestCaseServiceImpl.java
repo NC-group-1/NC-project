@@ -6,6 +6,7 @@ import com.nc.project.dao.testCase.TestCaseDao;
 import com.nc.project.dao.user.UserDao;
 import com.nc.project.dto.Page;
 import com.nc.project.dto.TestCaseDto;
+import com.nc.project.dto.TestScenarioDto;
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.ActionInst;
 import com.nc.project.model.TestCase;
@@ -53,35 +54,32 @@ public class TestCaseServiceImpl implements TestCaseService {
     }
 
     @Override
-    public TestCase create(TestScenario testScenario) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = ((UserDetails) principal).getUsername();
-        Optional<UserProfileDto> user = userDao.findByEmail(username);
+    public TestCase create(TestScenarioDto testScenarioDto) {
         TestCase testCase = TestCase.builder()
-                .name(testScenario.getName())
+                .name(testScenarioDto.getName())
+                .description(testScenarioDto.getDescription())
                 .creationDate(new Timestamp(System.currentTimeMillis()))
                 .status(TestingStatus.UNKNOWN.name())
-                .description(testScenario.getDescription())
-                .project(testScenario.getProjectId())
-                .creator(user.get().getUserId())
-                .testScenario(testScenario.getTest_scenario_id())
+                .project(testScenarioDto.getProjectId())
+                .creator(testScenarioDto.getCreatorId())
+                .testScenario(testScenarioDto.getTest_scenario_id())
                 .build();
 
         testCase = testCaseDao.create(testCase);
 
-        List<ActionInst> actionInstances = convertToInstances(testScenario, testCase.getId());
+        List<ActionInst> actionInstances = convertToInstances(testScenarioDto, testCase.getId());
         actionInstances.forEach(actionInstDao::create);
 
         return testCase;
     }
 
-    private List<ActionInst> convertToInstances(TestScenario testScenario, Integer testCaseId) {
-        return testScenario.getAction_compound_id().stream()
+    private List<ActionInst> convertToInstances(TestScenarioDto testScenarioDto, Integer testCaseId) {
+        return testScenarioDto.getActions().stream()
                 .map(a -> ActionInst.builder()
-                        .action(a)
+                        .action(a.getActionId())
                         .testCase(testCaseId)
                         .status(TestingStatus.UNKNOWN.name())
-                        .orderNum(testScenario.getAction_compound_id().indexOf(a))
+                        .orderNum(a.getOrderNum())
                         .build())
                 .collect(Collectors.toList());
 

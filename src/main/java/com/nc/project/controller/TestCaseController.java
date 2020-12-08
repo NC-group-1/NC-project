@@ -3,9 +3,9 @@ package com.nc.project.controller;
 import com.nc.project.dto.ActionInstDto;
 import com.nc.project.dto.Page;
 import com.nc.project.dto.TestCaseDto;
+import com.nc.project.dto.TestScenarioDto;
 import com.nc.project.model.ActionInst;
 import com.nc.project.model.TestCase;
-import com.nc.project.model.TestScenario;
 import com.nc.project.service.actionInst.ActionInstService;
 import com.nc.project.service.testCase.TestCaseService;
 import org.springframework.http.HttpStatus;
@@ -26,13 +26,13 @@ public class TestCaseController {
     }
 
     @PostMapping
-    public ResponseEntity<TestCase> create(@RequestBody TestScenario testScenario) {
-        TestCase createdTestCase = testCaseService.create(testScenario);
+    public ResponseEntity<TestCase> create(@RequestBody TestScenarioDto testScenarioDto) {
+        TestCase createdTestCase = testCaseService.create(testScenarioDto);
         return new ResponseEntity<>(createdTestCase, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<List<ActionInst>> save(@RequestBody ActionInstDto actionInstDto) {
+    public ResponseEntity<List<ActionInst>> save(@RequestBody List<ActionInstDto> actionInstDto) {
         List<ActionInst> updatedInstances = actionInstService.update(actionInstDto);
         return new ResponseEntity<>(updatedInstances, HttpStatus.OK);
     }

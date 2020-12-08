@@ -6,5 +6,5 @@ import com.nc.project.model.ActionInst;
 import java.util.List;
 
 public interface ActionInstService {
-    List<ActionInst> update(ActionInstDto actionInstDto);
+    List<ActionInst> update(List<ActionInstDto> actionInstDto);
 }
