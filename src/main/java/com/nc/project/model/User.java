@@ -38,6 +38,10 @@ public class User implements UserDetails {
         this.pass = pass;
     }
 
+    public User(int id) {
+        this.id = id;
+    }
+
     public User(int id, String email, String emailCode, Timestamp codeExpireDate) {
         this.id = id;
         this.email = email;

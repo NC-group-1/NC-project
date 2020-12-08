@@ -11,8 +11,10 @@ import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 @Repository
 public class TestScenarioDaoImpl implements TestScenarioDao {
@@ -49,8 +51,12 @@ public class TestScenarioDaoImpl implements TestScenarioDao {
     }
 
     @Override
-    public void addManyActionOrCompound(int action_compound_id, int ts_id, int order_num) {
+    public void addManyActionOrCompound(int[] action_compound_id, int ts_id) {
         String sql = queryService.getQuery("testScenario.addManyActionOrCompound");
+        jdbcTemplate.update(sql,
+                action_compound_id,
+                ts_id,
+                IntStream.range(1, action_compound_id.length+1).toArray());
     }
 
     @Override

@@ -28,10 +28,11 @@ public class TestScenarioServiceImpl implements TestScenarioService {
     public void createTestScenario(TestScenario testScenario) {
 
         Integer ts_id= testScenarioDao.create(testScenario).get();
-        ArrayList<Integer> arrlist = testScenario.getAction_compound_id();
-        for (int counter = 0; counter < arrlist.size(); counter++) {
-            testScenarioDao.addActionOrCompound(arrlist.get(counter),ts_id,counter+1);
-        }
+        ArrayList<Integer> arrayList = testScenario.getAction_compound_id();
+        testScenarioDao.addManyActionOrCompound(arrayList.stream().mapToInt(i -> i).toArray(),ts_id);
+//        for (int counter = 0; counter < arrlist.size(); counter++) {
+//            testScenarioDao.addActionOrCompound(arrlist.get(counter),ts_id,counter+1);
+//        }
 
     }
 

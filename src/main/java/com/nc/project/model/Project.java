@@ -39,4 +39,8 @@ public class Project {
         this.link = link;
         this.date = date;
     }
+
+    public Project(Integer project_id) {
+        this.project_id = project_id;
+    }
 }
