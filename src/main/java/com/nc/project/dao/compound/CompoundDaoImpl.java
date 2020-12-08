@@ -24,10 +24,24 @@ public class CompoundDaoImpl implements CompoundDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+//    @Override
+//    public Compound createCompound(Compound compound) {
+//        String sql = queryService.getQuery("compound.create");
+//        jdbcTemplate.update(sql,
+//                compound.getName(),
+//                compound.getDescription(),
+//                compound.getActionsId(),
+//                compound.getActionsOrder(),
+//                compound.getActionsKeys()
+//        );
+//        return compound;
+//    }
+
     @Override
     public Compound createCompound(Compound compound) {
-        String sql = queryService.getQuery("compound.create");
+        String sql = queryService.getQuery("compound.createWithParams");
         jdbcTemplate.update(sql,
+                compound.getActionsKeys(),
                 compound.getName(),
                 compound.getDescription(),
                 compound.getActionsId(),

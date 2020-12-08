@@ -5,12 +5,16 @@ import com.nc.project.dto.Page;
 import com.nc.project.model.Action;
 import com.nc.project.model.ActionOfCompound;
 import com.nc.project.model.Compound;
+import com.nc.project.model.util.ActionType;
 import com.nc.project.service.compound.CompoundService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.IntStream;
 
 @Slf4j
 @Service
@@ -28,6 +32,17 @@ public class CompoundServiceImpl implements CompoundService {
         if (compound == null) {
             throw new NoSuchElementException("Compound not found");
         }
+        ActionOfCompound[] actions = compound.getActions();
+        List<ActionOfCompound> actionsOfCompound = new ArrayList<>();
+        Arrays.stream(actions).forEach(action -> {
+            if (action.getAction().getType().equals(ActionType.COMPOUND)) {
+                actionsOfCompound.addAll(compoundDao.getActionsOfCompound(action.getAction().getId()));
+            } else {
+                actionsOfCompound.add(action);
+            }
+        });
+        IntStream.range(0, actionsOfCompound.size()).forEach(i -> actionsOfCompound.get(i).setOrderNum(i + 1));
+        compound.setActions(actionsOfCompound.toArray(ActionOfCompound[]::new));
         return compoundDao.createCompound(compound);
     }
 

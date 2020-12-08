@@ -27,15 +27,15 @@ public class ProjectDaoImpl implements ProjectDao {
                 project.getName(),
                 project.getLink(),
                 project.getUser_id()
-                );
+        );
     }
 
     @Override
-    public List<ProjectDto> getAllByPage(int page, int size, String filter, String orderBy,String order) {
+    public List<ProjectDto> getAllByPage(int page, int size, String filter, String orderBy, String order) {
         String query = queryService.getQuery("project.getAllByPage");
-        query = String.format(query,orderBy,order);
+        query = String.format(query, orderBy, order);
         List<ProjectDto> projectList = jdbcTemplate.query(query,
-                new Object[]{"%"+filter +"%","%"+filter +"%", size, size, page-1},
+                new Object[]{"%" + filter + "%", "%" + filter + "%", size, size, page - 1},
                 (resultSet, i) -> new ProjectDto(
                         resultSet.getInt("project_id"),
                         resultSet.getString("name"),
@@ -64,7 +64,7 @@ public class ProjectDaoImpl implements ProjectDao {
     public Optional<Integer> getSizeOfResultSet(String filter) {
         String sql = queryService.getQuery("project.getSizeOfResultSet");
         Integer size = jdbcTemplate.queryForObject(sql,
-                new Object[]{"%"+filter +"%"},
+                new Object[]{"%" + filter + "%"},
                 (rs, rowNum) -> rs.getInt("count"));
         return Optional.of(size);
     }

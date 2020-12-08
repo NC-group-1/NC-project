@@ -36,11 +36,19 @@ public class Compound extends Action{
         return Arrays.stream(this.actions).map(ActionOfCompound::getOrderNum).toArray(Integer[]::new);
     }
     @JsonIgnore
-    public Integer[] getActionsKeys() {
+    public Integer[] getActionsKeyIds() {
         return Arrays.stream(actions).map(actionOfCompound -> ParameterKey.checkValid(actionOfCompound.getKey())
                 ? actionOfCompound.getKey().getId()
                 : ParameterKey.checkValid(actionOfCompound.getAction().getKey())
                 ? actionOfCompound.getAction().getKey().getId() :
                 null).toArray(Integer[]::new);
+    }
+    @JsonIgnore
+    public String[] getActionsKeys() {
+        return Arrays.stream(actions).map(actionOfCompound -> ParameterKey.checkValid(actionOfCompound.getKey())
+                ? actionOfCompound.getKey().getKey()
+                : ParameterKey.checkValid(actionOfCompound.getAction().getKey())
+                ? actionOfCompound.getAction().getKey().getKey() :
+                null).toArray(String[]::new);
     }
 }
