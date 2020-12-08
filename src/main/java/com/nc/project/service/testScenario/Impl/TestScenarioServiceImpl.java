@@ -1,20 +1,27 @@
 package com.nc.project.service.testScenario.Impl;
 
+import com.nc.project.dao.compound.CompoundDao;
 import com.nc.project.dao.testScenario.TestScenarioDao;
 import com.nc.project.dto.Page;
 import com.nc.project.dto.TestScenarioDto;
+import com.nc.project.model.ActionOfCompound;
 import com.nc.project.model.TestScenario;
+import com.nc.project.model.TestScenarioComponent;
+import com.nc.project.model.util.ActionType;
 import com.nc.project.service.testScenario.TestScenarioService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class TestScenarioServiceImpl implements TestScenarioService {
-    private TestScenarioDao testScenarioDao;
+    private final TestScenarioDao testScenarioDao;
+    private final CompoundDao compoundDao;
 
-    public TestScenarioServiceImpl(TestScenarioDao testScenarioDao) {
+    public TestScenarioServiceImpl(TestScenarioDao testScenarioDao, CompoundDao compoundDao) {
         this.testScenarioDao = testScenarioDao;
+        this.compoundDao = compoundDao;
     }
 
     @Override
@@ -70,7 +77,16 @@ public class TestScenarioServiceImpl implements TestScenarioService {
     @Override
     public TestScenario getTestScenarioById(int id) {
         TestScenario testScenario = testScenarioDao.getById(id).get();
-        //testScenario.setActions();
+        List<TestScenarioComponent> components = testScenarioDao.getComponents(id);
+        for (TestScenarioComponent component: components) {
+            if (component.getComponent().getType() == ActionType.COMPOUND){
+                component
+                        .getComponent()
+                        .setActions(compoundDao.getActionsOfCompound(component.getComponent().getId()).toArray(ActionOfCompound[]::new));
+            }
+        }
+
+        testScenario.setActions(components);
         return testScenario;
     }
 }

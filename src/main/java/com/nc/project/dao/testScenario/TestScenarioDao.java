@@ -3,6 +3,7 @@ package com.nc.project.dao.testScenario;
 
 import com.nc.project.dto.TestScenarioDto;
 import com.nc.project.model.TestScenario;
+import com.nc.project.model.TestScenarioComponent;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,4 +25,6 @@ public interface TestScenarioDao {
     void makeUnactivated(int testScenarioId);
 
     Optional<TestScenario> getById(int id);
+
+    List<TestScenarioComponent> getComponents(int id);
 }

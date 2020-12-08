@@ -4,7 +4,9 @@ import com.nc.project.dto.ProjectDto;
 import com.nc.project.dto.TestScenarioDto;
 import com.nc.project.model.Project;
 import com.nc.project.model.TestScenario;
+import com.nc.project.model.TestScenarioComponent;
 import com.nc.project.model.User;
+import com.nc.project.model.util.ActionType;
 import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -164,5 +166,23 @@ public class TestScenarioDaoImpl implements TestScenarioDao {
                 )
         );
         return Optional.of(ts);
+    }
+
+    @Override
+    public List<TestScenarioComponent> getComponents(int id) {
+        String sql = queryService.getQuery("testScenario.getComponents");
+        List<TestScenarioComponent> testScenarioList = jdbcTemplate.query(sql,
+                new Object[]{id},
+                (resultSet, i) -> new TestScenarioComponent(
+                        resultSet.getInt("order_num"),
+                        resultSet.getInt("action_id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("description"),
+                        ActionType.valueOf(resultSet.getString("type")),
+                        resultSet.getString("key"),
+                        resultSet.getInt("parameter_key_id")
+                )
+        );
+        return testScenarioList;
     }
 }
