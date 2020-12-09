@@ -16,7 +16,7 @@ import java.sql.Timestamp;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TestCase {
     private Integer id;
-    private Integer project;
+    //private Integer project;
     private Integer creator;
     private Integer starter;
     private Integer testScenario;

@@ -15,8 +15,8 @@ public class TestScenarioDto {
     private String description;
     private String creatorName;
     private Integer creatorId;
-    private Integer projectId;
-    private List<ActionDto> actions;
+   // private Integer projectId;
+    private List<ActionInstDto> actions;
 
     public TestScenarioDto(int test_scenario_id, String name, String description, String creatorName) {
         this.test_scenario_id = test_scenario_id;
