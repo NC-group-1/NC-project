@@ -26,5 +26,13 @@ public class TestScenarioDto {
         this.description = description;
         this.creatorName = creatorName;
     }
+
+    public TestScenarioDto(int test_scenario_id, String name, String description, String role, int user_id) {
+        this.test_scenario_id = test_scenario_id;
+        this.name = name;
+        this.description = description;
+        this.role = role;
+        this.user_id = user_id;
+    }
 }
 
