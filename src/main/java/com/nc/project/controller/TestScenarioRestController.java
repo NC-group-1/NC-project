@@ -2,12 +2,15 @@ package com.nc.project.controller;
 
 import com.nc.project.dto.Page;
 import com.nc.project.dto.TestScenarioDto;
+import com.nc.project.model.Action;
 import com.nc.project.model.Compound;
 import com.nc.project.model.TestScenario;
 import com.nc.project.service.testScenario.TestScenarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/test-scenario")

@@ -80,10 +80,10 @@ public class TestScenarioServiceImpl implements TestScenarioService {
         TestScenario testScenario = testScenarioDao.getById(id).get();
         List<TestScenarioComponent> components = testScenarioDao.getComponents(id);
         for (TestScenarioComponent component: components) {
-            if (component.getComponent().getType() == ActionType.COMPOUND){
+            if (component.getAction().getType() == ActionType.COMPOUND){
                 component
-                        .getComponent()
-                        .setActions(compoundDao.getActionsOfCompound(component.getComponent().getId()).toArray(ActionOfCompound[]::new));
+                        .getAction()
+                        .setActions(compoundDao.getActionsOfCompound(component.getAction().getId()));
             }
         }
 

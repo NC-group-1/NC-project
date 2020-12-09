@@ -35,7 +35,7 @@ public class CompoundController {
     }
 
     @PostMapping
-    public Action postCompound(@RequestBody Compound compound){
+    public Action createCompound(@RequestBody Compound compound){
         return compoundService.createCompound(compound);
     }
     @GetMapping("{id}")

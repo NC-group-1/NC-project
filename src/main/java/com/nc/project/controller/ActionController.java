@@ -55,7 +55,7 @@ public class ActionController {
     public ResponseEntity<Page<Action>> getActionPageWithFilter(
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size,
-            @RequestParam(name = "filter") String filter,
+            @RequestParam(name = "filter", defaultValue = "") String filter,
             @RequestParam(name = "filterTable",defaultValue = "name") String filterTable,
             @RequestParam(name = "orderBy",defaultValue = "name") String orderBy,
             @RequestParam(name = "order", defaultValue = "ASC") String order) {
