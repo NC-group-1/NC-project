@@ -1,30 +1,38 @@
 package com.nc.project.service.testScenario.Impl;
 
+import com.nc.project.dao.compound.CompoundDao;
 import com.nc.project.dao.testScenario.TestScenarioDao;
 import com.nc.project.dto.Page;
 import com.nc.project.dto.TestScenarioDto;
+import com.nc.project.model.ActionOfCompound;
 import com.nc.project.model.TestScenario;
+import com.nc.project.model.TestScenarioComponent;
+import com.nc.project.model.util.ActionType;
 import com.nc.project.service.testScenario.TestScenarioService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class TestScenarioServiceImpl implements TestScenarioService {
-    private TestScenarioDao testScenarioDao;
+    private final TestScenarioDao testScenarioDao;
+    private final CompoundDao compoundDao;
 
-    public TestScenarioServiceImpl(TestScenarioDao testScenarioDao) {
+    public TestScenarioServiceImpl(TestScenarioDao testScenarioDao, CompoundDao compoundDao) {
         this.testScenarioDao = testScenarioDao;
+        this.compoundDao = compoundDao;
     }
 
     @Override
     public void createTestScenario(TestScenario testScenario) {
 
         Integer ts_id= testScenarioDao.create(testScenario).get();
-        ArrayList<Integer> arrlist = testScenario.getAction_compound_id();
-        for (int counter = 0; counter < arrlist.size(); counter++) {
-            testScenarioDao.addActionOrCompound(arrlist.get(counter),ts_id,counter+1);
-        }
+        ArrayList<Integer> arrayList = testScenario.getAction_compound_id();
+        testScenarioDao.addManyActionOrCompound(arrayList.stream().mapToInt(i -> i).toArray(),ts_id);
+//        for (int counter = 0; counter < arrlist.size(); counter++) {
+//            testScenarioDao.addActionOrCompound(arrlist.get(counter),ts_id,counter+1);
+//        }
 
     }
 
@@ -55,5 +63,31 @@ public class TestScenarioServiceImpl implements TestScenarioService {
         }else
             testScenarioDao.edit(testScenario);
 
+    }
+
+    @Override
+    public void deleteTestScenario(int testScenarioId) {
+        if(!testScenarioDao.checkForTestCaseOnIt(testScenarioId).get()){
+            testScenarioDao.dropActionOrCompound(testScenarioId);
+            testScenarioDao.delete(testScenarioId);
+        }else{
+            testScenarioDao.makeUnactivated(testScenarioId);
+        }
+    }
+
+    @Override
+    public TestScenario getTestScenarioById(int id) {
+        TestScenario testScenario = testScenarioDao.getById(id).get();
+        List<TestScenarioComponent> components = testScenarioDao.getComponents(id);
+        for (TestScenarioComponent component: components) {
+            if (component.getComponent().getType() == ActionType.COMPOUND){
+                component
+                        .getComponent()
+                        .setActions(compoundDao.getActionsOfCompound(component.getComponent().getId()).toArray(ActionOfCompound[]::new));
+            }
+        }
+
+        testScenario.setActions(components);
+        return testScenario;
     }
 }
