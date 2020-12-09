@@ -12,7 +12,7 @@ public class TestCaseRowMapper implements RowMapper<TestCase> {
     public TestCase mapRow(ResultSet resultSet, int i) throws SQLException {
         TestCase testCase = new TestCase();
         testCase.setId(resultSet.getObject("test_case_id", Integer.class));
-        testCase.setProject(resultSet.getObject("action_id", Integer.class));
+        //testCase.setProject(resultSet.getObject("project_id", Integer.class));
         testCase.setCreator(resultSet.getObject("creator_id", Integer.class));
         testCase.setStarter(resultSet.getObject("starter_id", Integer.class));
         testCase.setTestScenario(resultSet.getObject("test_scenario_id", Integer.class));

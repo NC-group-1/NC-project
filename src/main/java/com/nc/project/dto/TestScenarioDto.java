@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,5 +15,24 @@ public class TestScenarioDto {
     private String description;
     private String role;
     private int user_id;
+    private String creatorName;
+    private Integer creatorId;
+   // private Integer projectId;
+    private List<ActionInstDto> actions;
+
+    public TestScenarioDto(int test_scenario_id, String name, String description, String creatorName) {
+        this.test_scenario_id = test_scenario_id;
+        this.name = name;
+        this.description = description;
+        this.creatorName = creatorName;
+    }
+
+    public TestScenarioDto(int test_scenario_id, String name, String description, String role, int user_id) {
+        this.test_scenario_id = test_scenario_id;
+        this.name = name;
+        this.description = description;
+        this.role = role;
+        this.user_id = user_id;
+    }
 }
 
