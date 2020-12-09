@@ -7,6 +7,7 @@ import com.nc.project.model.ActionInst;
 import com.nc.project.model.TestCase;
 import com.nc.project.model.TestScenario;
 import com.nc.project.service.actionInst.ActionInstService;
+import com.nc.project.service.runTestCase.RunTestCaseService;
 import com.nc.project.service.testCase.TestCaseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,16 +20,26 @@ import java.util.List;
 public class TestCaseController {
     private final TestCaseService testCaseService;
     private final ActionInstService actionInstService;
+    private final RunTestCaseService runTestCaseService;
 
-    public TestCaseController(TestCaseService testCaseService, ActionInstService actionInstService) {
+    public TestCaseController(TestCaseService testCaseService,
+                              ActionInstService actionInstService,
+                              RunTestCaseService runTestCaseService) {
         this.testCaseService = testCaseService;
         this.actionInstService = actionInstService;
+        this.runTestCaseService = runTestCaseService;
     }
 
     @PostMapping
     public ResponseEntity<TestCase> create(@RequestBody TestScenario testScenario) {
         TestCase createdTestCase = testCaseService.create(testScenario);
         return new ResponseEntity<>(createdTestCase, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/{id}/run")
+    public ResponseEntity runTestCase(@PathVariable int id) {
+        runTestCaseService.runTestCase(id);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @PutMapping("/{id}")

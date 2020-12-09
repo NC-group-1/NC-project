@@ -17,4 +17,6 @@ public interface TestCaseDao extends GenericDao<TestCase, Integer> {
     void delete(int id);
 
     Optional<Integer> getSizeOfResultSet(String filter);
+
+    String getProjectLinkByTestCaseId(int id);
 }

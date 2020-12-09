@@ -7,13 +7,14 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 public class Invoker {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private Executor executor;
-    private Map<ActionType, Command> actionTypeCommandMap;
+    private final Executor executor;
+    private final Map<ActionType, BiFunction<String, String, TestingStatus>> actionTypeCommandMap;
 
     public Invoker(Executor executor) {
         if(executor == null) throw new IllegalArgumentException("executor must be not null");
@@ -40,7 +41,7 @@ public class Invoker {
 
     public TestingStatus invoke(ActionType type, String parameter, String actionKey) {
         try {
-            return this.actionTypeCommandMap.get(type).perform(parameter, actionKey);
+            return this.actionTypeCommandMap.get(type).apply(parameter, actionKey);
         } catch (Exception e) {
             log.error("Error in action "+type.name(), e);
             executor.addToContext(actionKey, "Error in action "+type.name()+" "+e.getMessage());

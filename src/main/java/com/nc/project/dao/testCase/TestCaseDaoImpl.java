@@ -70,6 +70,12 @@ public class TestCaseDaoImpl implements TestCaseDao {
     }
 
     @Override
+    public String getProjectLinkByTestCaseId(int id) {
+        //TODO implement
+        return "https://www.google.com";
+    }
+
+    @Override
     public TestCase create(TestCase testCase) {
         String sql = queryService.getQuery("testCase.create");
         KeyHolder keyHolder = new GeneratedKeyHolder();
