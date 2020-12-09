@@ -83,7 +83,7 @@ public class TestScenarioServiceImpl implements TestScenarioService {
             if (component.getAction().getType() == ActionType.COMPOUND){
                 component
                         .getAction()
-                        .setActions(compoundDao.getActionsOfCompound(component.getAction().getId()).toArray(ActionOfCompound[]::new));
+                        .setActions(compoundDao.getActionsOfCompound(component.getAction().getId()));
             }
         }
 

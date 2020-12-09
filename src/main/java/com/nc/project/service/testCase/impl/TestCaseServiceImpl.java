@@ -101,7 +101,7 @@ public class TestCaseServiceImpl implements TestCaseService {
                         .status(TestingStatus.UNKNOWN.name())
                         .orderNum(a.getOrderNum())
                         .parameterKey(a.getParameterKey().getId())
-                        .dataSet(getDatasetIdForActionInstance(a.getAction(), a.getDataSet()))
+                        .dataSet(a.getDatasetId())
                         .build())
                 .collect(Collectors.toList());
     }

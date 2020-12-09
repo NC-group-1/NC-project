@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ActionInstDto {
     private Action action;
-    private DataSet dataSet;
+    private Integer datasetId;
     private Integer orderNum;
     private ParameterKey parameterKey;
 

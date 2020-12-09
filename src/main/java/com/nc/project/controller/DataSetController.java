@@ -28,9 +28,9 @@ public class DataSetController {
 
     @GetMapping
     public ResponseEntity<Page<DataSetGeneralInfoDto>> getDataSetPage(
-            @RequestParam(name = "page") int page,
-            @RequestParam(name = "size") int size,
-            @RequestParam(name = "filter") String filter,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size,
+            @RequestParam(name = "filter", defaultValue = "") String filter,
             @RequestParam(name = "orderBy",defaultValue = "name") String orderBy,
             @RequestParam(name = "order", defaultValue = "ASC") String order) {
         Page<DataSetGeneralInfoDto> resultPage = dataSetService.getAllByPage(page, size, filter, orderBy, order);

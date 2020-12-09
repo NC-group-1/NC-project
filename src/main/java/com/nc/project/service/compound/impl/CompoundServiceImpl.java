@@ -32,9 +32,9 @@ public class CompoundServiceImpl implements CompoundService {
         if (compound == null) {
             throw new NoSuchElementException("Compound not found");
         }
-        ActionOfCompound[] actions = compound.getActions();
+        List<ActionOfCompound> actions = compound.getActions();
         List<ActionOfCompound> actionsOfCompound = new ArrayList<>();
-        Arrays.stream(actions).forEach(action -> {
+        actions.forEach(action -> {
             if (action.getAction().getType().equals(ActionType.COMPOUND)) {
                 actionsOfCompound.addAll(compoundDao.getActionsOfCompound(action.getAction().getId()));
             } else {
@@ -42,14 +42,14 @@ public class CompoundServiceImpl implements CompoundService {
             }
         });
         IntStream.range(0, actionsOfCompound.size()).forEach(i -> actionsOfCompound.get(i).setOrderNum(i + 1));
-        compound.setActions(actionsOfCompound.toArray(ActionOfCompound[]::new));
+        compound.setActions(actionsOfCompound);
         return compoundDao.createCompound(compound);
     }
 
     @Override
     public Compound getCompoundById(int id) {
         Compound compoundById = compoundDao.findCompoundById(id);
-        compoundById.setActions(compoundDao.getActionsOfCompound(id).toArray(ActionOfCompound[]::new));
+        compoundById.setActions(compoundDao.getActionsOfCompound(id));
         return compoundById;
     }
 
