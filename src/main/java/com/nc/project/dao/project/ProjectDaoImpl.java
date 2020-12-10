@@ -43,9 +43,9 @@ public class ProjectDaoImpl implements ProjectDao {
                         resultSet.getString("link"),
                         resultSet.getTimestamp("date"),
                         new User(resultSet.getInt("user_id"),
+                                resultSet.getString("email"),
                                 resultSet.getString("username"),
-                                resultSet.getString("surname"),
-                                resultSet.getString("email")),
+                                resultSet.getString("surname")),
                         resultSet.getBoolean("activated")
                 )
         );
