@@ -30,7 +30,7 @@ public class TestScenarioRestController {
 
     @GetMapping("list/{projectId}")
     public ResponseEntity<Page<TestScenarioDto>> getAllByProject(
-            @RequestParam(defaultValue = "5") int pageSize,
+            @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "0") int pageIndex,
             @RequestParam(defaultValue = "") String filter,
             @RequestParam(defaultValue = "") String orderBy,

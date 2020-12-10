@@ -63,7 +63,7 @@ public class TestCaseServiceImpl implements TestCaseService {
             ActionInstResponseDto responseDto = new ActionInstResponseDto();
             responseDto.setId(a.getId());
             responseDto.setOrderNum(a.getOrderNum());
-            responseDto.setParameterKey(parameterKeyDao.findById(a.getParameterKey()).orElse(null));
+            responseDto.setParameterKey(parameterKeyDao.findById(a.getParameterKey().getId()).orElse(null));
             responseDto.setAction(actionDao.findById(a.getAction()).orElse(null));
             responseDto.setDatasetId(a.getDataSet());
             responseDtos.add(responseDto);
@@ -99,7 +99,7 @@ public class TestCaseServiceImpl implements TestCaseService {
                         .testCase(testCaseId)
                         .status(TestingStatus.UNKNOWN.name())
                         .orderNum(a.getOrderNum())
-                        .parameterKey(a.getParameterKey().getId())
+                        .parameterKey(a.getParameterKey())
                         .dataSet(a.getDatasetId())
                         .build())
                 .collect(Collectors.toList());
