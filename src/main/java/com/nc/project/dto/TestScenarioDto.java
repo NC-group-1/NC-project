@@ -1,5 +1,6 @@
 package com.nc.project.dto;
 
+import com.nc.project.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,29 +11,24 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TestScenarioDto {
-    private int test_scenario_id;
+    private int testScenarioId;
     private String name;
     private String description;
-    private String role;
-    private int user_id;
-    private String creatorName;
-    private Integer creatorId;
-   // private Integer projectId;
+    private User user;
+    // private Integer projectId;
     private List<ActionInstDto> actions;
 
-    public TestScenarioDto(int test_scenario_id, String name, String description, String creatorName) {
-        this.test_scenario_id = test_scenario_id;
+    public TestScenarioDto(int testScenarioId, String name, String description) {
+        this.testScenarioId = testScenarioId;
         this.name = name;
         this.description = description;
-        this.creatorName = creatorName;
     }
 
-    public TestScenarioDto(int test_scenario_id, String name, String description, String role, int user_id) {
-        this.test_scenario_id = test_scenario_id;
+    public TestScenarioDto(int testScenarioId, String name, String description, User user) {
+        this.testScenarioId = testScenarioId;
         this.name = name;
         this.description = description;
-        this.role = role;
-        this.user_id = user_id;
+        this.user = user;
     }
 }
 

@@ -1,6 +1,5 @@
 package com.nc.project.dao.testScenario;
 
-import com.nc.project.dto.ProjectDto;
 import com.nc.project.dto.TestScenarioDto;
 import com.nc.project.model.Project;
 import com.nc.project.model.TestScenario;
@@ -11,7 +10,6 @@ import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -28,16 +26,15 @@ public class TestScenarioDaoImpl implements TestScenarioDao {
     }
 
     @Override
-    public Optional<Integer> create(TestScenario testScenario) {
+    public Integer create(TestScenario testScenario) {
         String sql = queryService.getQuery("testScenario.create");
-        Integer id =jdbcTemplate.queryForObject(sql,new Object[]{
-                testScenario.getName(),
-                testScenario.getUser().getId(),
-                testScenario.getProject().getProject_id(),
-                testScenario.getDescription()},
+        return jdbcTemplate.queryForObject(sql, new Object[]{
+                        testScenario.getName(),
+                        testScenario.getUser().getId(),
+                        testScenario.getProject().getProject_id(),
+                        testScenario.getDescription()},
                 (rs, rowNum) -> rs.getInt("test_scenario_id")
         );
-        return Optional.of(id);
     }
 
     @Override
@@ -56,25 +53,17 @@ public class TestScenarioDaoImpl implements TestScenarioDao {
         jdbcTemplate.update(sql,
                 action_compound_id,
                 ts_id,
-                IntStream.range(1, action_compound_id.length+1).toArray());
+                IntStream.range(1, action_compound_id.length + 1).toArray());
     }
 
     @Override
     public List<TestScenarioDto> getAllByPage(int page, int size, String filter, String orderBy, String order) {
         String query = queryService.getQuery("testScenario.getAllByPage");
-        query = String.format(query,orderBy,order);
-        List<TestScenarioDto> testScenarioList = jdbcTemplate.query(query,
-                new Object[]{"%"+filter +"%", size, size, page},
-                (resultSet, i) -> new TestScenarioDto(
-                        resultSet.getInt("test_scenario_id"),
-                        resultSet.getString("name"),
-                        resultSet.getString("description"),
-                        resultSet.getString("role"),
-                        resultSet.getInt("user_id")
-                )
+        query = String.format(query, orderBy, order);
+        return jdbcTemplate.query(query,
+                new Object[]{"%" + filter + "%", size, size, page},
+                new TestScenarioDtoRowMapper()
         );
-
-        return testScenarioList;
     }
 
     @Override
@@ -84,59 +73,50 @@ public class TestScenarioDaoImpl implements TestScenarioDao {
                 testScenario.getName(),
                 testScenario.getDescription(),
                 testScenario.isActive(),
-                testScenario.getTest_scenario_id()
+                testScenario.getTestScenarioId()
         );
     }
 
     @Override
-    public Optional<Integer> getSizeOfResultSet(String filter) {
+    public Integer getSizeOfResultSet(String filter) {
         String sql = queryService.getQuery("testScenario.getSizeOfResultSet");
-        Integer size = jdbcTemplate.queryForObject(sql,
-                new Object[]{"%"+filter +"%"},
+        return jdbcTemplate.queryForObject(sql,
+                new Object[]{"%" + filter + "%"},
                 (rs, rowNum) -> rs.getInt("count"));
-        return Optional.of(size);
     }
 
     @Override
     public List<TestScenarioDto> getAllByPageAndProject(int page, int size, String filter, String orderBy, String order, int projectId) {
         String query = queryService.getQuery("testScenario.getAllByPageAndProject");
-        query = String.format(query,orderBy,order);
+        query = String.format(query, orderBy, order);
         List<TestScenarioDto> testScenarioList = jdbcTemplate.query(query,
-                new Object[]{"%"+filter +"%",projectId, size, size, page},
-                (resultSet, i) -> new TestScenarioDto(
-                        resultSet.getInt("test_scenario_id"),
-                        resultSet.getString("name"),
-                        resultSet.getString("description"),
-                        resultSet.getString("role"),
-                        resultSet.getInt("user_id")
-                )
+                new Object[]{"%" + filter + "%", projectId, size, size, page},
+                new TestScenarioDtoRowMapper()
         );
 
         return testScenarioList;
     }
 
     @Override
-    public Optional<Integer> getSizeOfProjectResultSet(String filter, int projectId) {
+    public Integer getSizeOfProjectResultSet(String filter, int projectId) {
         String sql = queryService.getQuery("testScenario.getSizeOfProjectResultSet");
-        Integer size = jdbcTemplate.queryForObject(sql,
-                new Object[]{"%"+filter +"%",projectId},
+        return jdbcTemplate.queryForObject(sql,
+                new Object[]{"%" + filter + "%", projectId},
                 (rs, rowNum) -> rs.getInt("count"));
-        return Optional.of(size);
     }
 
     @Override
-    public Optional<Boolean> checkForTestCaseOnIt(int testScenarioId) {
+    public Boolean checkForTestCaseOnIt(int testScenarioId) {
         String sql = queryService.getQuery("testScenario.checkForTestCaseOnIt");
-        Boolean res =jdbcTemplate.queryForObject(sql,
+        return jdbcTemplate.queryForObject(sql,
                 new Object[]{testScenarioId},
                 (rs, rowNum) -> rs.getBoolean("case"));
-        return Optional.of(res);
     }
 
     @Override
     public void dropActionOrCompound(int testScenarioId) {
         String sql = queryService.getQuery("testScenario.dropActionOrCompound");
-        jdbcTemplate.update(sql,testScenarioId);
+        jdbcTemplate.update(sql, testScenarioId);
     }
 
     @Override
@@ -171,13 +151,13 @@ public class TestScenarioDaoImpl implements TestScenarioDao {
                         rs.getBoolean("activated")
                 )
         );
-        return Optional.of(ts);
+        return Optional.ofNullable(ts);
     }
 
     @Override
     public List<TestScenarioComponent> getComponents(int id) {
         String sql = queryService.getQuery("testScenario.getComponents");
-        List<TestScenarioComponent> testScenarioList = jdbcTemplate.query(sql,
+        return jdbcTemplate.query(sql,
                 new Object[]{id},
                 (resultSet, i) -> new TestScenarioComponent(
                         resultSet.getInt("order_num"),
@@ -189,6 +169,5 @@ public class TestScenarioDaoImpl implements TestScenarioDao {
                         resultSet.getInt("parameter_key_id")
                 )
         );
-        return testScenarioList;
     }
 }
