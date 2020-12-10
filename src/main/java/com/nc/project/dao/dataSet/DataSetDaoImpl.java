@@ -5,16 +5,41 @@ import com.nc.project.dto.DataSetGeneralInfoDto;
 import com.nc.project.model.DataSet;
 import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-
 import java.util.Collections;
 import java.util.List;
 
 @Repository
 public class DataSetDaoImpl extends GenericDaoImpl<Integer, DataSetGeneralInfoDto> implements DataSetDao {
 
+    RowMapper<DataSetGeneralInfoDto> rowMapper = (resultSet, i) -> new DataSetGeneralInfoDto(
+            resultSet.getObject("data_set_id", Integer.class),
+            resultSet.getString("name"),
+            resultSet.getString("description"),
+            resultSet.getObject("user_id", Integer.class),
+            resultSet.getString("role"),
+            resultSet.getString("username"),
+            resultSet.getString("surname")
+    );
+
     public DataSetDaoImpl(JdbcTemplate jdbcTemplate, QueryService queryService) {
-        super(jdbcTemplate, queryService, new DataSetGeneralInfoDto());
+        super(jdbcTemplate, queryService);
+    }
+
+    @Override
+    protected RowMapper<DataSetGeneralInfoDto> getRowMapper() {
+        return rowMapper;
+    }
+
+    @Override
+    protected String getTableName() {
+        return "data_set";
+    }
+
+    @Override
+    protected Object[] getQueryArgs(DataSetGeneralInfoDto entity) {
+        return new Object[]{entity.getName(), entity.getDescription(), entity.getCreatedById(), entity.getId()};
     }
 
     @Override
@@ -39,7 +64,7 @@ public class DataSetDaoImpl extends GenericDaoImpl<Integer, DataSetGeneralInfoDt
         query = String.format(query,orderBy,order);
         return jdbcTemplate.query(query,
                 new Object[]{"%" + filter + "%", limit, offset},
-                new DataSetGeneralInfoDto().returnRowMapper()
+                getRowMapper()
         );
     }
 
