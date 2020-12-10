@@ -4,15 +4,14 @@ import com.nc.project.dao.compound.CompoundDao;
 import com.nc.project.dao.testScenario.TestScenarioDao;
 import com.nc.project.dto.Page;
 import com.nc.project.dto.TestScenarioDto;
-import com.nc.project.model.ActionOfCompound;
 import com.nc.project.model.TestScenario;
 import com.nc.project.model.TestScenarioComponent;
 import com.nc.project.model.util.ActionType;
 import com.nc.project.service.testScenario.TestScenarioService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TestScenarioServiceImpl implements TestScenarioService {
@@ -26,68 +25,61 @@ public class TestScenarioServiceImpl implements TestScenarioService {
 
     @Override
     public void createTestScenario(TestScenario testScenario) {
-
-        Integer ts_id= testScenarioDao.create(testScenario).get();
-        ArrayList<Integer> arrayList = testScenario.getAction_compound_id();
-        testScenarioDao.addManyActionOrCompound(arrayList.stream().mapToInt(i -> i).toArray(),ts_id);
-//        for (int counter = 0; counter < arrlist.size(); counter++) {
-//            testScenarioDao.addActionOrCompound(arrlist.get(counter),ts_id,counter+1);
-//        }
-
+        int testScenarioId = testScenarioDao.create(testScenario);
+        testScenarioDao.addManyActionOrCompound(testScenario.getListActionCompoundId().stream().mapToInt(i -> i).toArray(), testScenarioId);
     }
 
     @Override
-    public Page<TestScenarioDto> getAllByPage(int page, int size, String filter, String orderBy, String order,int projectId) {
-        if(orderBy.equals(""))
+    public Page<TestScenarioDto> getAllByPage(int page, int size, String filter, String orderBy, String order, int projectId) {
+        if (orderBy.equals(""))
             orderBy = "test_scenario_id";
-        if(!order.equals("DESC"))
-            order="";
-        if (projectId!=0)
-            return new Page<>(testScenarioDao.getAllByPageAndProject(page,size,filter,orderBy,order,projectId),testScenarioDao.getSizeOfProjectResultSet(filter,projectId).get());
-        return new Page<>(testScenarioDao.getAllByPage(page,size,filter,orderBy,order),testScenarioDao.getSizeOfResultSet(filter).get());
+        if (!order.equals("DESC"))
+            order = "";
+        if (projectId != 0) {
+            return new Page<>(testScenarioDao.getAllByPageAndProject(page, size, filter, orderBy, order, projectId), testScenarioDao.getSizeOfProjectResultSet(filter, projectId));
+        }
+        return new Page<>(testScenarioDao.getAllByPage(page, size, filter, orderBy, order), testScenarioDao.getSizeOfResultSet(filter));
     }
 
     @Override
     public void editTestScenario(TestScenario testScenario) {
-        if(testScenario.isActive()){
-            if(!testScenarioDao.checkForTestCaseOnIt(testScenario.getTest_scenario_id()).get()){
-                testScenarioDao.dropActionOrCompound(testScenario.getTest_scenario_id());
-                ArrayList<Integer> arrlist = testScenario.getAction_compound_id();
-                for (int counter = 0; counter < arrlist.size(); counter++) {
-                    testScenarioDao.addActionOrCompound(arrlist.get(counter),testScenario.getTest_scenario_id(),counter+1);
-                }
-                testScenarioDao.edit(testScenario);
-            }
-            else
-                this.createTestScenario(testScenario);
-        }else
+        int testScenarioId = testScenario.getTestScenarioId();
+        if (!testScenarioDao.checkForTestCaseOnIt(testScenarioId)) {
+            testScenarioDao.dropActionOrCompound(testScenarioId);
+            testScenarioDao.addManyActionOrCompound(testScenario.getListActionCompoundId().stream().mapToInt(i -> i).toArray(), testScenarioId);
             testScenarioDao.edit(testScenario);
+        } else {
+            this.createTestScenario(testScenario);
+        }
 
     }
 
     @Override
     public void deleteTestScenario(int testScenarioId) {
-        if(!testScenarioDao.checkForTestCaseOnIt(testScenarioId).get()){
+        if (!testScenarioDao.checkForTestCaseOnIt(testScenarioId)) {
             testScenarioDao.dropActionOrCompound(testScenarioId);
             testScenarioDao.delete(testScenarioId);
-        }else{
+        } else {
             testScenarioDao.makeUnactivated(testScenarioId);
         }
     }
 
     @Override
     public TestScenario getTestScenarioById(int id) {
-        TestScenario testScenario = testScenarioDao.getById(id).get();
-        List<TestScenarioComponent> components = testScenarioDao.getComponents(id);
-        for (TestScenarioComponent component: components) {
-            if (component.getAction().getType() == ActionType.COMPOUND){
-                component
-                        .getAction()
-                        .setActions(compoundDao.getActionsOfCompound(component.getAction().getId()));
+        Optional<TestScenario> testScenarioOptional = testScenarioDao.getById(id);
+        if (testScenarioOptional.isPresent()) {
+            TestScenario testScenario = testScenarioOptional.get();
+            List<TestScenarioComponent> components = testScenarioDao.getComponents(id);
+            for (TestScenarioComponent component : components) {
+                if (component.getAction().getType() == ActionType.COMPOUND) {
+                    component
+                            .getAction()
+                            .setActions(compoundDao.getActionsOfCompound(component.getAction().getId()));
+                }
             }
+            testScenario.setActions(components);
+            return testScenario;
         }
-
-        testScenario.setActions(components);
-        return testScenario;
+        return new TestScenario();
     }
 }

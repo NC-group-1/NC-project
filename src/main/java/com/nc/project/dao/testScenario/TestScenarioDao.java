@@ -9,15 +9,24 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TestScenarioDao {
-    Optional<Integer> create(TestScenario testScenario);
-    void addActionOrCompound(int action_compound_id,int ts_id,int order_num);
+    Integer create(TestScenario testScenario);
+
+    void addActionOrCompound(int action_compound_id, int ts_id, int order_num);
+
     void addManyActionOrCompound(int[] action_compound_id, int ts_id);
+
     List<TestScenarioDto> getAllByPage(int page, int size, String filter, String orderBy, String order);
+
     void edit(TestScenario testScenario);
-    Optional<Integer> getSizeOfResultSet(String filter);
-    List<TestScenarioDto> getAllByPageAndProject(int page, int size, String filter, String orderBy, String order,int projectId);
-    Optional<Integer> getSizeOfProjectResultSet(String filter,int projectId);
-    Optional<Boolean> checkForTestCaseOnIt(int testScenarioId);
+
+    Integer getSizeOfResultSet(String filter);
+
+    List<TestScenarioDto> getAllByPageAndProject(int page, int size, String filter, String orderBy, String order, int projectId);
+
+    Integer getSizeOfProjectResultSet(String filter, int projectId);
+
+    Boolean checkForTestCaseOnIt(int testScenarioId);
+
     void dropActionOrCompound(int testScenarioId);
 
     void delete(int testScenarioId);

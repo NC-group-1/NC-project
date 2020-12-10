@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -80,8 +79,8 @@ public class TestCaseServiceImpl implements TestCaseService {
                 .description(testScenarioDto.getDescription())
                 .creationDate(new Timestamp(System.currentTimeMillis()))
                 .status(TestingStatus.UNKNOWN.name())
-                .creator(testScenarioDto.getCreatorId())
-                .testScenario(testScenarioDto.getTest_scenario_id())
+                .creator(testScenarioDto.getUser().getId())
+                .testScenario(testScenarioDto.getTestScenarioId())
                 .build();
 
         testCase = testCaseDao.create(testCase);
