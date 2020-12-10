@@ -5,13 +5,15 @@ import com.nc.project.dto.Page;
 import com.nc.project.dto.ProjectDto;
 import com.nc.project.model.Project;
 import com.nc.project.service.project.ProjectService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
-    @Autowired
-    private ProjectDao projectDao;
+    private final ProjectDao projectDao;
+
+    public ProjectServiceImpl(ProjectDao projectDao) {
+        this.projectDao = projectDao;
+    }
 
     @Override
     public void createProject(Project project) {
@@ -26,7 +28,7 @@ public class ProjectServiceImpl implements ProjectService {
             order="";
         }
 
-        return new Page(projectDao.getAllByPage(page,size,filter,orderBy,order),projectDao.getSizeOfResultSet(filter).get());
+        return new Page<>(projectDao.getAllByPage(page,size,filter,orderBy,order),projectDao.getSizeOfResultSet(filter));
     }
 
     @Override

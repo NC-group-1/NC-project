@@ -31,7 +31,7 @@ public class TestScenarioDaoImpl implements TestScenarioDao {
         return jdbcTemplate.queryForObject(sql, new Object[]{
                         testScenario.getName(),
                         testScenario.getUser().getId(),
-                        testScenario.getProject().getProject_id(),
+                        testScenario.getProject().getProjectId(),
                         testScenario.getDescription()},
                 (rs, rowNum) -> rs.getInt("test_scenario_id")
         );

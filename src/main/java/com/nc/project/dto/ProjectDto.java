@@ -1,5 +1,6 @@
 package com.nc.project.dto;
 
+import com.nc.project.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,10 +11,10 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProjectDto {
-    private Integer project_id;
+    private Integer projectId;
     private String name;
     private String link;
     private Timestamp date;
-    private String role;
+    private User user;
     private Boolean archived;
 }
