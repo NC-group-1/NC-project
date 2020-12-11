@@ -27,7 +27,7 @@ public class UsersListRestController {
             )
     {
 
-        Page<UserProfileDto> userList = userService.getAllByPage(pageIndex, pageSize,filter,orderBy,order);
+        Page<UserProfileDto> userList = userService.getAllByPage(pageSize,pageIndex,filter,orderBy,order);
 
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
