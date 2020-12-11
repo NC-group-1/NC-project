@@ -70,9 +70,12 @@ public class TestCaseDaoImpl implements TestCaseDao {
     }
 
     @Override
-    public String getProjectLinkByTestCaseId(int id) {
-        //TODO implement
-        return "https://www.google.com";
+    public Optional<String> getProjectLinkByTestCaseId(int id) {
+        String sql = queryService.getQuery("testCase.getProjectLinkByTestCaseId");
+        String link = jdbcTemplate.queryForObject(sql,
+                new Object[]{id},
+                (rs, rowNum) -> rs.getString("link"));
+        return Optional.of(link);
     }
 
     @Override

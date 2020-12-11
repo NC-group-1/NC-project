@@ -18,5 +18,5 @@ public interface TestCaseDao extends GenericDao<TestCase, Integer> {
 
     Optional<Integer> getSizeOfResultSet(String filter);
 
-    String getProjectLinkByTestCaseId(int id);
+    Optional<String> getProjectLinkByTestCaseId(int id);
 }

@@ -1,8 +1,12 @@
 package com.nc.project.dao.actionInst;
 
+import com.nc.project.dto.ActionInstRunDto;
 import com.nc.project.model.ActionInst;
+import com.nc.project.model.util.ActionType;
+import com.nc.project.model.util.TestingStatus;
 import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,6 +16,15 @@ import java.util.Optional;
 public class ActionInstDaoImpl implements ActionInstDao {
     private final QueryService queryService;
     private final JdbcTemplate jdbcTemplate;
+
+    RowMapper<ActionInstRunDto> actionInstRunDtoRowMapper = (resultSet, i) -> new ActionInstRunDto(
+            resultSet.getObject("action_inst_id", Integer.class),
+            ActionType.valueOf(resultSet.getString("type")),
+            resultSet.getString("value"),
+            resultSet.getString("key"),
+            TestingStatus.valueOf(resultSet.getString("status")),
+            resultSet.getString("result")
+    );
 
     public ActionInstDaoImpl(QueryService queryService, JdbcTemplate jdbcTemplate) {
         this.queryService = queryService;
@@ -66,5 +79,13 @@ public class ActionInstDaoImpl implements ActionInstDao {
     public void delete(Integer id) {
         String sql = queryService.getQuery("actionInst.deleteById");
         jdbcTemplate.update(sql, id);
+    }
+
+    @Override
+    public List<ActionInstRunDto> getAllByTestCaseId(int id) {
+        String sql = queryService.getQuery("actionInst.getAllByDataSetId");
+        return jdbcTemplate.query(sql,
+                new Object[]{id},
+                actionInstRunDtoRowMapper);
     }
 }

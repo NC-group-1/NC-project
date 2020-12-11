@@ -43,8 +43,13 @@ public class Invoker {
         try {
             return this.actionTypeCommandMap.get(type).apply(parameter, actionKey);
         } catch (Exception e) {
-            log.error("Error in action "+type.name(), e);
-            executor.addToContext(actionKey, "Error in action "+type.name()+" "+e.getMessage());
+            log.error("Error in action "+type.name()+" "+e.getMessage());
+            if(e.getMessage() != null){
+                executor.addToContext(actionKey, "Error in action "+type.name()
+                        +" "+e.getMessage().split("\n")[0]);
+            } else {
+                executor.addToContext(actionKey, "Error in action "+type.name());
+            }
             return TestingStatus.FAILED;
         }
     }
