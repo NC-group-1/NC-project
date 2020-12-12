@@ -36,7 +36,7 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
 
     @Override
     @Async
-    public void runTestCase(Integer id) {
+    public void runTestCase(Integer id, Integer startedById) {
         log.debug("Run test case with id="+id+" asynchronously. Thread name="+Thread.currentThread().getName());
         WebDriver driver = new ChromeDriver();
         driver.manage().window().maximize();
@@ -70,6 +70,7 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
         for (ActionInstRunDto actionInst : actionInstRunDtos) {
             log.debug(actionInst.toString());
         }
-        actionInstDao.updateAll(actionInstRunDtos);
+        //updating db temporary disabled
+        //actionInstDao.updateAll(actionInstRunDtos);
     }
 }

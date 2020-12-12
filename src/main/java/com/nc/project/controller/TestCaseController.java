@@ -37,8 +37,9 @@ public class TestCaseController {
     }
 
     @PostMapping("/{id}/run")
-    public ResponseEntity runTestCase(@PathVariable int id) {
-        runTestCaseService.runTestCase(id);
+    public ResponseEntity runTestCase(@PathVariable int id,
+                                      @RequestParam(name = "startedById") Integer startedById) {
+        runTestCaseService.runTestCase(id, startedById);
         return new ResponseEntity(HttpStatus.OK);
     }
 
