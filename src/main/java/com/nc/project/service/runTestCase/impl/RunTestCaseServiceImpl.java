@@ -42,7 +42,7 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         driver.get(testCaseDao.getProjectLinkByTestCaseId(id).orElseThrow());
-        List<ActionInstRunDto> actionInstRunDtos = actionInstDao.getAllByTestCaseId(id);
+        List<ActionInstRunDto> actionInstRunDtos = actionInstDao.getAllActionInstRunDtosByTestCaseId(id);
         Executor executor = new SeleniumExecutorImpl(driver, new Context() {
             @Override
             public void put(String actionKey, String value) {
