@@ -2,12 +2,10 @@ package com.nc.project.dao.dataSet;
 
 import com.nc.project.dao.genericDao.GenericDaoImpl;
 import com.nc.project.dto.DataSetGeneralInfoDto;
-import com.nc.project.model.DataSet;
 import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -42,17 +40,17 @@ public class DataSetDaoImpl extends GenericDaoImpl<Integer, DataSetGeneralInfoDt
         return new Object[]{entity.getName(), entity.getDescription(), entity.getCreatedById(), entity.getId()};
     }
 
-    @Override
-    public List<DataSet> getByIds(List<Integer> dataSetIds) {
-        String sql = queryService.getQuery("dataSet.getByIds");
-        String inSql = String.join(",", Collections.nCopies(dataSetIds.size(), "?"));
-        List<DataSet> dataSets = jdbcTemplate.query(String.format(sql, inSql),
-                dataSetIds.toArray(), new DataSetRowMapper()
-        );
-
-        return dataSets;
-
-    }
+//    @Override
+//    public List<DataSet> getByIds(List<Integer> dataSetIds) {
+//        String sql = queryService.getQuery("dataSet.getByIds");
+//        String inSql = String.join(",", Collections.nCopies(dataSetIds.size(), "?"));
+//        List<DataSet> dataSets = jdbcTemplate.query(String.format(sql, inSql),
+//                dataSetIds.toArray(), new DataSetRowMapper()
+//        );
+//
+//        return dataSets;
+//
+//    }
 
     @Override
     public List<DataSetGeneralInfoDto> getGeneralInfoByPage(int limit,

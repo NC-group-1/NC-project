@@ -16,6 +16,6 @@ public interface DataSetDao extends GenericDao<DataSetGeneralInfoDto,Integer> {
 
     public int getSizeOfResultSet(String filter);
 
-    List<DataSet> getByIds(List<Integer> dataSetIds);
+    //List<DataSet> getByIds(List<Integer> dataSetIds);
 
 }
