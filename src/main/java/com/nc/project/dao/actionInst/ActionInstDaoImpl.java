@@ -88,4 +88,15 @@ public class ActionInstDaoImpl implements ActionInstDao {
                 new Object[]{id},
                 actionInstRunDtoRowMapper);
     }
+
+    @Override
+    public List<ActionInstRunDto> updateAll(List<ActionInstRunDto> actionInstRunDtos) {
+        String sql = queryService.getQuery("actionInst.updateAll");
+        jdbcTemplate.update(sql,
+                actionInstRunDtos.stream().map(ActionInstRunDto::getId).toArray(Integer[]::new),
+                actionInstRunDtos.stream().map(actionInstRunDto -> actionInstRunDto.getStatus().name())
+                        .toArray(String[]::new),
+                actionInstRunDtos.stream().map(ActionInstRunDto::getResult).toArray(String[]::new));
+        return actionInstRunDtos;
+    }
 }

@@ -70,5 +70,6 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
         for (ActionInstRunDto actionInst : actionInstRunDtos) {
             log.debug(actionInst.toString());
         }
+        actionInstDao.updateAll(actionInstRunDtos);
     }
 }

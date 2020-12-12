@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface ActionInstDao extends GenericDao<ActionInst, Integer>{
     List<ActionInstRunDto> getAllByTestCaseId(int id);
+    List<ActionInstRunDto> updateAll(List<ActionInstRunDto> actionInstRunDtos);
 }
