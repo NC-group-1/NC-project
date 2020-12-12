@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/datasets")
+@RequestMapping("/api/ncp/datasets")
 @CrossOrigin(origins = "http://localhost:4200")
 public class DataSetController {
 

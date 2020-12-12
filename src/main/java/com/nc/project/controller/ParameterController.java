@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/parameters")
+@RequestMapping("/api/ncp/parameters")
 @CrossOrigin(origins = "http://localhost:4200")
 public class ParameterController {
 

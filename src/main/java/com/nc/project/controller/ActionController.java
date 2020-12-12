@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/actions")
+@RequestMapping("/api/ncp/actions")
 @CrossOrigin(origins = "http://localhost:4200")
 public class ActionController {
 
