@@ -56,9 +56,13 @@ public class DataSetController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteDataSet(@PathVariable int id) {
-        dataSetService.delete(id);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity<Integer> deleteDataSet(@PathVariable int id) {
+        int usages = dataSetService.delete(id);
+        if(usages == 0){
+            return new ResponseEntity<>(0,HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(usages,HttpStatus.FORBIDDEN);
+        }
     }
 
     @GetMapping("/{id}")

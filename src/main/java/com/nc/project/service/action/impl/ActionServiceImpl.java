@@ -22,6 +22,11 @@ public class ActionServiceImpl implements ActionService {
     private final ActionDao actionDao;
     private final ParameterKeyDao parameterKeyDao;
 
+    private final List<String> actionTypes = Arrays.stream(ActionType.values())
+            .filter(actionType -> !actionType.equals(ActionType.COMPOUND))
+            .map(Enum::name)
+            .collect(Collectors.toList());
+
     public ActionServiceImpl(ActionDao actionDao, ParameterKeyDao parameterKeyDao) {
         this.actionDao = actionDao;
         this.parameterKeyDao = parameterKeyDao;
@@ -87,7 +92,7 @@ public class ActionServiceImpl implements ActionService {
 
     @Override
     public List<String> getActionTypes() {
-        return Arrays.stream(ActionType.values()).map(Enum::name).collect(Collectors.toList());
+        return actionTypes;
     }
 
     @Override

@@ -74,4 +74,13 @@ public class DataSetDaoImpl extends GenericDaoImpl<Integer, DataSetGeneralInfoDt
                 (rs, rowNum) -> rs.getInt("count"));
         return size == null? 0:size;
     }
+
+    @Override
+    public int getNumberOfUsages(int id) {
+        String sql = queryService.getQuery("data_set.getNumberOfUsages");
+        Integer count = jdbcTemplate.queryForObject(sql,
+                new Object[]{id},
+                (rs, rowNum) -> rs.getInt("count"));
+        return count == null? 0:count;
+    }
 }

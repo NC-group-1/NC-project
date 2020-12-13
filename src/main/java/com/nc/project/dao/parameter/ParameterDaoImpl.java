@@ -50,4 +50,13 @@ public class ParameterDaoImpl extends GenericDaoImpl<Integer, Parameter> impleme
                 getRowMapper());
     }
 
+    @Override
+    public int getNumberOfUsages(int id) {
+        String sql = queryService.getQuery("parameter.getNumberOfUsages");
+        Integer count = jdbcTemplate.queryForObject(sql,
+                new Object[]{id},
+                (rs, rowNum) -> rs.getInt("count"));
+        return count == null? 0:count;
+    }
+
 }

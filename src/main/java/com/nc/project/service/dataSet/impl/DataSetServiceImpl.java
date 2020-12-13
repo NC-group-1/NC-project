@@ -43,7 +43,11 @@ public class DataSetServiceImpl implements DataSetService {
     }
 
     @Override
-    public void delete(Integer id) {
-        dataSetDao.delete(id);
+    public int delete(Integer id) {
+        int numberOfUsages = dataSetDao.getNumberOfUsages(id);
+        if(numberOfUsages == 0) {
+            dataSetDao.delete(id);
+        }
+        return numberOfUsages;
     }
 }
