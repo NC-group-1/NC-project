@@ -12,5 +12,7 @@ public interface NotificationDao {
     void createNotifications(Integer testCaseId, NotificationType type);
     List<Integer> getTestCaseWatchersId(Integer testCaseId);
     Optional<TestCaseProgress> getTestCaseProgress(Integer testCaseId);
+    Boolean changeRead(Integer userId, Integer notificationId);
 
+    Boolean deleteNotification(Integer userId, Integer notificationId);
 }

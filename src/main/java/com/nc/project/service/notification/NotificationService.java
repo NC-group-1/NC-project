@@ -17,4 +17,7 @@ public interface NotificationService {
     void sendProgressToTestCase(Integer testCaseId) throws InterruptedException;
     void sendNotificationsToUser(Integer userId);
     void sendNotificationsToUsers(List<Integer> userIds);
+    Boolean changeRead(Integer userId, Integer notificationId);
+
+    Boolean deleteNotification(Integer userId, Integer notificationId);
 }

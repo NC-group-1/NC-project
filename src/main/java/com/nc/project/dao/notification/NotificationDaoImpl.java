@@ -49,4 +49,18 @@ public class NotificationDaoImpl implements NotificationDao {
                     resultSet.getFloat("progress")
         )).stream().findFirst();
     }
+
+    @Override
+    public Boolean changeRead(Integer userId, Integer notificationId) {
+        String sql = queryService.getQuery("notification.read");
+        int changed = jdbcTemplate.update(sql, userId, notificationId);
+        return changed > 0;
+    }
+
+    @Override
+    public Boolean deleteNotification(Integer userId, Integer notificationId) {
+        String sql = queryService.getQuery("notification.delete");
+        int deleted = jdbcTemplate.update(sql, userId, notificationId);
+        return deleted > 0;
+    }
 }

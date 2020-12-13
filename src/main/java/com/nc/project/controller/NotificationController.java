@@ -3,9 +3,7 @@ package com.nc.project.controller;
 import com.nc.project.service.notification.NotificationService;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @EnableScheduling
@@ -29,5 +27,13 @@ public class NotificationController {
     @MessageMapping("/progress/tc")
     public void getTestCaseProgress(Integer testCaseId) throws InterruptedException {
         this.notificationService.sendProgressToTestCase(testCaseId);
+    }
+    @PutMapping("/{userId}")
+    public Boolean markAsRead(@PathVariable Integer userId, @RequestBody Integer notificationId){
+        return this.notificationService.changeRead(userId, notificationId);
+    }
+    @DeleteMapping("/user/{userId}/notification/{notificationId}")
+    public Boolean deleteNotification(@PathVariable Integer userId, @PathVariable Integer notificationId){
+        return this.notificationService.deleteNotification(userId, notificationId);
     }
 }

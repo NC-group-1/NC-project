@@ -44,7 +44,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 
     @Override
-    public void sendProgressToTestCase(Integer testCaseId) throws InterruptedException {
+    public void sendProgressToTestCase(Integer testCaseId) {
         Optional<TestCaseProgress> progress = this.getTestCaseProgress(testCaseId);
         progress.ifPresent(testCaseProgress -> messagingTemplate.convertAndSend("/topic/progress/" + testCaseId, testCaseProgress));
 
@@ -68,5 +68,16 @@ public class NotificationServiceImpl implements NotificationService {
             sendNotificationsToUser(id);
         }
     }
+
+    @Override
+    public Boolean changeRead(Integer userId, Integer notificationId) {
+        return this.notificationDao.changeRead(userId, notificationId);
+    }
+
+    @Override
+    public Boolean deleteNotification(Integer userId, Integer notificationId) {
+        return this.notificationDao.deleteNotification(userId, notificationId);
+    }
+
 
 }
