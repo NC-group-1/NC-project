@@ -66,6 +66,15 @@ public class TestCaseDaoImpl implements TestCaseDao {
     }
 
     @Override
+    public Optional<String> getProjectLinkByTestCaseId(int id) {
+        String sql = queryService.getQuery("testCase.getProjectLinkByTestCaseId");
+        String link = jdbcTemplate.queryForObject(sql,
+                new Object[]{id},
+                (rs, rowNum) -> rs.getString("link"));
+        return Optional.of(link);
+    }
+
+    @Override
     public TestCase create(TestCase testCase) {
         String sql = queryService.getQuery("testCase.create");
         KeyHolder keyHolder = new GeneratedKeyHolder();

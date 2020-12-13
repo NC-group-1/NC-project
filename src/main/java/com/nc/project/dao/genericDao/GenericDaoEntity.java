@@ -1,13 +1,8 @@
 package com.nc.project.dao.genericDao;
 
-import org.springframework.jdbc.core.RowMapper;
-
 import java.io.Serializable;
 
-public interface GenericDaoEntity<T, ID extends Serializable> {
-    RowMapper<T> returnRowMapper();
+public interface GenericDaoEntity<ID extends Serializable> {
     ID getId();
     void setId(ID id);
-    String returnTableName();
-    Object[] returnQueryArgs();
 }

@@ -5,7 +5,6 @@ import com.nc.project.dao.parameterKey.ParameterKeyDao;
 import com.nc.project.model.Parameter;
 import com.nc.project.service.parameter.ParameterService;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -37,12 +36,25 @@ public class ParameterServiceImpl implements ParameterService {
     }
 
     @Override
-    public Parameter update(Parameter entity) {
-        return parameterDao.update(entity);
+    public Optional<Parameter> update(Parameter entity) {
+        if(parameterDao.getNumberOfUsages(entity.getId()) == 0) {
+            return Optional.of(parameterDao.update(entity));
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
-    public void delete(Integer id) {
-        parameterDao.delete(id);
+    public int delete(Integer id) {
+        int numberOfUsages = parameterDao.getNumberOfUsages(id);
+        if(numberOfUsages == 0) {
+            parameterDao.delete(id);
+        }
+        return numberOfUsages;
+    }
+
+    @Override
+    public int getNumberOfUsages(Integer id) {
+        return parameterDao.getNumberOfUsages(id);
     }
 }

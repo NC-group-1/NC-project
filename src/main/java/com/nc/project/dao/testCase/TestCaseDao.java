@@ -18,4 +18,6 @@ public interface TestCaseDao extends GenericDao<TestCase, Integer> {
     List<Integer> getTestCasesIdByWatcher(Integer userId);
 
     Optional<Integer> getSizeOfResultSet(String filter);
+
+    Optional<String> getProjectLinkByTestCaseId(int id);
 }

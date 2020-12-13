@@ -6,13 +6,19 @@ import java.util.Optional;
 
 public interface DataSetService {
 
-    public Page<DataSetGeneralInfoDto> getAllByPage(int page, int size, String filter, String orderBy, String order);
+    Page<DataSetGeneralInfoDto> getAllByPage(int page, int size, String filter, String orderBy, String order);
 
-    public DataSetGeneralInfoDto create(DataSetGeneralInfoDto entity);
+    DataSetGeneralInfoDto create(DataSetGeneralInfoDto entity);
 
-    public Optional<DataSetGeneralInfoDto> findById(Integer id);
+    Optional<DataSetGeneralInfoDto> findById(Integer id);
 
-    public DataSetGeneralInfoDto update(DataSetGeneralInfoDto entity);
+    DataSetGeneralInfoDto update(DataSetGeneralInfoDto entity);
 
-    public void delete(Integer id);
+    /**
+     * If number of usages = 0, removes dataset and all it parameters.
+     *
+     * @param id data set id
+     * @return number of usages
+     */
+    int delete(Integer id);
 }

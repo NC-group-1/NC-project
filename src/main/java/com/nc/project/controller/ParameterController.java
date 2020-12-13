@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/parameters")
+@RequestMapping("/api/ncp/parameters")
 @CrossOrigin(origins = "http://localhost:4200")
 public class ParameterController {
 
@@ -29,19 +29,28 @@ public class ParameterController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Parameter> editParameter(@RequestBody Parameter entity) {
-        Parameter updatedDataSet = parameterService.update(entity);
-        return new ResponseEntity<>(updatedDataSet, HttpStatus.OK);
+        Optional<Parameter> updatedDataSet = parameterService.update(entity);
+        return updatedDataSet.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.FORBIDDEN).build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteParameter(@PathVariable int id) {
-        parameterService.delete(id);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity<Integer> deleteParameter(@PathVariable int id) {
+        int usages = parameterService.delete(id);
+        if(usages == 0){
+            return new ResponseEntity<>(0,HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(usages,HttpStatus.FORBIDDEN);
+        }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Parameter> getParameter(@PathVariable int id) {
         Optional<Parameter> entity =  parameterService.findById(id);
         return entity.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/{id}/usages")
+    public ResponseEntity<Integer> getNumberOfUsages(@PathVariable int id) {
+        return new ResponseEntity<>(parameterService.getNumberOfUsages(id),HttpStatus.OK);
     }
 }

@@ -5,13 +5,21 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ParameterService {
-    public List<Parameter> getParametersByDataSetId(int id);
+    List<Parameter> getParametersByDataSetId(int id);
 
-    public Parameter create(Parameter entity);
+    Parameter create(Parameter entity);
 
-    public Optional<Parameter> findById(Integer id);
+    Optional<Parameter> findById(Integer id);
 
-    public Parameter update(Parameter entity);
+    Optional<Parameter> update(Parameter entity);
 
-    public void delete(Integer id);
+    /**
+     * If number of usages = 0, removes dataset and all it parameters.
+     *
+     * @param id data set id
+     * @return number of usages
+     */
+    int delete(Integer id);
+
+    int getNumberOfUsages(Integer id);
 }
