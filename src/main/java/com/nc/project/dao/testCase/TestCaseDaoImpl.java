@@ -1,18 +1,14 @@
 package com.nc.project.dao.testCase;
 
-import com.nc.project.dao.actionInst.ActionInstRowMapper;
 import com.nc.project.dto.TestCaseDto;
-import com.nc.project.model.ActionInst;
 import com.nc.project.model.TestCase;
 import com.nc.project.service.query.QueryService;
-import org.postgresql.util.PGInterval;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -117,5 +113,11 @@ public class TestCaseDaoImpl implements TestCaseDao {
     public void delete(Integer id) {
         String sql = queryService.getQuery("testCase.deleteById");
         jdbcTemplate.update(sql, id);
+    }
+
+    @Override
+    public List<Integer> getTestCasesIdByWatcher(Integer userId) {
+        String sql = queryService.getQuery("notification.getRunningTestCasesIdByWatcher");
+        return jdbcTemplate.query(sql, new Object[]{userId}, (resultSet,i) -> resultSet.getInt("test_case_id"));
     }
 }

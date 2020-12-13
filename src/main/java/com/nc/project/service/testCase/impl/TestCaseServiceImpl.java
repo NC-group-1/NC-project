@@ -91,6 +91,11 @@ public class TestCaseServiceImpl implements TestCaseService {
 
         return testCase;
     }
+    @Override
+    public List<Integer> getTestCasesIdByWatcher(Integer userId) {
+        return testCaseDao.getTestCasesIdByWatcher(userId);
+    }
+
 
     private List<ActionInst> convertToActionInstances(TestScenarioDto testScenarioDto, Integer testCaseId) {
         return testScenarioDto.getActions().stream()

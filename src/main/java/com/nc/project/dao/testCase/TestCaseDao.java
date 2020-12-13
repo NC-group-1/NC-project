@@ -15,6 +15,7 @@ public interface TestCaseDao extends GenericDao<TestCase, Integer> {
     TestCase update(TestCase testCase);
 
     void delete(int id);
+    List<Integer> getTestCasesIdByWatcher(Integer userId);
 
     Optional<Integer> getSizeOfResultSet(String filter);
 }

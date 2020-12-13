@@ -21,6 +21,11 @@ public class TestCaseController {
         this.testCaseService = testCaseService;
     }
 
+    @GetMapping("/user/{userId}")
+    public List<Integer> getUserTestCases(@PathVariable Integer userId){
+        return this.testCaseService.getTestCasesIdByWatcher(userId);
+    }
+
     @PostMapping
     public ResponseEntity<TestCase> create(@RequestBody TestScenarioDto testScenarioDto) {
         TestCase createdTestCase = testCaseService.create(testScenarioDto);
