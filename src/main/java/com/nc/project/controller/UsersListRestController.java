@@ -37,6 +37,6 @@ public class UsersListRestController {
     public void update(
             @RequestBody UserProfileDto userProfileDto)
     {
-        userService.UpdateUserFromTable(userProfileDto);
+        userService.updateUserFromTable(userProfileDto);
     }
 }

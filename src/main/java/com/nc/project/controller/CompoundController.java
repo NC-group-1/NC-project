@@ -20,10 +20,6 @@ public class CompoundController {
         this.compoundService = compoundService;
     }
 
-//    @GetMapping
-//    public List<Action> getCompounds(){
-//        return compoundService.getAllCompounds();
-//    }
     @GetMapping
     public Page<Compound> getCompounds(@RequestParam(defaultValue = "0") Integer page,
                                        @RequestParam(defaultValue = "10") Integer size,
