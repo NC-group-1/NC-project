@@ -24,13 +24,13 @@ public interface UserService {
 
     String validatePasswordRecoverToken(String token);
 
-    Optional<UserProfileDto> findByEmail(String email);
+    Optional<UserProfileDto> findByEmail(String email) throws InterruptedException;
 
     String getUserRoleByEmail(String email);
 
     Page<UserProfileDto> getAllByPage(int page, int size, String filter, String orderBy, String order);
 
-    void UpdateUserFromTable(UserProfileDto userProfile);
+    void updateUserFromTable(UserProfileDto userProfile);
 
     Integer getUserIdByEmail(String username);
   

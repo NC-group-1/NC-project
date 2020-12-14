@@ -43,7 +43,7 @@ public class UserRestController {
         return userUpdated.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
     @GetMapping("/email/{email}")
-    public ResponseEntity<UserProfileDto> findUserByEmail(@PathVariable String email) {
+    public ResponseEntity<UserProfileDto> findUserByEmail(@PathVariable String email) throws InterruptedException {
         Optional<UserProfileDto> user = userService.findByEmail(email);
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -55,7 +55,7 @@ public class UserRestController {
     }
     @RequestMapping(path = "/auth", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
-    public AuthResponse authenticate(@RequestBody AuthRequest req) throws MessagingException {
+    public AuthResponse authenticate(@RequestBody AuthRequest req) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(req.getUsername(), req.getPassword()));
         String token = jwtTokenUtil.generateToken(req.getUsername(), userService.getUserRoleByEmail(req.getUsername()), userService.getUserIdByEmail(req.getUsername()));
         return new AuthResponse(token);

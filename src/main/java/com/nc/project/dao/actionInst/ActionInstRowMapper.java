@@ -1,6 +1,7 @@
 package com.nc.project.dao.actionInst;
 
 import com.nc.project.model.ActionInst;
+import com.nc.project.model.ParameterKey;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -17,7 +18,10 @@ public class ActionInstRowMapper implements RowMapper<ActionInst> {
         actionInst.setTestCase(resultSet.getObject("test_case_id", Integer.class));
         actionInst.setDataSet(resultSet.getObject("data_set_id", Integer.class));
         //actionInst.setDataSet(Arrays.asList((Integer[]) resultSet.getArray("data_set_id").getArray()));
-        actionInst.setParameterKey(resultSet.getObject("parameter_key_id", Integer.class));
+        actionInst.setParameterKey(new ParameterKey(
+                resultSet.getObject("parameter_key_id", Integer.class),
+                resultSet.getObject("key", String.class)
+        ));
         actionInst.setStatus(resultSet.getString("status"));
         actionInst.setOrderNum(resultSet.getObject("order_num", Integer.class));
 

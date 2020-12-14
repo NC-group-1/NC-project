@@ -1,18 +1,14 @@
 package com.nc.project.dao.testCase;
 
-import com.nc.project.dao.actionInst.ActionInstRowMapper;
 import com.nc.project.dto.TestCaseDto;
-import com.nc.project.model.ActionInst;
 import com.nc.project.model.TestCase;
 import com.nc.project.service.query.QueryService;
-import org.postgresql.util.PGInterval;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,6 +66,15 @@ public class TestCaseDaoImpl implements TestCaseDao {
     }
 
     @Override
+    public Optional<String> getProjectLinkByTestCaseId(int id) {
+        String sql = queryService.getQuery("testCase.getProjectLinkByTestCaseId");
+        String link = jdbcTemplate.queryForObject(sql,
+                new Object[]{id},
+                (rs, rowNum) -> rs.getString("link"));
+        return Optional.of(link);
+    }
+
+    @Override
     public TestCase create(TestCase testCase) {
         String sql = queryService.getQuery("testCase.create");
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -117,5 +122,11 @@ public class TestCaseDaoImpl implements TestCaseDao {
     public void delete(Integer id) {
         String sql = queryService.getQuery("testCase.deleteById");
         jdbcTemplate.update(sql, id);
+    }
+
+    @Override
+    public List<Integer> getTestCasesIdByWatcher(Integer userId) {
+        String sql = queryService.getQuery("notification.getRunningTestCasesIdByWatcher");
+        return jdbcTemplate.query(sql, new Object[]{userId}, (resultSet,i) -> resultSet.getInt("test_case_id"));
     }
 }

@@ -15,8 +15,9 @@ public class TestScenarioDtoRowMapper implements RowMapper<TestScenarioDto> {
                 resultSet.getString("name"),
                 resultSet.getString("description"),
                 new User(resultSet.getInt("user_id"),
+                        resultSet.getString("email"),
                         resultSet.getString("username"),
-                        resultSet.getString("surname"),
-                        resultSet.getString("email")));
+                        resultSet.getString("surname")
+                        ));
     }
 }

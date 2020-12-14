@@ -28,4 +28,11 @@ public class TestCase {
     private String description;
     private PGInterval recurringTime;
     private Integer iterationsAmount;
+
+    public TestCase(Integer id, String name, String description, String status) {
+        this.id = id;
+        this.name = name;
+        this.status = status;
+        this.description = description;
+    }
 }

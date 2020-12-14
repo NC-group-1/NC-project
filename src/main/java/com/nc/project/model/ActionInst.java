@@ -16,7 +16,7 @@ public class ActionInst {
     private Integer testCase;
     private Integer dataSet;
     private Integer dataSetId;
-    private Integer parameterKey;
+    private ParameterKey parameterKey;
     private String status;
     private Integer orderNum;
 
