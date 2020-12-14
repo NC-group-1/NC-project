@@ -14,6 +14,6 @@ public class ProjectDto {
     private String name;
     private String link;
     private Timestamp date;
-    private String creatorName;
+    private String role;
     private Boolean archived;
 }

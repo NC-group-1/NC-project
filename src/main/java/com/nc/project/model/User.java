@@ -44,6 +44,8 @@ public class User implements UserDetails {
         this.codeExpireDate = codeExpireDate;
     }
 
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(role));

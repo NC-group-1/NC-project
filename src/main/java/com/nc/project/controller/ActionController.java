@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +16,18 @@ import java.util.Optional;
 @RequestMapping("/api/actions")
 @CrossOrigin(origins = "http://localhost:4200")
 public class ActionController {
+
+    private final List<String> allowedTableNames = new ArrayList<String>() {{
+        add("name");
+        add("description");
+        add("type");
+        add("key");
+    }};
+
+    private final List<String> allowedOrders = new ArrayList<String>() {{
+        add("ASC");
+        add("DESC");
+    }};
 
     private final ActionService actionService;
 
@@ -29,11 +41,36 @@ public class ActionController {
         return new ResponseEntity<>(createdAction, HttpStatus.CREATED);
     }
 
-    @GetMapping
-    public ResponseEntity<Page> getActionPage(@RequestParam(name = "page") int page,
-                                              @RequestParam(name = "size") int size) {
-        Page resultPage = actionService.getAllActionsByPage(page, size);
+    @Deprecated
+    @GetMapping("/oldPage")
+    public ResponseEntity<Page<Action>> getActionPage(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
+        Page<Action> resultPage = actionService.getAllActionsByPage(page, size,
+                "", "name", "name", "ASC");
+        return new ResponseEntity<>(resultPage, HttpStatus.OK);
+    }
 
+    @GetMapping
+    public ResponseEntity<Page<Action>> getActionPageWithFilter(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size,
+            @RequestParam(name = "filter") String filter,
+            @RequestParam(name = "filterTable",defaultValue = "name") String filterTable,
+            @RequestParam(name = "orderBy",defaultValue = "name") String orderBy,
+            @RequestParam(name = "order", defaultValue = "ASC") String order) {
+        if(!allowedTableNames.contains(filterTable) ||
+                !allowedTableNames.contains(orderBy) ||
+                !allowedOrders.contains(order)) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        Page<Action> resultPage = actionService.getAllActionsByPage(page, size, filter, filterTable, orderBy, order);
+        return new ResponseEntity<>(resultPage, HttpStatus.OK);
+    }
+
+    @GetMapping("/compounds/{targetId}")
+    public ResponseEntity<Page<Action>> getActionPageWithoutTarget(@PathVariable int targetId,
+                                                                   @RequestParam(name = "page", defaultValue = "0") int page,
+                                                                   @RequestParam(name = "size", defaultValue = "10") int size) {
+        Page<Action> resultPage = actionService.getAllActionsByPage(page, size, targetId);
         return new ResponseEntity<>(resultPage, HttpStatus.OK);
     }
 
@@ -56,7 +93,7 @@ public class ActionController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteAction(@RequestBody int id) {
+    public ResponseEntity deleteAction(@PathVariable int id) {
         actionService.deleteAction(id);
         return new ResponseEntity(HttpStatus.OK);
     }

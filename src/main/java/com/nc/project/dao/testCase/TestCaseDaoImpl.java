@@ -41,6 +41,8 @@ public class TestCaseDaoImpl implements TestCaseDao {
                     testCase.getName(),
                     testCase.getIterations_amount(),
                     new PGInterval(testCase.getRecurring_time()),
+                    testCase.getStart_date(),
+                    testCase.getStatus(),
                     testCase.getTest_case_id()
 
             );

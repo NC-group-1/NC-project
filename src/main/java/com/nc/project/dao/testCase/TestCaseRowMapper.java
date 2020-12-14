@@ -16,7 +16,10 @@ public class TestCaseRowMapper implements RowMapper<TestCaseDto> {
                 resultSet.getInt("creator_id"),
                 resultSet.getTimestamp("creation_date"),
                 resultSet.getInt("iterations_amount"),
-                resultSet.getString("recurring_time")
+                resultSet.getString("recurring_time"),
+                resultSet.getTimestamp("start_date"),
+                resultSet.getString("status")
+
         );
 
         return testCase;

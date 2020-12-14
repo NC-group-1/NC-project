@@ -1,6 +1,7 @@
 package com.nc.project.dao.testCase;
 
 import com.nc.project.dto.TestCaseDto;
+import com.nc.project.dto.RunningTestCaseDto;
 import com.nc.project.model.TestCase;
 
 import java.util.List;

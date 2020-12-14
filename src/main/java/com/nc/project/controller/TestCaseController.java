@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/test_case")
+@RequestMapping("api/test-case")
 public class TestCaseController {
     @Autowired
     private TestCaseService testCaseService;
@@ -30,7 +30,7 @@ public class TestCaseController {
         return new ResponseEntity<>(testCaseList, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/update",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
     public void editTestCaseByName(@RequestBody TestCase testCase) {
         testCaseService.editTestCase(testCase);

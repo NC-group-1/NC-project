@@ -27,6 +27,7 @@ public class TestCase {
     private String status;
     private String description;
     private String recurring_time;
+    private Integer watcher_numb;
     private Integer iterations_amount;
 
 }

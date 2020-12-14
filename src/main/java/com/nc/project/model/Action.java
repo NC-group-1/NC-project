@@ -11,10 +11,17 @@ import org.springframework.data.annotation.Id;
 @AllArgsConstructor
 public class Action {
     @Id
-    private Integer id;
+    private int id;
     private String name;
     private String description;
     private ActionType type;
     private ParameterKey key;
+
+    public Action(int id, String name, String description, ActionType type){
+        this.id=id;
+        this.name=name;
+        this.description=description;
+        this.type=type;
+    }
 
 }
