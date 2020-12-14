@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserProfileDto> findByEmail(String email) throws InterruptedException {
-        notificationService.sendUserTestCasesProgress(1);
+        //notificationService.sendUserTestCasesProgress(1);
         return userDao.findByEmail(email);
     }
 
