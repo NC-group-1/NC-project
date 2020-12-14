@@ -5,6 +5,7 @@ import com.nc.project.model.TestCase;
 import com.nc.project.model.User;
 import com.nc.project.model.UserNotification;
 import com.nc.project.model.util.NotificationType;
+import com.nc.project.model.util.TestingStatus;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -20,7 +21,7 @@ public class NotificationRowMapper implements RowMapper<UserNotification> {
                                 resultSet.getInt("test_case_id"),
                                 resultSet.getString("test_case_name"),
                                 resultSet.getString("description"),
-                                resultSet.getString("status")
+                                TestingStatus.valueOf(resultSet.getString("status"))
                         ),
                         resultSet.getDate("date"),
                         NotificationType.valueOf(resultSet.getString("type"))

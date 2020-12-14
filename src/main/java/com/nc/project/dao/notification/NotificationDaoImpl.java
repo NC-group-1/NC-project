@@ -30,7 +30,7 @@ public class NotificationDaoImpl implements NotificationDao {
     @Override
     public void createNotifications(Integer testCaseId, NotificationType type) {
         String sql = queryService.getQuery("notification.createNotification");
-        jdbcTemplate.update(sql, testCaseId, type);
+        jdbcTemplate.update(sql, testCaseId, type.name());
     }
 
     @Override

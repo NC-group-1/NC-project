@@ -1,6 +1,7 @@
 package com.nc.project.dao.testCase;
 
 import com.nc.project.model.TestCase;
+import com.nc.project.model.util.TestingStatus;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -20,7 +21,7 @@ public class TestCaseRowMapper implements RowMapper<TestCase> {
         testCase.setCreationDate(resultSet.getTimestamp("creation_date"));
         testCase.setStartDate(resultSet.getTimestamp("start_date"));
         testCase.setFinishDate(resultSet.getTimestamp("finish_date"));
-        testCase.setStatus(resultSet.getString("status"));
+        testCase.setStatus(TestingStatus.valueOf(resultSet.getString("status")));
         testCase.setDescription(resultSet.getString("description"));
         testCase.setIterationsAmount(resultSet.getObject("iterations_amount", Integer.class));
 

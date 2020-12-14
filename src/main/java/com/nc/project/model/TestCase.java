@@ -1,6 +1,7 @@
 package com.nc.project.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nc.project.model.util.TestingStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,12 +25,12 @@ public class TestCase {
     private Timestamp creationDate;
     private Timestamp startDate;
     private Timestamp finishDate;
-    private String status;
+    private TestingStatus status;
     private String description;
     private PGInterval recurringTime;
     private Integer iterationsAmount;
 
-    public TestCase(Integer id, String name, String description, String status) {
+    public TestCase(Integer id, String name, String description, TestingStatus status) {
         this.id = id;
         this.name = name;
         this.status = status;

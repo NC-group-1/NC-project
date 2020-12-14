@@ -89,7 +89,7 @@ public class TestCaseDaoImpl implements TestCaseDao {
                     ps.setTimestamp(5, testCase.getCreationDate());
                     ps.setTimestamp(6, testCase.getStartDate());
                     ps.setTimestamp(7, testCase.getFinishDate());
-                    ps.setString(8, testCase.getStatus());
+                    ps.setString(8, testCase.getStatus().name());
                     ps.setString(9, testCase.getDescription());
                     ps.setObject(10, testCase.getRecurringTime());
                     ps.setObject(11, testCase.getIterationsAmount());
@@ -114,8 +114,10 @@ public class TestCaseDaoImpl implements TestCaseDao {
 
     @Override
     public TestCase update(TestCase testCase) {
-        return null;
-
+        String sql = queryService.getQuery("testCase.edit");
+        jdbcTemplate.update(sql, testCase.getStarter(),
+                testCase.getStartDate(), testCase.getFinishDate(), testCase.getStatus().name(), testCase.getId());
+        return testCase;
     }
 
     @Override

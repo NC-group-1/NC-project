@@ -46,9 +46,16 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void sendProgressToTestCase(Integer testCaseId) {
         Optional<TestCaseProgress> progress = this.getTestCaseProgress(testCaseId);
-        progress.ifPresent(testCaseProgress -> messagingTemplate.convertAndSend("/topic/progress/" + testCaseId, testCaseProgress));
-
+        progress.ifPresent(testCaseProgress ->
+                messagingTemplate.convertAndSend("/topic/progress/" + testCaseId, testCaseProgress));
     }
+
+    @Override
+    public void sendProgressToTestCase(TestCaseProgress testCaseProgress) {
+        messagingTemplate.convertAndSend("/topic/progress/" + testCaseProgress.getTestCaseId(),
+                testCaseProgress);
+    }
+
     @Override
     public void sendNotificationsToUser(Integer userId) {
         List<UserNotification> userNotifications = this.getUserNotifications(userId);
