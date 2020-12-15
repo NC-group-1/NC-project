@@ -45,8 +45,12 @@ public class TestCaseController {
     @PostMapping("/{id}/run")
     public ResponseEntity runTestCase(@PathVariable int id,
                                       @RequestParam(name = "startedById") Integer startedById) {
-        runTestCaseService.runTestCase(id, startedById);
-        return new ResponseEntity(HttpStatus.OK);
+        int status = runTestCaseService.runTestCase(id, startedById);
+        if(status == 0){
+            return new ResponseEntity(HttpStatus.OK);
+        } else {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
     }
 
     @GetMapping("actions/{id}")

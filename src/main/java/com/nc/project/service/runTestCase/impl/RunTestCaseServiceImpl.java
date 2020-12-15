@@ -48,14 +48,18 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
     }
 
     @Override
-    public void runTestCase(Integer testCaseId, Integer startedById) {
+    public int runTestCase(Integer testCaseId, Integer startedById) {
         TestCase testCase = testCaseDao.findById(testCaseId).orElseThrow();
+        if(testCase.getStatus() != TestingStatus.UNKNOWN){
+            return -1;
+        }
         testCase.setStartDate(Timestamp.valueOf(LocalDateTime.now()));
         testCase.setStarter(startedById);
         testCase.setStatus(TestingStatus.IN_PROGRESS);
         testCaseDao.update(testCase);
         notificationService.createNotification(testCaseId, NotificationType.STARTED);
         runTestCaseService.runAsync(testCase);
+        return 0;
     }
 
     @Async
