@@ -1,9 +1,6 @@
 package com.nc.project.controller;
 
-import com.nc.project.dto.ActionInstResponseDto;
-import com.nc.project.dto.Page;
-import com.nc.project.dto.TestCaseDto;
-import com.nc.project.dto.TestScenarioDto;
+import com.nc.project.dto.*;
 import com.nc.project.model.TestCase;
 import com.nc.project.service.runTestCase.RunTestCaseService;
 import com.nc.project.service.testCase.TestCaseService;
@@ -14,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/test-case")
@@ -38,6 +36,12 @@ public class TestCaseController {
         return new ResponseEntity<>(createdTestCase, HttpStatus.CREATED);
     }
 
+    @GetMapping("/{idTestCase}")
+    public ResponseEntity<TestCase> getTestCaseById(@PathVariable Integer idTestCase) {
+        Optional<TestCase> testCase = testCaseService.findById(idTestCase);
+        return testCase.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @PostMapping("/{id}/run")
     public ResponseEntity runTestCase(@PathVariable int id,
                                       @RequestParam(name = "startedById") Integer startedById) {
@@ -45,7 +49,7 @@ public class TestCaseController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("actions/{id}")
     public ResponseEntity<List<ActionInstResponseDto>> getAllInstances(@PathVariable Integer id) {
         List<ActionInstResponseDto> instancesResponse = testCaseService.getAllInstances(id);
         return new ResponseEntity<>(instancesResponse, HttpStatus.OK);

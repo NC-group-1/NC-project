@@ -6,10 +6,7 @@ import com.nc.project.dao.dataSet.DataSetDao;
 import com.nc.project.dao.parameterKey.ParameterKeyDao;
 import com.nc.project.dao.testCase.TestCaseDao;
 import com.nc.project.dao.user.UserDao;
-import com.nc.project.dto.ActionInstResponseDto;
-import com.nc.project.dto.Page;
-import com.nc.project.dto.TestCaseDto;
-import com.nc.project.dto.TestScenarioDto;
+import com.nc.project.dto.*;
 import com.nc.project.model.*;
 import com.nc.project.model.util.TestingStatus;
 import com.nc.project.service.testCase.TestCaseService;
@@ -18,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,6 +51,11 @@ public class TestCaseServiceImpl implements TestCaseService {
     @Override
     public void editTestCase(TestCase testCase) {
         testCaseDao.edit(testCase);
+    }
+
+    @Override
+    public Optional<TestCase> findById(Integer id) {
+        return testCaseDao.findById(id);
     }
 
     @Override
