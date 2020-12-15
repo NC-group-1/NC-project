@@ -1,6 +1,7 @@
 package com.nc.project.service.dataSet;
 
 import com.nc.project.dto.DataSetGeneralInfoDto;
+import com.nc.project.dto.DataSetParamDto;
 import com.nc.project.dto.Page;
 import java.util.Optional;
 
@@ -21,4 +22,6 @@ public interface DataSetService {
      * @return number of usages
      */
     int delete(Integer id);
+
+    DataSetParamDto getDatasetValueByParam(int id, int parameterId);
 }
