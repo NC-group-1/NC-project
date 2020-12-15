@@ -39,11 +39,11 @@ public class ActionServiceImpl implements ActionService {
             throw new NoSuchElementException("Action not found");
         }
 
-        ParameterKey key = action.getKey();
+        ParameterKey key = action.getParameterKey();
 
         if (key != null) {
             key = parameterKeyDao.create(key);
-            action.setKey(key);
+            action.setParameterKey(key);
         }
 
         return actionDao.create(action);
@@ -77,10 +77,10 @@ public class ActionServiceImpl implements ActionService {
     @Override
     public Action editAction(Action action) {
         System.out.println(action);
-        ParameterKey key = action.getKey();
+        ParameterKey key = action.getParameterKey();
         if (key != null) {
             key = parameterKeyDao.create(key);
-            action.setKey(key);
+            action.setParameterKey(key);
         }
         return actionDao.update(action);
     }

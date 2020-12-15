@@ -13,7 +13,7 @@ public class Action {
     private String name;
     private String description;
     private ActionType type;
-    private ParameterKey key;
+    private ParameterKey parameterKey;
 
     public Action(int id, String name, String description, ActionType type){
         this.id=id;

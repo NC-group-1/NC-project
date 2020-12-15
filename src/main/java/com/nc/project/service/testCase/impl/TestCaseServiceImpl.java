@@ -112,11 +112,11 @@ public class TestCaseServiceImpl implements TestCaseService {
 
     private Integer getDatasetIdForActionInstance(Action action, DataSet dataset) {
         List<Integer> keyIds = dataset.getParameters().stream()
-                .map(Parameter::getKey)
+                .map(Parameter::getParameterKey)
                 .map(ParameterKey::getId)
                 .collect(Collectors.toList());
 
-        return keyIds.contains(action.getKey().getId()) ? dataset.getId() : null;
+        return keyIds.contains(action.getParameterKey().getId()) ? dataset.getId() : null;
     }
 
 

@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 public class ActionOfCompound {
     private Action action;
     private int orderNum;
-    private ParameterKey key;
+    private ParameterKey parameterKey;
 }
