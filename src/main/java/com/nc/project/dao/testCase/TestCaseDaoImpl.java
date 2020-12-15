@@ -1,12 +1,13 @@
 package com.nc.project.dao.testCase;
 
-import com.nc.project.dto.TestCaseDto;
 import com.nc.project.model.TestCase;
 import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.postgresql.util.PGInterval;
+import java.sql.SQLException;
 
 import java.sql.PreparedStatement;
 import java.util.List;
@@ -23,37 +24,33 @@ public class TestCaseDaoImpl implements TestCaseDao {
     }
 
     @Override
-    public List<TestCaseDto> getAllByPage(int page, int size, String filter, String orderBy, String order) {
+    public List<TestCase> getAllByPage(int page, int size, String filter, String orderBy, String order) {
         String query = queryService.getQuery("testCase.getAllByPage");
-        query = String.format(query, orderBy, order);
-        List<TestCaseDto> testCaseList = jdbcTemplate.query(query,
-                new Object[]{"%" + filter + "%", size, size, page - 1},
-                (resultSet, i) -> new TestCaseDto(
-                        resultSet.getInt("test_case_id"),
-                        resultSet.getString("name"),
-                        resultSet.getInt("creator_id"),
-                        resultSet.getTimestamp("creation_date"),
-                        resultSet.getInt("retries")
-                )
+        query = String.format(query,orderBy,order);
+        List<TestCase> testCaseList = jdbcTemplate.query(query,
+                new Object[]{"%"+filter +"%", size, size, page-1},
+                new TestCaseRowMapper()
         );
-
         return testCaseList;
     }
 
-//    @Override
-//    public void edit(TestCase testCase) {
-//        String sql = queryService.getQuery("testCase.edit");
-//        jdbcTemplate.update(sql,
-//                testCase.getName(),
-//                testCase.getIterationsAmount(),
-//                testCase.getId()
-//        );
-//    }
-
     @Override
-    public void delete(int test_case_id) {
-        String sql = queryService.getQuery("testCase.deleteById");
-        jdbcTemplate.update(sql, test_case_id);
+    public void edit(TestCase testCase) {
+        String sql = queryService.getQuery("testCase.edit");
+
+        try {
+            jdbcTemplate.update(sql,
+                    testCase.getName(),
+                    testCase.getIterationsAmount(),
+                    new PGInterval(testCase.getRecurringTime()),
+                    testCase.getStartDate(),
+                    testCase.getStatus(),
+                    testCase.getId()
+
+            );
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     @Override
@@ -121,10 +118,11 @@ public class TestCaseDaoImpl implements TestCaseDao {
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Integer test_case_id) {
         String sql = queryService.getQuery("testCase.deleteById");
-        jdbcTemplate.update(sql, id);
+        jdbcTemplate.update(sql, test_case_id);
     }
+
 
     @Override
     public List<Integer> getTestCasesIdByWatcher(Integer userId) {
