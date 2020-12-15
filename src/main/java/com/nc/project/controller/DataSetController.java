@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/datasets")
+@RequestMapping("/api/ncp/datasets")
 @CrossOrigin(origins = "http://localhost:4200")
 public class DataSetController {
 
@@ -28,9 +28,9 @@ public class DataSetController {
 
     @GetMapping
     public ResponseEntity<Page<DataSetGeneralInfoDto>> getDataSetPage(
-            @RequestParam(name = "page") int page,
-            @RequestParam(name = "size") int size,
-            @RequestParam(name = "filter") String filter,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size,
+            @RequestParam(name = "filter", defaultValue = "") String filter,
             @RequestParam(name = "orderBy",defaultValue = "name") String orderBy,
             @RequestParam(name = "order", defaultValue = "ASC") String order) {
         Page<DataSetGeneralInfoDto> resultPage = dataSetService.getAllByPage(page, size, filter, orderBy, order);
@@ -56,9 +56,13 @@ public class DataSetController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteDataSet(@PathVariable int id) {
-        dataSetService.delete(id);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity<Integer> deleteDataSet(@PathVariable int id) {
+        int usages = dataSetService.delete(id);
+        if(usages == 0){
+            return new ResponseEntity<>(0,HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(usages,HttpStatus.FORBIDDEN);
+        }
     }
 
     @GetMapping("/{id}")

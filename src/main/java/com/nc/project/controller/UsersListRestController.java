@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/users/")
+@RequestMapping("api/ncp/users/")
 public class UsersListRestController {
 
     private final UserService userService;
@@ -37,6 +37,6 @@ public class UsersListRestController {
     public void update(
             @RequestBody UserProfileDto userProfileDto)
     {
-        userService.UpdateUserFromTable(userProfileDto);
+        userService.updateUserFromTable(userProfileDto);
     }
 }

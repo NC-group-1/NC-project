@@ -2,12 +2,12 @@ package com.nc.project.dao.project;
 
 import com.nc.project.dto.ProjectDto;
 import com.nc.project.model.Project;
+import com.nc.project.model.User;
 import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public class ProjectDaoImpl implements ProjectDao {
@@ -26,27 +26,29 @@ public class ProjectDaoImpl implements ProjectDao {
         jdbcTemplate.update(sql,
                 project.getName(),
                 project.getLink(),
-                project.getUser_id()
-                );
+                project.getUser().getId()
+        );
     }
 
     @Override
-    public List<ProjectDto> getAllByPage(int page, int size, String filter, String orderBy,String order) {
+    public List<ProjectDto> getAllByPage(int page, int size, String filter, String orderBy, String order) {
         String query = queryService.getQuery("project.getAllByPage");
-        query = String.format(query,orderBy,order);
-        List<ProjectDto> projectList = jdbcTemplate.query(query,
-                new Object[]{"%"+filter +"%","%"+filter +"%", size, size, page-1},
+        query = String.format(query, orderBy, order);
+
+        return jdbcTemplate.query(query,
+                new Object[]{"%" + filter + "%", "%" + filter + "%", size, size, page - 1},
                 (resultSet, i) -> new ProjectDto(
                         resultSet.getInt("project_id"),
                         resultSet.getString("name"),
                         resultSet.getString("link"),
                         resultSet.getTimestamp("date"),
-                        resultSet.getString("role"),
+                        new User(resultSet.getInt("user_id"),
+                                resultSet.getString("email"),
+                                resultSet.getString("username"),
+                                resultSet.getString("surname")),
                         resultSet.getBoolean("activated")
                 )
         );
-
-        return projectList;
     }
 
     @Override
@@ -56,16 +58,15 @@ public class ProjectDaoImpl implements ProjectDao {
                 project.getName(),
                 project.getLink(),
                 project.getArchived(),
-                project.getProject_id()
+                project.getProjectId()
         );
     }
 
     @Override
-    public Optional<Integer> getSizeOfResultSet(String filter) {
+    public Integer getSizeOfResultSet(String filter) {
         String sql = queryService.getQuery("project.getSizeOfResultSet");
-        Integer size = jdbcTemplate.queryForObject(sql,
-                new Object[]{"%"+filter +"%"},
+        return jdbcTemplate.queryForObject(sql,
+                new Object[]{"%" + filter + "%"},
                 (rs, rowNum) -> rs.getInt("count"));
-        return Optional.of(size);
     }
 }

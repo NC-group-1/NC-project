@@ -1,27 +1,32 @@
 package com.nc.project.dao.testCase;
 
-import com.nc.project.dto.TestCaseDto;
+import com.nc.project.model.TestCase;
+import com.nc.project.model.util.TestingStatus;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class TestCaseRowMapper implements RowMapper<TestCaseDto> {
-    @Override
-    public TestCaseDto mapRow(ResultSet resultSet, int i) throws SQLException {
-        TestCaseDto testCase = new TestCaseDto(
-                resultSet.getInt("test_case_id"),
-                resultSet.getString("name"),
-                resultSet.getString("description"),
-                resultSet.getInt("creator_id"),
-                resultSet.getTimestamp("creation_date"),
-                resultSet.getInt("iterations_amount"),
-                resultSet.getString("recurring_time"),
-                resultSet.getTimestamp("start_date"),
-                resultSet.getString("status")
+public class TestCaseRowMapper implements RowMapper<TestCase> {
 
-        );
+    @Override
+    public TestCase mapRow(ResultSet resultSet, int i) throws SQLException {
+        TestCase testCase = new TestCase();
+        testCase.setId(resultSet.getObject("test_case_id", Integer.class));
+        //testCase.setProject(resultSet.getObject("project_id", Integer.class));
+        testCase.setCreator(resultSet.getObject("creator_id", Integer.class));
+        testCase.setStarter(resultSet.getObject("starter_id", Integer.class));
+        testCase.setTestScenario(resultSet.getObject("test_scenario_id", Integer.class));
+        testCase.setName(resultSet.getString("name"));
+        testCase.setCreationDate(resultSet.getTimestamp("creation_date"));
+        testCase.setStartDate(resultSet.getTimestamp("start_date"));
+        testCase.setFinishDate(resultSet.getTimestamp("finish_date"));
+        testCase.setStatus(TestingStatus.valueOf(resultSet.getString("status")));
+        testCase.setDescription(resultSet.getString("description"));
+        testCase.setRecurringTime(resultSet.getString("recurring_time"));
+        testCase.setIterationsAmount(resultSet.getObject("iterations_amount", Integer.class));
 
         return testCase;
+
     }
 }

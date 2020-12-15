@@ -1,5 +1,7 @@
 package com.nc.project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +17,7 @@ import java.util.Collections;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class User implements UserDetails {
     @Id
     private int id;
@@ -37,6 +40,10 @@ public class User implements UserDetails {
         this.pass = pass;
     }
 
+    public User(int id) {
+        this.id = id;
+    }
+
     public User(int id, String email, String emailCode, Timestamp codeExpireDate) {
         this.id = id;
         this.email = email;
@@ -44,35 +51,51 @@ public class User implements UserDetails {
         this.codeExpireDate = codeExpireDate;
     }
 
+    public User(int id, String email, String name, String surname) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
+        this.surname = surname;
+    }
 
-
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(role));
     }
 
     @Override
-    public String getPassword() { return pass; }
+    public String getPassword() {
+        return pass;
+    }
 
     @Override
-    public String getUsername() { return email; }
+    public String getUsername() {
+        return email;
+    }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
-    public boolean isEnabled() { return true; }
+    public boolean isEnabled() {
+        return true;
+    }
 
 }

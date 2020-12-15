@@ -20,10 +20,6 @@ public class CompoundController {
         this.compoundService = compoundService;
     }
 
-//    @GetMapping
-//    public List<Action> getCompounds(){
-//        return compoundService.getAllCompounds();
-//    }
     @GetMapping
     public Page<Compound> getCompounds(@RequestParam(defaultValue = "0") Integer page,
                                        @RequestParam(defaultValue = "10") Integer size,
@@ -35,7 +31,7 @@ public class CompoundController {
     }
 
     @PostMapping
-    public Action postCompound(@RequestBody Compound compound){
+    public Action createCompound(@RequestBody Compound compound){
         return compoundService.createCompound(compound);
     }
     @GetMapping("{id}")

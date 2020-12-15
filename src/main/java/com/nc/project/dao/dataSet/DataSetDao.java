@@ -2,7 +2,6 @@ package com.nc.project.dao.dataSet;
 
 import com.nc.project.dao.GenericDao;
 import com.nc.project.dto.DataSetGeneralInfoDto;
-
 import java.util.List;
 
 public interface DataSetDao extends GenericDao<DataSetGeneralInfoDto,Integer> {
@@ -13,5 +12,10 @@ public interface DataSetDao extends GenericDao<DataSetGeneralInfoDto,Integer> {
                                                      String orderBy,
                                                      String order);
 
-    public int getSizeOfResultSet(String filter);
+    int getSizeOfResultSet(String filter);
+
+    int getNumberOfUsages(int id);
+
+    //List<DataSet> getByIds(List<Integer> dataSetIds);
+
 }

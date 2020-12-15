@@ -1,13 +1,15 @@
 package com.nc.project.service.user.impl;
 
 
-import com.nc.project.dto.Page;
 import com.nc.project.dao.user.UserDao;
+import com.nc.project.dto.Page;
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.RecoveryToken;
 import com.nc.project.model.User;
+import com.nc.project.service.notification.NotificationService;
 import com.nc.project.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,8 +25,10 @@ import java.util.Optional;
 @Slf4j
 public class UserServiceImpl implements UserService {
 
-    private UserDao userDao;
-    private PasswordEncoder bCryptPasswordEncoder;
+    private final UserDao userDao;
+    private final PasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private NotificationService notificationService;
 
     public UserServiceImpl(UserDao userDao, PasswordEncoder bCryptPasswordEncoder) {
         this.userDao = userDao;
@@ -48,7 +52,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserProfileDto> findByEmail(String email) {
+    public Optional<UserProfileDto> findByEmail(String email) throws InterruptedException {
+        //notificationService.sendUserTestCasesProgress(1);
         return userDao.findByEmail(email);
     }
 
@@ -68,7 +73,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void UpdateUserFromTable(UserProfileDto userProfile) {
+    public void updateUserFromTable(UserProfileDto userProfile) {
         userDao.updateUserFromTable(userProfile);
     }
 

@@ -4,13 +4,11 @@ import com.nc.project.model.util.ActionType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Action {
-    @Id
     private int id;
     private String name;
     private String description;

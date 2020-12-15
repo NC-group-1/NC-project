@@ -46,7 +46,7 @@ public class RunningTestCaseDaoImpl implements RunningTestCaseDao {
         String query = queryService.getQuery("runningTestCase.edit");
             jdbcTemplate.update(query,
                     testCase.getStatus(),
-                    testCase.getTest_case_id()
+                    testCase.getId()
             );
     }
 

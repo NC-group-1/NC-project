@@ -9,9 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/project")
+@RequestMapping("api/ncp/project")
 public class ProjectRestController {
-
     private final ProjectService projectService;
 
     public ProjectRestController(ProjectService projectService) {
@@ -32,10 +31,9 @@ public class ProjectRestController {
             @RequestParam(defaultValue = "") String filter,
             @RequestParam(defaultValue = "") String orderBy,
             @RequestParam(defaultValue = "") String order
-    )
-    {
+    ) {
 
-        Page<ProjectDto> projectList = projectService.getAllByPage(pageIndex, pageSize,filter,orderBy,order);
+        Page<ProjectDto> projectList = projectService.getAllByPage(pageIndex, pageSize, filter, orderBy, order);
         return new ResponseEntity<>(projectList, HttpStatus.OK);
     }
 

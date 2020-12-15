@@ -8,16 +8,17 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.Arrays;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Compound extends Action{
-    private ActionOfCompound[] actions;
+    private List<ActionOfCompound> actions;
     @JsonIgnore
     private ParameterKey key;
-    public Compound(int id, String name, String description, ActionType type, ParameterKey key, ActionOfCompound[] actions) {
+    public Compound(int id, String name, String description, ActionType type, ParameterKey key, List<ActionOfCompound> actions) {
         super(id, name, description, type, key);
         this.actions = actions;
     }
@@ -29,18 +30,26 @@ public class Compound extends Action{
     }
     @JsonIgnore
     public Integer[] getActionsId() {
-        return Arrays.stream(this.actions).map(actionOfCompound -> actionOfCompound.getAction().getId()).toArray(Integer[]::new);
+        return this.actions.stream().map(actionOfCompound -> actionOfCompound.getAction().getId()).toArray(Integer[]::new);
     }
     @JsonIgnore
     public Integer[] getActionsOrder() {
-        return Arrays.stream(this.actions).map(ActionOfCompound::getOrderNum).toArray(Integer[]::new);
+        return this.actions.stream().map(ActionOfCompound::getOrderNum).toArray(Integer[]::new);
     }
     @JsonIgnore
-    public Integer[] getActionsKeys() {
-        return Arrays.stream(actions).map(actionOfCompound -> ParameterKey.checkValid(actionOfCompound.getKey())
+    public Integer[] getActionsKeyIds() {
+        return this.actions.stream().map(actionOfCompound -> ParameterKey.checkValid(actionOfCompound.getKey())
                 ? actionOfCompound.getKey().getId()
                 : ParameterKey.checkValid(actionOfCompound.getAction().getKey())
                 ? actionOfCompound.getAction().getKey().getId() :
                 null).toArray(Integer[]::new);
+    }
+    @JsonIgnore
+    public String[] getActionsKeys() {
+        return this.actions.stream().map(actionOfCompound -> ParameterKey.checkValid(actionOfCompound.getKey())
+                ? actionOfCompound.getKey().getKey()
+                : ParameterKey.checkValid(actionOfCompound.getAction().getKey())
+                ? actionOfCompound.getAction().getKey().getKey() :
+                null).toArray(String[]::new);
     }
 }
