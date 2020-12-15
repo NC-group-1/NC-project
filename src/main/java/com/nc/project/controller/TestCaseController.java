@@ -1,17 +1,17 @@
 package com.nc.project.controller;
 
-import com.nc.project.dto.ActionInstResponseDto;
-import com.nc.project.dto.Page;
-import com.nc.project.dto.TestCaseDto;
-import com.nc.project.dto.TestScenarioDto;
+import com.nc.project.dto.*;
 import com.nc.project.model.TestCase;
 import com.nc.project.service.runTestCase.RunTestCaseService;
 import com.nc.project.service.testCase.TestCaseService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/test-case")
@@ -36,6 +36,12 @@ public class TestCaseController {
         return new ResponseEntity<>(createdTestCase, HttpStatus.CREATED);
     }
 
+    @GetMapping("/{idTestCase}")
+    public ResponseEntity<TestCase> getTestCaseById(@PathVariable Integer idTestCase) {
+        Optional<TestCase> testCase = testCaseService.findById(idTestCase);
+        return testCase.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @PostMapping("/{id}/run")
     public ResponseEntity runTestCase(@PathVariable int id,
                                       @RequestParam(name = "startedById") Integer startedById) {
@@ -43,16 +49,16 @@ public class TestCaseController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("actions/{id}")
     public ResponseEntity<List<ActionInstResponseDto>> getAllInstances(@PathVariable Integer id) {
         List<ActionInstResponseDto> instancesResponse = testCaseService.getAllInstances(id);
         return new ResponseEntity<>(instancesResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/get_test_case_list/{pageIndex}/{pageSize}")
+    @GetMapping("/list")
     public ResponseEntity<Page<TestCaseDto>> getAll(
-            @PathVariable int pageSize,
-            @PathVariable int pageIndex,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "1") int pageIndex,
             @RequestParam(defaultValue = "") String filter,
             @RequestParam(defaultValue = "") String orderBy,
             @RequestParam(defaultValue = "") String order
@@ -63,15 +69,16 @@ public class TestCaseController {
         return new ResponseEntity<>(testCaseList, HttpStatus.OK);
     }
 
-//    @PostMapping(value = "/update",consumes = MediaType.APPLICATION_JSON_VALUE)
-//    @ResponseStatus(value = HttpStatus.OK)
-//    public void editTestCaseByName(@RequestBody TestCase testCase) {
-//        testCaseService.editTestCase(testCase);
-//    }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity deleteTestCase(@PathVariable int id) {
-        testCaseService.deleteTestCase(id);
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void editTestCaseByName(@RequestBody TestCase testCase) {
+        testCaseService.editTestCase(testCase);
+    }
+
+    @DeleteMapping("/{test_case_id}")
+    public ResponseEntity deleteTestCase(@PathVariable int test_case_id) {
+        testCaseService.deleteTestCase(test_case_id);
         return new ResponseEntity(HttpStatus.OK);
     }
 
