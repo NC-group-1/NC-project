@@ -16,4 +16,8 @@ public class ActionInstRunDto {
     private String parameterKeyKey;
     private TestingStatus status;
     private String result;
+    private String actionName;
+    private String dataSetName;
+    private Integer compoundId;
+    private String compoundName;
 }
