@@ -20,4 +20,11 @@ public class UserProfileDto {
     private String imageLink;
     private Timestamp regDate;
     private String aboutMe;
+
+    public UserProfileDto(int id, String name, String surname, String role) {
+        this.userId = id;
+        this.name = name;
+        this.surname = surname;
+        this.role = role;
+    }
 }

@@ -13,8 +13,8 @@ public interface TestCaseService {
     Page<TestCaseDto> getAllByPage(int page, int size, String filter, String orderBy, String order);
     List<Integer> getTestCasesIdByWatcher(Integer userId);
     TestCase create(TestScenarioDto testScenarioDto);
-
-    void deleteTestCase(int id);
+    void editTestCase(TestCase testCase);
+    void deleteTestCase(int test_case_id);
 
     List<ActionInstResponseDto> getAllInstances(Integer testCaseId);
 

@@ -51,8 +51,13 @@ public class TestCaseServiceImpl implements TestCaseService {
     }
 
     @Override
-    public void deleteTestCase(int id) {
-        testCaseDao.delete(id);
+    public void editTestCase(TestCase testCase) {
+        testCaseDao.edit(testCase);
+    }
+
+    @Override
+    public void deleteTestCase(int test_case_id) {
+        testCaseDao.delete(test_case_id);
     }
 
     @Override
