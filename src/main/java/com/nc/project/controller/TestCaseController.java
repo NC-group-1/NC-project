@@ -64,6 +64,12 @@ public class TestCaseController {
         return new ResponseEntity<>(actionInstRunDtos, HttpStatus.OK);
     }
 
+    @GetMapping("/{id}/details")
+    public ResponseEntity<TestCaseDetailsDto> getTestCaseDetailsById(@PathVariable Integer id) {
+        Optional<TestCaseDetailsDto> testCase = testCaseService.getTestCaseDetailsById(id);
+        return testCase.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @GetMapping("actions/{id}")
     public ResponseEntity<List<ActionInstResponseDto>> getAllInstances(@PathVariable Integer id) {
         List<ActionInstResponseDto> instancesResponse = testCaseService.getAllInstances(id);

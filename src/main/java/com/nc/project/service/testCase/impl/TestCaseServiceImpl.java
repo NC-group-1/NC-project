@@ -4,6 +4,7 @@ import com.nc.project.dao.action.ActionDao;
 import com.nc.project.dao.actionInst.ActionInstDao;
 import com.nc.project.dao.dataSet.DataSetDao;
 import com.nc.project.dao.parameterKey.ParameterKeyDao;
+import com.nc.project.dao.runningTestCase.RunningTestCaseDao;
 import com.nc.project.dao.testCase.TestCaseDao;
 import com.nc.project.dao.user.UserDao;
 import com.nc.project.dto.*;
@@ -24,15 +25,18 @@ public class TestCaseServiceImpl implements TestCaseService {
     private final ActionInstDao actionInstDao;
     private final ActionDao actionDao;
     private final ParameterKeyDao parameterKeyDao;
+    private final RunningTestCaseDao runningTestCaseDao;
     private final DataSetDao dataSetDao;
     private final UserDao userDao;
 
     public TestCaseServiceImpl(TestCaseDao testCaseDao, ActionInstDao actionInstDao,
-                               ActionDao actionDao, ParameterKeyDao parameterKeyDao, DataSetDao dataSetDao, UserDao userDao) {
+                               ActionDao actionDao, ParameterKeyDao parameterKeyDao,
+                               RunningTestCaseDao runningTestCaseDao, DataSetDao dataSetDao, UserDao userDao) {
         this.testCaseDao = testCaseDao;
         this.actionInstDao = actionInstDao;
         this.actionDao = actionDao;
         this.parameterKeyDao = parameterKeyDao;
+        this.runningTestCaseDao = runningTestCaseDao;
         this.dataSetDao = dataSetDao;
         this.userDao = userDao;
     }
@@ -83,6 +87,13 @@ public class TestCaseServiceImpl implements TestCaseService {
     @Override
     public List<ActionInstRunDto> getAllActionInstRunDtos(Integer testCaseId) {
         return actionInstDao.getAllActionInstRunDtosByTestCaseId(testCaseId);
+    }
+
+    @Override
+    public Optional<TestCaseDetailsDto> getTestCaseDetailsById(Integer id) {
+        Optional<TestCaseDetailsDto> optionalTestCase = testCaseDao.getTestCaseDetailsById(id);
+        optionalTestCase.ifPresent(testCaseDetailsDto -> testCaseDetailsDto.setWatchers(runningTestCaseDao.getWatcherByTestCaseId(id)));
+        return optionalTestCase;
     }
 
     @Override

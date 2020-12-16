@@ -23,4 +23,6 @@ public interface TestCaseService {
     List<ActionInstResponseDto> getAllInstances(Integer testCaseId);
 
     List<ActionInstRunDto> getAllActionInstRunDtos(Integer testCaseId);
+
+    Optional<TestCaseDetailsDto> getTestCaseDetailsById(Integer id);
 }

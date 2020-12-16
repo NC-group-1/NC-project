@@ -1,5 +1,6 @@
 package com.nc.project.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nc.project.model.util.ActionType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Action {
     private int id;
     private String name;
