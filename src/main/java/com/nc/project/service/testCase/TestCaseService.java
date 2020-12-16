@@ -1,10 +1,7 @@
 
 package com.nc.project.service.testCase;
 
-import com.nc.project.dto.ActionInstResponseDto;
-import com.nc.project.dto.Page;
-import com.nc.project.dto.TestCaseDto;
-import com.nc.project.dto.TestScenarioDto;
+import com.nc.project.dto.*;
 import com.nc.project.model.TestCase;
 
 import java.util.List;
@@ -25,4 +22,5 @@ public interface TestCaseService {
 
     List<ActionInstResponseDto> getAllInstances(Integer testCaseId);
 
+    Page<TestCaseHistory> getHistory(int pageIndex, int pageSize, String filter, String orderBy, String order, int projectId);
 }
