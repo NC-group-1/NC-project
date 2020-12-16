@@ -9,6 +9,7 @@ import com.nc.project.model.util.ActionType;
 import com.nc.project.service.action.ActionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,6 +34,7 @@ public class ActionServiceImpl implements ActionService {
     }
 
     @Override
+    @Transactional
     public Action createAction(Action action) {
         if (action.getName() == null) {
             log.info("Action not exists");
@@ -75,6 +77,7 @@ public class ActionServiceImpl implements ActionService {
      */
 
     @Override
+    @Transactional
     public Action editAction(Action action) {
         System.out.println(action);
         ParameterKey key = action.getKey();

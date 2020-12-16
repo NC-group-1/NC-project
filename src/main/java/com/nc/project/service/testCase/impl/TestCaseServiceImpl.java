@@ -11,6 +11,7 @@ import com.nc.project.model.*;
 import com.nc.project.model.util.TestingStatus;
 import com.nc.project.service.testCase.TestCaseService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -91,6 +92,7 @@ public class TestCaseServiceImpl implements TestCaseService {
     }
 
     @Override
+    @Transactional
     public TestCase create(TestScenarioDto testScenarioDto) {
         TestCase testCase = TestCase.builder()
                 .name(testScenarioDto.getName())

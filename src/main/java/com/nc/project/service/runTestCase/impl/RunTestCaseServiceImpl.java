@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -48,6 +50,7 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
     }
 
     @Override
+    @Transactional
     public int runTestCase(Integer testCaseId, Integer startedById) {
         TestCase testCase = testCaseDao.findById(testCaseId).orElseThrow();
         if(testCase.getStatus() != TestingStatus.UNKNOWN){
@@ -63,6 +66,7 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
     }
 
     @Async
+    @Transactional
     protected void runAsync(TestCase testCase){
         log.debug("Run test case with id="+testCase.getId()+" asynchronously. Thread name="
                 +Thread.currentThread().getName());
