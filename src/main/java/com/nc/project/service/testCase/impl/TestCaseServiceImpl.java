@@ -81,6 +81,11 @@ public class TestCaseServiceImpl implements TestCaseService {
     }
 
     @Override
+    public List<ActionInstRunDto> getAllActionInstRunDtos(Integer testCaseId) {
+        return actionInstDao.getAllActionInstRunDtosByTestCaseId(testCaseId);
+    }
+
+    @Override
     public TestCase create(TestScenarioDto testScenarioDto) {
         TestCase testCase = TestCase.builder()
                 .name(testScenarioDto.getName())

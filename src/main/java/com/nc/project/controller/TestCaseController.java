@@ -4,10 +4,10 @@ import com.nc.project.dto.*;
 import com.nc.project.model.TestCase;
 import com.nc.project.service.runTestCase.RunTestCaseService;
 import com.nc.project.service.testCase.TestCaseService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,6 +51,17 @@ public class TestCaseController {
         } else {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
+    }
+
+    @MessageMapping("/actionInst/tc")
+    public void getTestCaseActionInstances(Integer testCaseId) {
+        this.runTestCaseService.sendActionInstToTestCaseSocket(testCaseId);
+    }
+
+    @GetMapping("/{id}/run-details")
+    public ResponseEntity<List<ActionInstRunDto>> getAllActionInstRunDtos(@PathVariable Integer id) {
+        List<ActionInstRunDto> actionInstRunDtos = testCaseService.getAllActionInstRunDtos(id);
+        return new ResponseEntity<>(actionInstRunDtos, HttpStatus.OK);
     }
 
     @GetMapping("actions/{id}")

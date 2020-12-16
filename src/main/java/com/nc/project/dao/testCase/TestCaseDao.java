@@ -13,7 +13,7 @@ public interface TestCaseDao extends GenericDao<TestCase, Integer> {
 
     void edit(TestCase testCase);
 
-    TestCase update(TestCase testCase);
+    TestCase editForRun(TestCase testCase);
 
     void delete(Integer ID);
 

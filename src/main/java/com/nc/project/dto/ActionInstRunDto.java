@@ -1,5 +1,6 @@
 package com.nc.project.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nc.project.model.util.ActionType;
 import com.nc.project.model.util.TestingStatus;
 import lombok.AllArgsConstructor;
@@ -11,8 +12,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ActionInstRunDto {
     private Integer id;
+    @JsonIgnore
     private ActionType actionType;
+    @JsonIgnore
     private String parameterValue;
+    @JsonIgnore
     private String parameterKeyKey;
     private TestingStatus status;
     private String result;
@@ -20,4 +24,5 @@ public class ActionInstRunDto {
     private String dataSetName;
     private Integer compoundId;
     private String compoundName;
+    private Integer orderNum;
 }

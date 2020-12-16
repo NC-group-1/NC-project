@@ -108,10 +108,15 @@ public class TestCaseDaoImpl implements TestCaseDao {
         return Optional.ofNullable(testCases.get(0));
     }
 
+    @Override
+    public TestCase update(TestCase entity) {
+        return null;
+    }
+
 
     @Override
-    public TestCase update(TestCase testCase) {
-        String sql = queryService.getQuery("testCase.edit");
+    public TestCase editForRun(TestCase testCase) {
+        String sql = queryService.getQuery("testCase.editForRun");
         jdbcTemplate.update(sql, testCase.getStarter(),
                 testCase.getStartDate(), testCase.getFinishDate(), testCase.getStatus().name(), testCase.getId());
         return testCase;

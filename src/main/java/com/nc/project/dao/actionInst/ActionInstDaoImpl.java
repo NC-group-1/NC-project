@@ -27,7 +27,8 @@ public class ActionInstDaoImpl implements ActionInstDao {
             resultSet.getString("action_name"),
             resultSet.getString("dataset_name"),
             resultSet.getObject("compound_id", Integer.class),
-            resultSet.getString("compound_name")
+            resultSet.getString("compound_name"),
+            resultSet.getObject("order_num", Integer.class)
     );
 
     public ActionInstDaoImpl(QueryService queryService, JdbcTemplate jdbcTemplate) {

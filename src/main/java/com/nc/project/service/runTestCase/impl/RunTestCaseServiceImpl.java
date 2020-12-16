@@ -18,33 +18,39 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 @Service
 public class RunTestCaseServiceImpl implements RunTestCaseService {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private final ConcurrentHashMap<Integer, CopyOnWriteArrayList<ActionInstRunDto>> sharedStorage;
 
     private final ActionInstDao actionInstDao;
     private final TestCaseDao testCaseDao;
     private final RunTestCaseServiceImpl runTestCaseService;
     private final NotificationService notificationService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     public RunTestCaseServiceImpl(ActionInstDao actionInstDao,
                                   TestCaseDao testCaseDao,
                                   @Lazy RunTestCaseServiceImpl runTestCaseService,
-                                  NotificationService notificationService) {
+                                  NotificationService notificationService, SimpMessagingTemplate messagingTemplate) {
         this.actionInstDao = actionInstDao;
         this.testCaseDao = testCaseDao;
         this.runTestCaseService = runTestCaseService;
         this.notificationService = notificationService;
+        this.messagingTemplate = messagingTemplate;
         WebDriverManager.chromedriver().setup();
+        sharedStorage = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -56,10 +62,26 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
         testCase.setStartDate(Timestamp.valueOf(LocalDateTime.now()));
         testCase.setStarter(startedById);
         testCase.setStatus(TestingStatus.IN_PROGRESS);
-        testCaseDao.update(testCase);
+        testCaseDao.editForRun(testCase);
         notificationService.createNotification(testCaseId, NotificationType.STARTED);
+        sharedStorage.put(testCaseId, new CopyOnWriteArrayList<>());
         runTestCaseService.runAsync(testCase);
         return 0;
+    }
+
+    @Override
+    public List<ActionInstRunDto> getActionInstRunDtosFromSharedStorage(Integer testCaseId) {
+        return sharedStorage.get(testCaseId);
+    }
+
+    @Override
+    public void sendActionInstToTestCaseSocket(List<ActionInstRunDto> actionInstRunDtos, Integer testCaseId) {
+        messagingTemplate.convertAndSend("/topic/actionInst/" + testCaseId, actionInstRunDtos);
+    }
+
+    @Override
+    public void sendActionInstToTestCaseSocket(Integer testCaseId) {
+        messagingTemplate.convertAndSend("/topic/actionInst/" + testCaseId, sharedStorage.get(testCaseId));
     }
 
     @Async
@@ -84,17 +106,20 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
                         actionInst.getParameterValue(),
                         actionInst.getParameterKeyKey());
                 actionInst.setStatus(currentActionInstStatus);
-                if (currentActionInstStatus == TestingStatus.FAILED) {
-                    testCase.setStatus(TestingStatus.FAILED);
-                }
                 progress.setProgress((actionNumber+1.0f)/actionInstRunDtos.size());
                 notificationService.sendProgressToTestCase(progress);
+                sharedStorage.get(testCase.getId()).add(actionInst);
+                runTestCaseService.sendActionInstToTestCaseSocket(Collections.singletonList(actionInst), testCase.getId());
+                if (currentActionInstStatus == TestingStatus.FAILED) {
+                    testCase.setStatus(TestingStatus.FAILED);
+                    break;
+                }
             }
             if(testCase.getStatus() == TestingStatus.IN_PROGRESS){
                 testCase.setStatus(TestingStatus.PASSED);
             }
             testCase.setFinishDate(Timestamp.valueOf(LocalDateTime.now()));
-            testCaseDao.update(testCase);
+            testCaseDao.editForRun(testCase);
             actionInstDao.updateAll(actionInstRunDtos);
             if(testCase.getStatus() == TestingStatus.FAILED){
                 notificationService.createNotification(testCase.getId(), NotificationType.FAIL);
@@ -103,6 +128,7 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
                 notificationService.createNotification(testCase.getId(), NotificationType.SUCCESS);
             }
         } finally {
+            sharedStorage.remove(testCase.getId());
             driver.close();
         }
     }
