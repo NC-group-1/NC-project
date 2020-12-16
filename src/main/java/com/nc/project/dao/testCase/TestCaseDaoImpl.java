@@ -1,6 +1,9 @@
 package com.nc.project.dao.testCase;
 
+import com.nc.project.dto.TestCaseHistory;
 import com.nc.project.model.TestCase;
+import com.nc.project.model.TestScenario;
+import com.nc.project.model.util.TestingStatus;
 import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -69,6 +72,31 @@ public class TestCaseDaoImpl implements TestCaseDao {
                 new Object[]{id},
                 (rs, rowNum) -> rs.getString("link"));
         return Optional.of(link);
+    }
+
+    @Override
+    public List<TestCaseHistory> getHistory(int pageIndex, int pageSize, String filter, String orderBy, String order, int projectId) {
+        String query = queryService.getQuery("testCase.getHistory");
+        query = String.format(query,orderBy,order);
+        return jdbcTemplate.query(query,
+                new Object[]{"%"+filter +"%",projectId, pageSize, pageSize, pageIndex-1},
+                (rs, rowNum) -> new TestCaseHistory(
+                        rs.getInt("test_case_id"),
+                        rs.getString("name"),
+                        rs.getString("role"),
+                        rs.getTimestamp("finish_date"),
+                        rs.getString("ts_name"),
+                        TestingStatus.valueOf(rs.getString("status"))
+                )
+        );
+    }
+
+    @Override
+    public Integer getSizeOfHistoryResultSet(String filter, int projectId) {
+        String sql = queryService.getQuery("testCase.getSizeOfHistoryResultSet");
+        return jdbcTemplate.queryForObject(sql,
+                new Object[]{"%" + filter + "%",projectId},
+                (rs, rowNum) -> rs.getInt("count"));
     }
 
     @Override
