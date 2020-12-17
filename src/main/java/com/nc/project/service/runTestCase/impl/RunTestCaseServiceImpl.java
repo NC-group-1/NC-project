@@ -7,6 +7,7 @@ import com.nc.project.dto.TestCaseProgress;
 import com.nc.project.model.TestCase;
 import com.nc.project.model.util.NotificationType;
 import com.nc.project.model.util.TestingStatus;
+import com.nc.project.scheduling.ScheduledTestCaseRunTask;
 import com.nc.project.selenium.Context;
 import com.nc.project.selenium.Invoker;
 import com.nc.project.selenium.SeleniumExecutorImpl;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,25 +43,31 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
     private final RunTestCaseServiceImpl runTestCaseService;
     private final NotificationService notificationService;
     private final SimpMessagingTemplate messagingTemplate;
+    private final ThreadPoolTaskScheduler threadPoolTaskScheduler;
 
     public RunTestCaseServiceImpl(ActionInstDao actionInstDao,
                                   TestCaseDao testCaseDao,
                                   @Lazy RunTestCaseServiceImpl runTestCaseService,
-                                  NotificationService notificationService, SimpMessagingTemplate messagingTemplate) {
+                                  NotificationService notificationService,
+                                  SimpMessagingTemplate messagingTemplate,
+                                  ThreadPoolTaskScheduler threadPoolTaskScheduler) {
         this.actionInstDao = actionInstDao;
         this.testCaseDao = testCaseDao;
         this.runTestCaseService = runTestCaseService;
         this.notificationService = notificationService;
         this.messagingTemplate = messagingTemplate;
+        this.threadPoolTaskScheduler = threadPoolTaskScheduler;
         WebDriverManager.chromedriver().setup();
         sharedStorage = new ConcurrentHashMap<>();
     }
+
+
 
     @Override
     @Transactional
     public int runTestCase(Integer testCaseId, Integer startedById) {
         TestCase testCase = testCaseDao.findById(testCaseId).orElseThrow();
-        if(testCase.getStatus() != TestingStatus.UNKNOWN){
+        if(testCase.getStatus() != TestingStatus.UNKNOWN && testCase.getStatus() != TestingStatus.SCHEDULED){
             return -1;
         }
         testCase.setStartDate(Timestamp.valueOf(LocalDateTime.now()));
@@ -69,6 +77,22 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
         notificationService.createNotification(testCaseId, NotificationType.STARTED);
         sharedStorage.put(testCaseId, new CopyOnWriteArrayList<>());
         runTestCaseService.runAsync(testCase);
+        return 0;
+    }
+
+    @Override
+    public int scheduleTestCase(Integer testCaseId, Integer startedById) {
+        TestCase testCase = testCaseDao.findById(testCaseId).orElseThrow();
+        if(testCase.getStatus() != TestingStatus.UNKNOWN || testCase.getStartDate() == null){
+            return -1;
+        }
+        testCase.setStarter(startedById);
+        testCase.setStatus(TestingStatus.SCHEDULED);
+        testCaseDao.editForRun(testCase);
+        threadPoolTaskScheduler.schedule(
+                new ScheduledTestCaseRunTask(testCaseId, startedById, runTestCaseService),
+                testCase.getStartDate()
+        );
         return 0;
     }
 

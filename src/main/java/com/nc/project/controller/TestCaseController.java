@@ -57,6 +57,17 @@ public class TestCaseController {
         }
     }
 
+    @PostMapping("/{id}/schedule")
+    public ResponseEntity<HttpStatus> scheduleTestCase(@PathVariable int id,
+                                                  @RequestParam(name = "startedById") Integer startedById) {
+        int status = runTestCaseService.scheduleTestCase(id, startedById);
+        if(status == 0){
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
+
     @MessageMapping("/actionInst/tc")
     public void getTestCaseActionInstances(Integer testCaseId) {
         this.runTestCaseService.sendActionInstToTestCaseSocket(testCaseId);
