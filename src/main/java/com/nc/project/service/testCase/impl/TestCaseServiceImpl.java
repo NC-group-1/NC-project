@@ -12,7 +12,7 @@ import com.nc.project.model.*;
 import com.nc.project.model.util.TestingStatus;
 import com.nc.project.service.testCase.TestCaseService;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -97,6 +97,17 @@ public class TestCaseServiceImpl implements TestCaseService {
     }
 
     @Override
+    public Page<TestCaseHistory> getHistory(int pageIndex, int pageSize, String filter, String orderBy, String order, int projectId) {
+        if (orderBy.equals(""))
+            orderBy = "test_case_id";
+        if (!order.equals("DESC")) {
+            order = "";
+        }
+        return new Page(testCaseDao.getHistory(pageIndex, pageSize, filter, orderBy, order,projectId), testCaseDao.getSizeOfHistoryResultSet(filter,projectId));
+    }
+
+    @Override
+    @Transactional
     public TestCase create(TestScenarioDto testScenarioDto) {
         TestCase testCase = TestCase.builder()
                 .name(testScenarioDto.getName())

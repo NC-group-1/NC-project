@@ -12,8 +12,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class RunningTestCaseServiceImpl implements RunningTestCaseService {
-    @Autowired
-    private RunningTestCaseDao runningTestCaseDao;
+    private final RunningTestCaseDao runningTestCaseDao;
+
+    public RunningTestCaseServiceImpl(RunningTestCaseDao runningTestCaseDao) {
+        this.runningTestCaseDao = runningTestCaseDao;
+    }
 
     @Override
     public Page<RunningTestCaseDto> getAllByPage(int page, int size, String filter, String orderBy, String order) {

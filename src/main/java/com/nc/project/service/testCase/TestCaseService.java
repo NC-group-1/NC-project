@@ -3,7 +3,6 @@ package com.nc.project.service.testCase;
 
 import com.nc.project.dto.*;
 import com.nc.project.model.TestCase;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -25,4 +24,6 @@ public interface TestCaseService {
     List<ActionInstRunDto> getAllActionInstRunDtos(Integer testCaseId);
 
     Optional<TestCaseDetailsDto> getTestCaseDetailsById(Integer id);
+
+    Page<TestCaseHistory> getHistory(int pageIndex, int pageSize, String filter, String orderBy, String order, int projectId);
 }

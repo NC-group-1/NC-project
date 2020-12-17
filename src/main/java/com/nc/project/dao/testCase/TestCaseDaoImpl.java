@@ -4,6 +4,8 @@ import com.nc.project.dto.TestCaseDetailsDto;
 import com.nc.project.model.Project;
 import com.nc.project.model.TestCase;
 import com.nc.project.model.User;
+import com.nc.project.dto.TestCaseHistory;
+import com.nc.project.model.util.TestingStatus;
 import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -12,7 +14,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.postgresql.util.PGInterval;
 import java.sql.SQLException;
-
 import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
@@ -107,9 +108,33 @@ public class TestCaseDaoImpl implements TestCaseDao {
     public Optional<TestCaseDetailsDto> getTestCaseDetailsById(Integer id) {
         String sql = queryService.getQuery("testCase.getTestCaseDetailsById");
         List<TestCaseDetailsDto> result = jdbcTemplate.query(sql,
-                preparedStatement -> preparedStatement.setObject(1,id),
+                preparedStatement -> preparedStatement.setObject(1, id),
                 testCaseDetailsDtoRowMapper);
         return Optional.ofNullable(result.get(0));
+    }
+
+    public List<TestCaseHistory> getHistory(int pageIndex, int pageSize, String filter, String orderBy, String order, int projectId) {
+        String query = queryService.getQuery("testCase.getHistory");
+        query = String.format(query,orderBy,order);
+        return jdbcTemplate.query(query,
+                new Object[]{"%"+filter +"%",projectId, pageSize, pageSize, pageIndex-1},
+                (rs, rowNum) -> new TestCaseHistory(
+                        rs.getInt("test_case_id"),
+                        rs.getString("name"),
+                        rs.getString("role"),
+                        rs.getTimestamp("finish_date"),
+                        rs.getString("ts_name"),
+                        TestingStatus.valueOf(rs.getString("status"))
+                )
+        );
+    }
+
+    @Override
+    public Integer getSizeOfHistoryResultSet(String filter, int projectId) {
+        String sql = queryService.getQuery("testCase.getSizeOfHistoryResultSet");
+        return jdbcTemplate.queryForObject(sql,
+                new Object[]{"%" + filter + "%",projectId},
+                (rs, rowNum) -> rs.getInt("count"));
     }
 
     @Override

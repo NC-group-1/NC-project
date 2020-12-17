@@ -9,6 +9,7 @@ import com.nc.project.model.util.ActionType;
 import com.nc.project.service.compound.CompoundService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,6 +29,7 @@ public class CompoundServiceImpl implements CompoundService {
 
 //rewrite
     @Override
+    @Transactional
     public Action createCompound(Compound compound) {
         if (compound == null) {
             throw new NoSuchElementException("Compound not found");
