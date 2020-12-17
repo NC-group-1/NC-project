@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.postgresql.util.PGInterval;
 import org.springframework.data.annotation.Id;
 
 import java.sql.Timestamp;
@@ -24,6 +23,7 @@ public class TestCase {
     private Integer starter;
     private Integer testScenario;
     private String name;
+    private User user;
     private Timestamp creationDate;
     private Timestamp startDate;
     private Timestamp finishDate;
@@ -40,12 +40,11 @@ public class TestCase {
         this.description = description;
     }
 
-    public TestCase(Integer id, String name, String description, Integer creator, Timestamp creationDate,
+    public TestCase(Integer id, String name, String description, Timestamp creationDate,
                     Integer iterationsAmount, String recurringTime, Timestamp startDate, TestingStatus status) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.creator = creator;
         this.creationDate = creationDate;
         this.iterationsAmount = iterationsAmount;
         this.recurringTime = recurringTime;

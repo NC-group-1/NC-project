@@ -42,19 +42,19 @@ public class TestCaseServiceImpl implements TestCaseService {
     }
 
     @Override
-    public Page<TestCaseDto> getAllByPage(int page, int size, String filter, String orderBy, String order) {
+    public Page<TestCaseDto> getAllByPage(int page, int size, String filter, String orderBy, String order, int projectId) {
         if (orderBy.equals(""))
             orderBy = "test_case_id";
         if (!order.equals("DESC")) {
             order = "";
         }
 
-        return new Page(testCaseDao.getAllByPage(page, size, filter, orderBy, order), testCaseDao.getSizeOfResultSet(filter).get());
+        return new Page(testCaseDao.getAllByPage(page, size, filter, orderBy, order, projectId), testCaseDao.getSizeOfResultSet(filter,projectId).get());
     }
 
     @Override
-    public void editTestCase(TestCase testCase) {
-        testCaseDao.edit(testCase);
+    public void updateTestCase(TestCase testCase) {
+        testCaseDao.update(testCase);
     }
 
     @Override
