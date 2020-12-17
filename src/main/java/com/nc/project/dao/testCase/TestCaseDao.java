@@ -1,6 +1,7 @@
 package com.nc.project.dao.testCase;
 
 import com.nc.project.dao.GenericDao;
+import com.nc.project.dto.TestScenarioDto;
 import com.nc.project.model.TestCase;
 
 import java.util.List;
@@ -22,4 +23,6 @@ public interface TestCaseDao extends GenericDao<TestCase, Integer> {
     Optional<Integer> getSizeOfResultSet(String filter);
 
     Optional<String> getProjectLinkByTestCaseId(int id);
+
+    Boolean editTestCaseActions(TestScenarioDto testScenarioDto);
 }

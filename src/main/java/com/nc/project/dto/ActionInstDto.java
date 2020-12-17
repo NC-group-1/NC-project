@@ -16,5 +16,5 @@ public class ActionInstDto {
     private Integer datasetId;
     private Integer orderNum;
     private ParameterKey parameterKey;
-
+    private Integer compoundId;
 }

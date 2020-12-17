@@ -81,6 +81,11 @@ public class TestCaseServiceImpl implements TestCaseService {
     }
 
     @Override
+    public Boolean editTestCaseActions(TestScenarioDto testScenarioDto) {
+        return testCaseDao.editTestCaseActions(testScenarioDto);
+    }
+
+    @Override
     public TestCase create(TestScenarioDto testScenarioDto) {
         TestCase testCase = TestCase.builder()
                 .name(testScenarioDto.getName())
@@ -109,6 +114,7 @@ public class TestCaseServiceImpl implements TestCaseService {
         return testScenarioDto.getActions().stream()
                 .map(a -> ActionInst.builder()
                         .action(a.getAction().getId())
+                        .compound(a.getCompoundId())
                         .testCase(testCaseId)
                         .status(TestingStatus.UNKNOWN.name())
                         .orderNum(a.getOrderNum())

@@ -35,6 +35,10 @@ public class TestCaseController {
         TestCase createdTestCase = testCaseService.create(testScenarioDto);
         return new ResponseEntity<>(createdTestCase, HttpStatus.CREATED);
     }
+    @PutMapping
+    public Boolean editTestCaseActions(@RequestBody TestScenarioDto testScenarioDto){
+        return testCaseService.editTestCaseActions(testScenarioDto);
+    }
 
     @GetMapping("/{idTestCase}")
     public ResponseEntity<TestCase> getTestCaseById(@PathVariable Integer idTestCase) {
@@ -43,13 +47,13 @@ public class TestCaseController {
     }
 
     @PostMapping("/{id}/run")
-    public ResponseEntity runTestCase(@PathVariable int id,
+    public ResponseEntity<HttpStatus> runTestCase(@PathVariable int id,
                                       @RequestParam(name = "startedById") Integer startedById) {
         int status = runTestCaseService.runTestCase(id, startedById);
         if(status == 0){
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return new ResponseEntity(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
     }
 
@@ -74,7 +78,7 @@ public class TestCaseController {
     }
 
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "edit")
     @ResponseStatus(value = HttpStatus.OK)
     public void editTestCaseByName(@RequestBody TestCase testCase) {
         testCaseService.editTestCase(testCase);

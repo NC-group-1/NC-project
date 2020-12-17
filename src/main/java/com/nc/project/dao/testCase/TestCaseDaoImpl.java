@@ -1,5 +1,7 @@
 package com.nc.project.dao.testCase;
 
+import com.nc.project.dto.ActionInstDto;
+import com.nc.project.dto.TestScenarioDto;
 import com.nc.project.model.TestCase;
 import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -69,6 +71,15 @@ public class TestCaseDaoImpl implements TestCaseDao {
                 new Object[]{id},
                 (rs, rowNum) -> rs.getString("link"));
         return Optional.of(link);
+    }
+
+    @Override
+    public Boolean editTestCaseActions(TestScenarioDto testScenarioDto) {
+        String sql = queryService.getQuery("testCase.editTestCaseActions");
+        return jdbcTemplate.update(sql, testScenarioDto.getTestCaseId(),
+                testScenarioDto.getActions().stream().mapToInt(action -> action.getParameterKey().getId()),
+                testScenarioDto.getActions().stream().mapToInt(ActionInstDto::getDatasetId),
+                testScenarioDto.getActions().size()) > 0;
     }
 
     @Override
