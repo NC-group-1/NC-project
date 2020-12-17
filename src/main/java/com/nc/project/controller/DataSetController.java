@@ -2,6 +2,7 @@ package com.nc.project.controller;
 
 import com.nc.project.dto.DataSetGeneralInfoDto;
 import com.nc.project.dto.Page;
+import com.nc.project.dto.DataSetParamDto;
 import com.nc.project.model.Parameter;
 import com.nc.project.service.dataSet.DataSetService;
 import com.nc.project.service.parameter.ParameterService;
@@ -41,6 +42,11 @@ public class DataSetController {
     public ResponseEntity<List<Parameter>> getParametersByDataSetId (@PathVariable int id) {
         List<Parameter> resultList = parameterService.getParametersByDataSetId(id);
         return new ResponseEntity<>(resultList, HttpStatus.OK);
+    }
+    @GetMapping("dataset/{id}/param/{parameterId}")
+    public ResponseEntity<DataSetParamDto> getDatasetValueByParam (@PathVariable int id, @PathVariable int parameterId) {
+        DataSetParamDto param = dataSetService.getDatasetValueByParam(id, parameterId);
+        return new ResponseEntity<>(param, HttpStatus.OK);
     }
 
     @PostMapping

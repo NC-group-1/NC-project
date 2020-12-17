@@ -25,5 +25,7 @@ public interface TestCaseService {
 
     Optional<TestCaseDetailsDto> getTestCaseDetailsById(Integer id);
 
+    Boolean editTestCaseActions(TestScenarioDto testScenarioDto);
+
     Page<TestCaseHistory> getHistory(int pageIndex, int pageSize, String filter, String orderBy, String order, int projectId);
 }

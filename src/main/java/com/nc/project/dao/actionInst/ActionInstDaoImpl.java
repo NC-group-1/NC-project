@@ -44,7 +44,7 @@ public class ActionInstDaoImpl implements ActionInstDao {
                 actionInst.getCompound(),
                 actionInst.getTestCase(),
                 actionInst.getDataSet(),
-                actionInst.getParameterKey(),
+                actionInst.getParameterKey().getId(),
                 actionInst.getStatus(),
                 actionInst.getOrderNum()
         );

@@ -16,7 +16,7 @@ public class TestScenarioComponent {
         this.orderNum = orderNum;
         action = new Compound(action_id, name, description, actionType);
         if (key != null) {
-            action.setKey(new ParameterKey(parameter_key_id, key));
+            action.setParameterKey(new ParameterKey(parameter_key_id, key));
         }
 
     }

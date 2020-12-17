@@ -105,11 +105,11 @@ public class CompoundDaoImpl implements CompoundDao {
     @Override
     public void postActionInCompound(ActionOfCompound compound, int compoundId) {
 
-        String sql = compound.getKey() != null
+        String sql = compound.getParameterKey() != null
                 ? queryService.getQuery("compound.addActionToCompound")
                 : queryService.getQuery("compound.addActionWithKeyNull");
         jdbcTemplate.update(sql,
-                compound.getKey() != null ? compound.getKey().getKey() : null,
+                compound.getParameterKey() != null ? compound.getParameterKey().getKey() : null,
                 compound.getAction().getId(),
                 compoundId,
                 compound.getOrderNum()
@@ -148,10 +148,10 @@ public class CompoundDaoImpl implements CompoundDao {
                 Arrays.stream(actions).map(actionOfCompound -> actionOfCompound.getAction().getId()).toArray(Integer[]::new),
                 compoundId,
                 Arrays.stream(actions).map(ActionOfCompound::getOrderNum).toArray(Integer[]::new),
-                Arrays.stream(actions).map(actionOfCompound -> ParameterKey.checkValid(actionOfCompound.getKey())
-                        ? actionOfCompound.getKey().getId()
-                        : ParameterKey.checkValid(actionOfCompound.getAction().getKey())
-                        ? actionOfCompound.getAction().getKey().getId()
+                Arrays.stream(actions).map(actionOfCompound -> ParameterKey.checkValid(actionOfCompound.getParameterKey())
+                        ? actionOfCompound.getParameterKey().getId()
+                        : ParameterKey.checkValid(actionOfCompound.getAction().getParameterKey())
+                        ? actionOfCompound.getAction().getParameterKey().getId()
                         : null).toArray(Integer[]::new));
     }
 

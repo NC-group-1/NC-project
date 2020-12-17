@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Parameter implements GenericDaoEntity<Integer> {
     private Integer id;
-    private ParameterKey key;
+    private ParameterKey parameterKey;
     private String value;
     private Integer dataSetId;
 }

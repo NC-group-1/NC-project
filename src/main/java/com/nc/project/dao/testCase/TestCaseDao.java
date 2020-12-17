@@ -2,6 +2,7 @@ package com.nc.project.dao.testCase;
 
 import com.nc.project.dao.GenericDao;
 import com.nc.project.dto.TestCaseDetailsDto;
+import com.nc.project.dto.TestScenarioDto;
 import com.nc.project.dto.TestCaseHistory;
 import com.nc.project.model.TestCase;
 import java.util.List;
@@ -25,6 +26,8 @@ public interface TestCaseDao extends GenericDao<TestCase, Integer> {
     Optional<String> getProjectLinkByTestCaseId(int id);
 
     Optional<TestCaseDetailsDto> getTestCaseDetailsById(Integer id);
+
+    Boolean editTestCaseActions(TestScenarioDto testScenarioDto);
 
     List<TestCaseHistory> getHistory(int pageIndex, int pageSize, String filter, String orderBy, String order, int projectId);
 

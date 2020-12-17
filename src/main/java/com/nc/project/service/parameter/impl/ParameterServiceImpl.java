@@ -29,7 +29,7 @@ public class ParameterServiceImpl implements ParameterService {
     @Override
     @Transactional
     public Parameter create(Parameter entity) {
-        entity.setKey(parameterKeyDao.create(entity.getKey()));
+        entity.setParameterKey(parameterKeyDao.create(entity.getParameterKey()));
         return parameterDao.create(entity);
     }
 

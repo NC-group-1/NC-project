@@ -39,7 +39,7 @@ public class ParameterDaoImpl extends GenericDaoImpl<Integer, Parameter> impleme
 
     @Override
     protected Object[] getQueryArgs(Parameter entity) {
-        return new Object[]{entity.getValue(), entity.getKey().getId(), entity.getDataSetId(), entity.getId()};
+        return new Object[]{entity.getValue(), entity.getParameterKey().getId(), entity.getDataSetId(), entity.getId()};
     }
 
     @Override
