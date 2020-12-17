@@ -1,29 +1,35 @@
 package com.nc.project.service.runningTestCase.impl;
 
+
 import com.nc.project.dao.runningTestCase.RunningTestCaseDao;
 import com.nc.project.dto.Page;
 import com.nc.project.dto.RunningTestCaseDto;
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.*;
 import com.nc.project.service.runningTestCase.RunningTestCaseService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 @Service
 public class RunningTestCaseServiceImpl implements RunningTestCaseService {
-    @Autowired
-    private RunningTestCaseDao runningTestCaseDao;
+
+    private final RunningTestCaseDao runningTestCaseDao;
+
+    public RunningTestCaseServiceImpl(RunningTestCaseDao runningTestCaseDao) {
+        this.runningTestCaseDao = runningTestCaseDao;
+    }
 
     @Override
-    public Page<RunningTestCaseDto> getAllByPage(int page, int size, String filter, String orderBy, String order) {
+    public Page<RunningTestCaseDto> getAllByPage(int page, int size, String filter, String orderBy, String order, int projectId) {
         if(orderBy.equals(""))
             orderBy = "test_case_id";
         if(!order.equals("DESC")){
             order="";
         }
 
-        return new Page(runningTestCaseDao.getAllByPage(page,size,filter,orderBy,order),runningTestCaseDao.getSizeOfResultSet(filter).get());
+        return new Page<>(runningTestCaseDao.getAllByPage(page,size,filter,orderBy,order,projectId),runningTestCaseDao.getSizeOfResultSet(filter,projectId).get());
     }
 
     @Override
@@ -32,13 +38,14 @@ public class RunningTestCaseServiceImpl implements RunningTestCaseService {
     }
 
     @Override
-    public Page<UserProfileDto> getWatcherByTestCaseId(int test_case_id) {
-        return new Page(runningTestCaseDao.getWatcherByTestCaseId(test_case_id),1);
+    public List<UserProfileDto> getWatcherByTestCaseId(int test_case_id) {
+        return runningTestCaseDao.getWatcherByTestCaseId(test_case_id);
     }
 
     @Override
-    public Page<UserProfileDto> getUsersByName(String name) {
-        return new Page(runningTestCaseDao.getUsersByName(name),1);
+    public List<UserProfileDto> getUsersByName(String name) {
+
+        return runningTestCaseDao.getUsersByName(name);
     }
 
     @Override

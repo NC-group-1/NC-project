@@ -1,6 +1,7 @@
 package com.nc.project.dto;
 
 
+import com.nc.project.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,9 +10,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RunningTestCaseDto {
-    private Integer test_case_id;
+    private Integer id;
     private String name;
     private String description;
+    private User user;
     private Integer starter_id;
     private Integer watcher_numb;
     private String status;

@@ -10,10 +10,10 @@ import com.nc.project.model.TestCase;
 import java.util.List;
 
 public interface TestCaseService {
-    Page<TestCaseDto> getAllByPage(int page, int size, String filter, String orderBy, String order);
+    Page<TestCaseDto> getAllByPage(int page, int size, String filter, String orderBy, String order, int projectId);
     List<Integer> getTestCasesIdByWatcher(Integer userId);
     TestCase create(TestScenarioDto testScenarioDto);
-    void editTestCase(TestCase testCase);
+    void updateTestCase(TestCase testCase);
     void deleteTestCase(int test_case_id);
 
     List<ActionInstResponseDto> getAllInstances(Integer testCaseId);

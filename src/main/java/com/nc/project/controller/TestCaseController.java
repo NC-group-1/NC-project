@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/test-case")
+@RequestMapping("/api/ncp/test-case")
 public class TestCaseController {
     private final TestCaseService testCaseService;
     private final RunTestCaseService runTestCaseService;
@@ -51,25 +51,26 @@ public class TestCaseController {
         return new ResponseEntity<>(instancesResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/list")
+    @GetMapping("/list/{projectId}")
     public ResponseEntity<Page<TestCaseDto>> getAll(
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "1") int pageIndex,
             @RequestParam(defaultValue = "") String filter,
             @RequestParam(defaultValue = "") String orderBy,
-            @RequestParam(defaultValue = "") String order
+            @RequestParam(defaultValue = "") String order,
+            @PathVariable int projectId
     )
     {
-        Page<TestCaseDto> testCaseList = testCaseService.getAllByPage(pageIndex, pageSize,filter,orderBy,order);
+        Page<TestCaseDto> testCaseList = testCaseService.getAllByPage(pageIndex, pageSize,filter,orderBy,order,projectId);
 
         return new ResponseEntity<>(testCaseList, HttpStatus.OK);
     }
 
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value="/edit",consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
     public void editTestCaseByName(@RequestBody TestCase testCase) {
-        testCaseService.editTestCase(testCase);
+        testCaseService.updateTestCase(testCase);
     }
 
     @DeleteMapping("/{test_case_id}")

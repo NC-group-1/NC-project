@@ -58,6 +58,12 @@ public class User implements UserDetails {
         this.surname = surname;
     }
 
+    public User(int id, String name, String surname) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+    }
+
     @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,6 +1,7 @@
 package com.nc.project.dao.testCase;
 
 import com.nc.project.model.TestCase;
+import com.nc.project.model.User;
 import com.nc.project.model.util.TestingStatus;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -13,8 +14,9 @@ public class TestCaseRowMapper implements RowMapper<TestCase> {
     public TestCase mapRow(ResultSet resultSet, int i) throws SQLException {
         TestCase testCase = new TestCase();
         testCase.setId(resultSet.getObject("test_case_id", Integer.class));
-        //testCase.setProject(resultSet.getObject("project_id", Integer.class));
-        testCase.setCreator(resultSet.getObject("creator_id", Integer.class));
+        testCase.setUser(new User(resultSet.getObject("user_id", Integer.class),
+                resultSet.getString("username"),
+                resultSet.getString("surname")));
         testCase.setStarter(resultSet.getObject("starter_id", Integer.class));
         testCase.setTestScenario(resultSet.getObject("test_scenario_id", Integer.class));
         testCase.setName(resultSet.getString("name"));

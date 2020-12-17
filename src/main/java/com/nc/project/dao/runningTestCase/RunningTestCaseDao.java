@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RunningTestCaseDao {
-    List<RunningTestCaseDto> getAllByPage(int page, int size, String filter, String orderBy, String order);
-    Optional<Integer> getSizeOfResultSet(String filter);
+    List<RunningTestCaseDto> getAllByPage(int page, int size, String filter, String orderBy, String order, int projectId);
+    Optional<Integer> getSizeOfResultSet(String filter, int projectId);
     void edit(TestCase testCase);
     List<UserProfileDto> getWatcherByTestCaseId(int test_case_id);
     List<UserProfileDto> getUsersByName(String name);

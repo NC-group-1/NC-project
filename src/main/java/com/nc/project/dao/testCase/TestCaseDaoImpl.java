@@ -1,6 +1,7 @@
 package com.nc.project.dao.testCase;
 
 import com.nc.project.model.TestCase;
+import com.nc.project.model.util.TestingStatus;
 import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -24,40 +25,23 @@ public class TestCaseDaoImpl implements TestCaseDao {
     }
 
     @Override
-    public List<TestCase> getAllByPage(int page, int size, String filter, String orderBy, String order) {
+    public List<TestCase> getAllByPage(int page, int size, String filter, String orderBy, String order, int projectId) {
         String query = queryService.getQuery("testCase.getAllByPage");
         query = String.format(query,orderBy,order);
         List<TestCase> testCaseList = jdbcTemplate.query(query,
-                new Object[]{"%"+filter +"%", size, size, page-1},
+                new Object[]{"%"+filter +"%", projectId, size, size, page-1},
                 new TestCaseRowMapper()
         );
         return testCaseList;
     }
 
-    @Override
-    public void edit(TestCase testCase) {
-        String sql = queryService.getQuery("testCase.edit");
 
-        try {
-            jdbcTemplate.update(sql,
-                    testCase.getName(),
-                    testCase.getIterationsAmount(),
-                    new PGInterval(testCase.getRecurringTime()),
-                    testCase.getStartDate(),
-                    testCase.getStatus(),
-                    testCase.getId()
-
-            );
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-    }
 
     @Override
-    public Optional<Integer> getSizeOfResultSet(String filter) {
+    public Optional<Integer> getSizeOfResultSet(String filter, int projectId) {
         String sql = queryService.getQuery("testCase.getSizeOfResultSet");
         Integer size = jdbcTemplate.queryForObject(sql,
-                new Object[]{"%" + filter + "%"},
+                new Object[]{"%" + filter + "%", projectId},
                 (rs, rowNum) -> rs.getInt("count"));
         return Optional.of(size);
     }
@@ -109,11 +93,31 @@ public class TestCaseDaoImpl implements TestCaseDao {
     }
 
 
-    @Override
+    /*@Override
     public TestCase update(TestCase testCase) {
         String sql = queryService.getQuery("testCase.edit");
         jdbcTemplate.update(sql, testCase.getStarter(),
                 testCase.getStartDate(), testCase.getFinishDate(), testCase.getStatus().name(), testCase.getId());
+        return testCase;
+    }*/
+
+    @Override
+    public TestCase update(TestCase testCase) {
+        String sql = queryService.getQuery("testCase.edit");
+        try {
+            jdbcTemplate.update(sql,
+                    testCase.getName(),
+                    testCase.getStarter(),
+                    testCase.getIterationsAmount(),
+                    new PGInterval(testCase.getRecurringTime()),
+                    testCase.getStartDate(),
+                    testCase.getFinishDate(),
+                    testCase.getStatus().name(),
+                    testCase.getId()
+            );
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
         return testCase;
     }
 
