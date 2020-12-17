@@ -67,7 +67,7 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
     @Transactional
     public int runTestCase(Integer testCaseId, Integer startedById) {
         TestCase testCase = testCaseDao.findById(testCaseId).orElseThrow();
-        if(testCase.getStatus() != TestingStatus.UNKNOWN && testCase.getStatus() != TestingStatus.SCHEDULED){
+        if(testCase.getStatus() != TestingStatus.READY && testCase.getStatus() != TestingStatus.SCHEDULED){
             return -1;
         }
         testCase.setStartDate(Timestamp.valueOf(LocalDateTime.now()));
@@ -81,9 +81,10 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
     }
 
     @Override
+    @Transactional
     public int scheduleTestCase(Integer testCaseId, Integer startedById) {
         TestCase testCase = testCaseDao.findById(testCaseId).orElseThrow();
-        if(testCase.getStatus() != TestingStatus.UNKNOWN || testCase.getStartDate() == null){
+        if(testCase.getStatus() != TestingStatus.READY || testCase.getStartDate() == null){
             return -1;
         }
         testCase.setStarter(startedById);
