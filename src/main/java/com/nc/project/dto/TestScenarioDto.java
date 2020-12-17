@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TestScenarioDto {
+    private int testCaseId;
     private int testScenarioId;
     private String name;
     private String description;
@@ -29,6 +30,14 @@ public class TestScenarioDto {
         this.name = name;
         this.description = description;
         this.user = user;
+    }
+
+    public TestScenarioDto(int testScenarioId, String name, String description, User user, List<ActionInstDto> actions) {
+        this.testScenarioId = testScenarioId;
+        this.name = name;
+        this.description = description;
+        this.user = user;
+        this.actions = actions;
     }
 }
 

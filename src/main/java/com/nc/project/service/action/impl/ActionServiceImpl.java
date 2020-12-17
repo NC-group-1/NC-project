@@ -9,6 +9,7 @@ import com.nc.project.model.util.ActionType;
 import com.nc.project.service.action.ActionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,17 +34,18 @@ public class ActionServiceImpl implements ActionService {
     }
 
     @Override
+    @Transactional
     public Action createAction(Action action) {
         if (action.getName() == null) {
             log.info("Action not exists");
             throw new NoSuchElementException("Action not found");
         }
 
-        ParameterKey key = action.getKey();
+        ParameterKey key = action.getParameterKey();
 
         if (key != null) {
             key = parameterKeyDao.create(key);
-            action.setKey(key);
+            action.setParameterKey(key);
         }
 
         return actionDao.create(action);
@@ -75,12 +77,13 @@ public class ActionServiceImpl implements ActionService {
      */
 
     @Override
+    @Transactional
     public Action editAction(Action action) {
         System.out.println(action);
-        ParameterKey key = action.getKey();
+        ParameterKey key = action.getParameterKey();
         if (key != null) {
             key = parameterKeyDao.create(key);
-            action.setKey(key);
+            action.setParameterKey(key);
         }
         return actionDao.update(action);
     }

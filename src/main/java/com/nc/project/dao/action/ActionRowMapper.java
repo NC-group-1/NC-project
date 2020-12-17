@@ -21,7 +21,7 @@ public class ActionRowMapper implements RowMapper<Action> {
         action.setName(resultSet.getString("name"));
         action.setDescription(resultSet.getString("description"));
         action.setType(ActionType.valueOf(resultSet.getString("type")));
-        action.setKey(paramKey);
+        action.setParameterKey(paramKey);
 
         return action;
     }

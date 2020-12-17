@@ -19,11 +19,16 @@ public class ActionInstDaoImpl implements ActionInstDao {
 
     RowMapper<ActionInstRunDto> actionInstRunDtoRowMapper = (resultSet, i) -> new ActionInstRunDto(
             resultSet.getObject("action_inst_id", Integer.class),
-            ActionType.valueOf(resultSet.getString("type")),
+            ActionType.valueOf(resultSet.getString("action_type")),
             resultSet.getString("value"),
             resultSet.getString("key"),
             TestingStatus.valueOf(resultSet.getString("status")),
-            resultSet.getString("result")
+            resultSet.getString("result"),
+            resultSet.getString("action_name"),
+            resultSet.getString("dataset_name"),
+            resultSet.getObject("compound_id", Integer.class),
+            resultSet.getString("compound_name"),
+            resultSet.getObject("order_num", Integer.class)
     );
 
     public ActionInstDaoImpl(QueryService queryService, JdbcTemplate jdbcTemplate) {
@@ -39,7 +44,7 @@ public class ActionInstDaoImpl implements ActionInstDao {
                 actionInst.getCompound(),
                 actionInst.getTestCase(),
                 actionInst.getDataSet(),
-                actionInst.getParameterKey(),
+                actionInst.getParameterKey().getId(),
                 actionInst.getStatus(),
                 actionInst.getOrderNum()
         );

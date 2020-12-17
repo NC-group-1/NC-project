@@ -6,7 +6,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@EnableScheduling
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/ncp/notifications")
 public class NotificationController {

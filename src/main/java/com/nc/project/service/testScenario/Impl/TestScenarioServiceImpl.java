@@ -9,6 +9,7 @@ import com.nc.project.model.TestScenarioComponent;
 import com.nc.project.model.util.ActionType;
 import com.nc.project.service.testScenario.TestScenarioService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,6 +43,7 @@ public class TestScenarioServiceImpl implements TestScenarioService {
     }
 
     @Override
+    @Transactional
     public void editTestScenario(TestScenario testScenario) {
         int testScenarioId = testScenario.getTestScenarioId();
         if (!testScenarioDao.checkForTestCaseOnIt(testScenarioId)) {
@@ -55,6 +57,7 @@ public class TestScenarioServiceImpl implements TestScenarioService {
     }
 
     @Override
+    @Transactional
     public void deleteTestScenario(int testScenarioId) {
         if (!testScenarioDao.checkForTestCaseOnIt(testScenarioId)) {
             testScenarioDao.dropActionOrCompound(testScenarioId);

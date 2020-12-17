@@ -12,6 +12,7 @@ public interface RunningTestCaseDao {
     Optional<Integer> getSizeOfResultSet(String filter, int projectId);
     void edit(TestCase testCase);
     List<UserProfileDto> getWatcherByTestCaseId(int test_case_id);
+    List<UserProfileDto> getWatcherWithImageByTestCaseId(int test_case_id);
     List<UserProfileDto> getUsersByName(String name);
     void addWatcher(Watcher watcher);
 }

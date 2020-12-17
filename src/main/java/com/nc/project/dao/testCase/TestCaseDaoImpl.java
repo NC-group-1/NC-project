@@ -1,15 +1,22 @@
 package com.nc.project.dao.testCase;
 
+import com.nc.project.dto.TestCaseDetailsDto;
+import com.nc.project.model.Project;
+import com.nc.project.dto.ActionInstDto;
+import com.nc.project.dto.TestScenarioDto;
+import com.nc.project.dto.TestCaseHistory;
 import com.nc.project.model.TestCase;
+import com.nc.project.model.User;
+import com.nc.project.dto.TestCaseHistory;
 import com.nc.project.model.util.TestingStatus;
 import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.postgresql.util.PGInterval;
 import java.sql.SQLException;
-
 import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +25,34 @@ import java.util.Optional;
 public class TestCaseDaoImpl implements TestCaseDao {
     private final JdbcTemplate jdbcTemplate;
     private final QueryService queryService;
+
+    private final RowMapper<TestCaseDetailsDto> testCaseDetailsDtoRowMapper = (resultSet, i) -> {
+        TestCaseDetailsDto entity = new TestCaseDetailsDto();
+        entity.setId(resultSet.getObject("test_case_id", Integer.class));
+        entity.setName(resultSet.getString("test_case_name"));
+        entity.setStatus(resultSet.getString("status"));
+        entity.setStartDate(resultSet.getTimestamp("start_date"));
+        entity.setFinishDate(resultSet.getTimestamp("finish_date"));
+        User creator = new User();
+        creator.setId(resultSet.getObject("creator_id", Integer.class));
+        creator.setName(resultSet.getString("creator_name"));
+        creator.setSurname(resultSet.getString("creator_surname"));
+        entity.setCreator(creator);
+        if(resultSet.getObject("starter_id", Integer.class) != null){
+            User starter = new User();
+            starter.setId(resultSet.getObject("starter_id", Integer.class));
+            starter.setName(resultSet.getString("starter_name"));
+            starter.setSurname(resultSet.getString("starter_surname"));
+            entity.setStarter(starter);
+        }
+        Project project = new Project();
+        project.setProjectId(resultSet.getObject("project_id", Integer.class));
+        project.setName(resultSet.getString("project_name"));
+        project.setLink(resultSet.getString("link"));
+        entity.setProject(project);
+        entity.setNumberOfActions(resultSet.getObject("number_of_actions", Long.class));
+        return entity;
+    };
 
     public TestCaseDaoImpl(JdbcTemplate jdbcTemplate, QueryService queryService) {
         this.jdbcTemplate = jdbcTemplate;
@@ -53,6 +88,48 @@ public class TestCaseDaoImpl implements TestCaseDao {
                 new Object[]{id},
                 (rs, rowNum) -> rs.getString("link"));
         return Optional.of(link);
+    }
+
+    @Override
+    public Optional<TestCaseDetailsDto> getTestCaseDetailsById(Integer id) {
+        String sql = queryService.getQuery("testCase.getTestCaseDetailsById");
+        List<TestCaseDetailsDto> result = jdbcTemplate.query(sql,
+                preparedStatement -> preparedStatement.setObject(1, id),
+                testCaseDetailsDtoRowMapper);
+        return Optional.ofNullable(result.get(0));
+    }
+
+    public Boolean editTestCaseActions(TestScenarioDto testScenarioDto) {
+        String sql = queryService.getQuery("testCase.editTestCaseActions");
+        return jdbcTemplate.update(sql, testScenarioDto.getTestCaseId(),
+                testScenarioDto.getActions().stream().mapToInt(action -> action.getParameterKey().getId()),
+                testScenarioDto.getActions().stream().mapToInt(ActionInstDto::getDatasetId),
+                testScenarioDto.getActions().size()) > 0;
+    }
+
+    @Override
+    public List<TestCaseHistory> getHistory(int pageIndex, int pageSize, String filter, String orderBy, String order, int projectId) {
+        String query = queryService.getQuery("testCase.getHistory");
+        query = String.format(query,orderBy,order);
+        return jdbcTemplate.query(query,
+                new Object[]{"%"+filter +"%",projectId, pageSize, pageSize, pageIndex-1},
+                (rs, rowNum) -> new TestCaseHistory(
+                        rs.getInt("test_case_id"),
+                        rs.getString("name"),
+                        rs.getString("role"),
+                        rs.getTimestamp("finish_date"),
+                        rs.getString("ts_name"),
+                        TestingStatus.valueOf(rs.getString("status"))
+                )
+        );
+    }
+
+    @Override
+    public Integer getSizeOfHistoryResultSet(String filter, int projectId) {
+        String sql = queryService.getQuery("testCase.getSizeOfHistoryResultSet");
+        return jdbcTemplate.queryForObject(sql,
+                new Object[]{"%" + filter + "%",projectId},
+                (rs, rowNum) -> rs.getInt("count"));
     }
 
     @Override
@@ -92,14 +169,13 @@ public class TestCaseDaoImpl implements TestCaseDao {
         return Optional.ofNullable(testCases.get(0));
     }
 
-
-    /*@Override
-    public TestCase update(TestCase testCase) {
-        String sql = queryService.getQuery("testCase.edit");
+    @Override
+    public TestCase editForRun(TestCase testCase) {
+        String sql = queryService.getQuery("testCase.editForRun");
         jdbcTemplate.update(sql, testCase.getStarter(),
                 testCase.getStartDate(), testCase.getFinishDate(), testCase.getStatus().name(), testCase.getId());
         return testCase;
-    }*/
+    }
 
     @Override
     public TestCase update(TestCase testCase) {
