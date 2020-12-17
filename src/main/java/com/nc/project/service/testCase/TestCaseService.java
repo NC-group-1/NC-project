@@ -22,5 +22,6 @@ public interface TestCaseService {
 
     List<ActionInstResponseDto> getAllInstances(Integer testCaseId);
 
+    Boolean editTestCaseActions(TestScenarioDto testScenarioDto);
     Page<TestCaseHistory> getHistory(int pageIndex, int pageSize, String filter, String orderBy, String order, int projectId);
 }

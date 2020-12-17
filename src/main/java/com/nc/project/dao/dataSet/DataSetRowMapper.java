@@ -22,7 +22,7 @@ public class DataSetRowMapper implements RowMapper<DataSet> {
 
         Parameter parameter = new Parameter();
         parameter.setId(resultSet.getInt("parameter_id"));
-        parameter.setKey(parameterKey);
+        parameter.setParameterKey(parameterKey);
         parameter.setValue(resultSet.getString("value"));
         parameter.setDataSetId(resultSet.getInt("data_set_id"));
 

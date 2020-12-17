@@ -82,6 +82,11 @@ public class TestCaseServiceImpl implements TestCaseService {
     }
 
     @Override
+    public Boolean editTestCaseActions(TestScenarioDto testScenarioDto) {
+        return testCaseDao.editTestCaseActions(testScenarioDto);
+    }
+
+    @Override
     public Page<TestCaseHistory> getHistory(int pageIndex, int pageSize, String filter, String orderBy, String order, int projectId) {
         if (orderBy.equals(""))
             orderBy = "test_case_id";
@@ -121,6 +126,7 @@ public class TestCaseServiceImpl implements TestCaseService {
         return testScenarioDto.getActions().stream()
                 .map(a -> ActionInst.builder()
                         .action(a.getAction().getId())
+                        .compound(a.getCompoundId())
                         .testCase(testCaseId)
                         .status(TestingStatus.UNKNOWN.name())
                         .orderNum(a.getOrderNum())
@@ -132,11 +138,11 @@ public class TestCaseServiceImpl implements TestCaseService {
 
     private Integer getDatasetIdForActionInstance(Action action, DataSet dataset) {
         List<Integer> keyIds = dataset.getParameters().stream()
-                .map(Parameter::getKey)
+                .map(Parameter::getParameterKey)
                 .map(ParameterKey::getId)
                 .collect(Collectors.toList());
 
-        return keyIds.contains(action.getKey().getId()) ? dataset.getId() : null;
+        return keyIds.contains(action.getParameterKey().getId()) ? dataset.getId() : null;
     }
 
 

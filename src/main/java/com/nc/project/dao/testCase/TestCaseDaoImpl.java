@@ -1,5 +1,7 @@
 package com.nc.project.dao.testCase;
 
+import com.nc.project.dto.ActionInstDto;
+import com.nc.project.dto.TestScenarioDto;
 import com.nc.project.dto.TestCaseHistory;
 import com.nc.project.model.TestCase;
 import com.nc.project.model.TestScenario;
@@ -74,6 +76,14 @@ public class TestCaseDaoImpl implements TestCaseDao {
         return Optional.of(link);
     }
 
+    @Override
+    public Boolean editTestCaseActions(TestScenarioDto testScenarioDto) {
+        String sql = queryService.getQuery("testCase.editTestCaseActions");
+        return jdbcTemplate.update(sql, testScenarioDto.getTestCaseId(),
+                testScenarioDto.getActions().stream().mapToInt(action -> action.getParameterKey().getId()),
+                testScenarioDto.getActions().stream().mapToInt(ActionInstDto::getDatasetId),
+                testScenarioDto.getActions().size()) > 0;
+    }
     @Override
     public List<TestCaseHistory> getHistory(int pageIndex, int pageSize, String filter, String orderBy, String order, int projectId) {
         String query = queryService.getQuery("testCase.getHistory");

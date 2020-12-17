@@ -2,6 +2,7 @@ package com.nc.project.service.dataSet.impl;
 
 import com.nc.project.dao.dataSet.DataSetDao;
 import com.nc.project.dto.DataSetGeneralInfoDto;
+import com.nc.project.dto.DataSetParamDto;
 import com.nc.project.dto.Page;
 import com.nc.project.service.dataSet.DataSetService;
 import org.springframework.stereotype.Service;
@@ -49,5 +50,10 @@ public class DataSetServiceImpl implements DataSetService {
             dataSetDao.delete(id);
         }
         return numberOfUsages;
+    }
+
+    @Override
+    public DataSetParamDto getDatasetValueByParam(int id, int parameterId) {
+        return dataSetDao.getDatasetValueByParam(id, parameterId);
     }
 }
