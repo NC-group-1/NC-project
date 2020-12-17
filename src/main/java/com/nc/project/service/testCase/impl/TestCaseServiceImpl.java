@@ -92,7 +92,8 @@ public class TestCaseServiceImpl implements TestCaseService {
     @Override
     public Optional<TestCaseDetailsDto> getTestCaseDetailsById(Integer id) {
         Optional<TestCaseDetailsDto> optionalTestCase = testCaseDao.getTestCaseDetailsById(id);
-        optionalTestCase.ifPresent(testCaseDetailsDto -> testCaseDetailsDto.setWatchers(runningTestCaseDao.getWatcherByTestCaseId(id)));
+        optionalTestCase.ifPresent(testCaseDetailsDto ->
+                testCaseDetailsDto.setWatchers(runningTestCaseDao.getWatcherWithImageByTestCaseId(id)));
         return optionalTestCase;
     }
 

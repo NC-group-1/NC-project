@@ -67,6 +67,20 @@ public class RunningTestCaseDaoImpl implements RunningTestCaseDao {
     }
 
     @Override
+    public List<UserProfileDto> getWatcherWithImageByTestCaseId(int test_case_id) {
+        String query = queryService.getQuery("runningTestCase.getWatcherWithImageByTestCaseId");
+        return jdbcTemplate.query(query,
+                new Object[]{test_case_id},
+                (resultSet, i) -> { UserProfileDto profileDto = new UserProfileDto();
+                    profileDto.setUserId(resultSet.getInt("user_id"));
+                    profileDto.setName(resultSet.getString("name"));
+                    profileDto.setSurname(resultSet.getString("surname"));
+                    profileDto.setImageLink(resultSet.getString("image_link"));
+                    return  profileDto;
+                });
+    }
+
+    @Override
     public List<UserProfileDto> getUsersByName(String name) {
         String query = queryService.getQuery("runningTestCase.findByName");
         List<UserProfileDto> users = jdbcTemplate.query(query,
