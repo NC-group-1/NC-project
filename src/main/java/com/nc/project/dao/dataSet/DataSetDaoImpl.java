@@ -2,6 +2,7 @@ package com.nc.project.dao.dataSet;
 
 import com.nc.project.dao.genericDao.GenericDaoImpl;
 import com.nc.project.dto.DataSetGeneralInfoDto;
+import com.nc.project.dto.DataSetParamDto;
 import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -82,5 +83,15 @@ public class DataSetDaoImpl extends GenericDaoImpl<Integer, DataSetGeneralInfoDt
                 new Object[]{id},
                 (rs, rowNum) -> rs.getInt("count"));
         return count == null? 0:count;
+    }
+
+    @Override
+    public DataSetParamDto getDatasetValueByParam(int id, int parameterId) {
+        String sql = queryService.getQuery("data_set.getDatasetValueByParam");
+        return jdbcTemplate.queryForObject(sql, new Object[]{id, parameterId}, (resultSet, i) -> new DataSetParamDto(
+                resultSet.getInt("ds_id"),
+                resultSet.getString("name"),
+                resultSet.getString("val")
+        ));
     }
 }

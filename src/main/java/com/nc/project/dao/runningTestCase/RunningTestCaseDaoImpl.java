@@ -21,11 +21,11 @@ public class RunningTestCaseDaoImpl implements RunningTestCaseDao {
     }
 
     @Override
-    public List<RunningTestCaseDto> getAllByPage(int page, int size, String filter, String orderBy, String order) {
+    public List<RunningTestCaseDto> getAllByPage(int page, int size, String filter, String orderBy, String order, int projectId) {
         String query = queryService.getQuery("runningTestCase.getAllByPage");
         query = String.format(query,orderBy,order);
         List<RunningTestCaseDto> runningTestCaseList = jdbcTemplate.query(query,
-                new Object[]{"%"+filter +"%", size, size, page-1},
+                new Object[]{"%"+filter +"%", projectId, size, size, page-1},
                 new RunningTestCaseRowMapper()
         );
         return runningTestCaseList;
@@ -33,10 +33,10 @@ public class RunningTestCaseDaoImpl implements RunningTestCaseDao {
 
 
     @Override
-    public Optional<Integer> getSizeOfResultSet(String filter) {
+    public Optional<Integer> getSizeOfResultSet(String filter, int projectId) {
         String query = queryService.getQuery("runningTestCase.getSizeOfResultSet");
         Integer size = jdbcTemplate.queryForObject(query,
-                new Object[]{"%"+filter +"%"},
+                new Object[]{"%"+filter +"%", projectId},
                 (rs, rowNum) -> rs.getInt("count"));
         return Optional.of(size);
     }
@@ -44,8 +44,9 @@ public class RunningTestCaseDaoImpl implements RunningTestCaseDao {
     @Override
     public void edit(TestCase testCase) {
         String query = queryService.getQuery("runningTestCase.edit");
+        System.out.println(testCase.toString());
             jdbcTemplate.update(query,
-                    testCase.getStatus(),
+                    testCase.getStatus().name(),
                     testCase.getId()
             );
     }
@@ -64,6 +65,20 @@ public class RunningTestCaseDaoImpl implements RunningTestCaseDao {
         );
 
         return watcherList;
+    }
+
+    @Override
+    public List<UserProfileDto> getWatcherWithImageByTestCaseId(int test_case_id) {
+        String query = queryService.getQuery("runningTestCase.getWatcherWithImageByTestCaseId");
+        return jdbcTemplate.query(query,
+                new Object[]{test_case_id},
+                (resultSet, i) -> { UserProfileDto profileDto = new UserProfileDto();
+                    profileDto.setUserId(resultSet.getInt("user_id"));
+                    profileDto.setName(resultSet.getString("name"));
+                    profileDto.setSurname(resultSet.getString("surname"));
+                    profileDto.setImageLink(resultSet.getString("image_link"));
+                    return  profileDto;
+                });
     }
 
     @Override

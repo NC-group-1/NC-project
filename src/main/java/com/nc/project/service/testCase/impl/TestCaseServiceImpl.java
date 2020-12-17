@@ -4,6 +4,7 @@ import com.nc.project.dao.action.ActionDao;
 import com.nc.project.dao.actionInst.ActionInstDao;
 import com.nc.project.dao.dataSet.DataSetDao;
 import com.nc.project.dao.parameterKey.ParameterKeyDao;
+import com.nc.project.dao.runningTestCase.RunningTestCaseDao;
 import com.nc.project.dao.testCase.TestCaseDao;
 import com.nc.project.dao.user.UserDao;
 import com.nc.project.dto.*;
@@ -11,7 +12,7 @@ import com.nc.project.model.*;
 import com.nc.project.model.util.TestingStatus;
 import com.nc.project.service.testCase.TestCaseService;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,33 +25,36 @@ public class TestCaseServiceImpl implements TestCaseService {
     private final ActionInstDao actionInstDao;
     private final ActionDao actionDao;
     private final ParameterKeyDao parameterKeyDao;
+    private final RunningTestCaseDao runningTestCaseDao;
     private final DataSetDao dataSetDao;
     private final UserDao userDao;
 
     public TestCaseServiceImpl(TestCaseDao testCaseDao, ActionInstDao actionInstDao,
-                               ActionDao actionDao, ParameterKeyDao parameterKeyDao, DataSetDao dataSetDao, UserDao userDao) {
+                               ActionDao actionDao, ParameterKeyDao parameterKeyDao,
+                               RunningTestCaseDao runningTestCaseDao, DataSetDao dataSetDao, UserDao userDao) {
         this.testCaseDao = testCaseDao;
         this.actionInstDao = actionInstDao;
         this.actionDao = actionDao;
         this.parameterKeyDao = parameterKeyDao;
+        this.runningTestCaseDao = runningTestCaseDao;
         this.dataSetDao = dataSetDao;
         this.userDao = userDao;
     }
 
     @Override
-    public Page<TestCaseDto> getAllByPage(int page, int size, String filter, String orderBy, String order) {
+    public Page<TestCaseDto> getAllByPage(int page, int size, String filter, String orderBy, String order, int projectId) {
         if (orderBy.equals(""))
             orderBy = "test_case_id";
         if (!order.equals("DESC")) {
             order = "";
         }
 
-        return new Page(testCaseDao.getAllByPage(page, size, filter, orderBy, order), testCaseDao.getSizeOfResultSet(filter).get());
+        return new Page(testCaseDao.getAllByPage(page, size, filter, orderBy, order, projectId), testCaseDao.getSizeOfResultSet(filter,projectId).get());
     }
 
     @Override
-    public void editTestCase(TestCase testCase) {
-        testCaseDao.edit(testCase);
+    public void updateTestCase(TestCase testCase) {
+        testCaseDao.update(testCase);
     }
 
     @Override
@@ -81,6 +85,35 @@ public class TestCaseServiceImpl implements TestCaseService {
     }
 
     @Override
+    public List<ActionInstRunDto> getAllActionInstRunDtos(Integer testCaseId) {
+        return actionInstDao.getAllActionInstRunDtosByTestCaseId(testCaseId);
+    }
+
+    @Override
+    public Optional<TestCaseDetailsDto> getTestCaseDetailsById(Integer id) {
+        Optional<TestCaseDetailsDto> optionalTestCase = testCaseDao.getTestCaseDetailsById(id);
+        optionalTestCase.ifPresent(testCaseDetailsDto ->
+                testCaseDetailsDto.setWatchers(runningTestCaseDao.getWatcherWithImageByTestCaseId(id)));
+        return optionalTestCase;
+    }
+
+    @Override
+    public Boolean editTestCaseActions(TestScenarioDto testScenarioDto) {
+        return testCaseDao.editTestCaseActions(testScenarioDto);
+    }
+
+    @Override
+    public Page<TestCaseHistory> getHistory(int pageIndex, int pageSize, String filter, String orderBy, String order, int projectId) {
+        if (orderBy.equals(""))
+            orderBy = "test_case_id";
+        if (!order.equals("DESC")) {
+            order = "";
+        }
+        return new Page(testCaseDao.getHistory(pageIndex, pageSize, filter, orderBy, order,projectId), testCaseDao.getSizeOfHistoryResultSet(filter,projectId));
+    }
+
+    @Override
+    @Transactional
     public TestCase create(TestScenarioDto testScenarioDto) {
         TestCase testCase = TestCase.builder()
                 .name(testScenarioDto.getName())
@@ -109,6 +142,7 @@ public class TestCaseServiceImpl implements TestCaseService {
         return testScenarioDto.getActions().stream()
                 .map(a -> ActionInst.builder()
                         .action(a.getAction().getId())
+                        .compound(a.getCompoundId())
                         .testCase(testCaseId)
                         .status(TestingStatus.UNKNOWN.name())
                         .orderNum(a.getOrderNum())
@@ -120,11 +154,11 @@ public class TestCaseServiceImpl implements TestCaseService {
 
     private Integer getDatasetIdForActionInstance(Action action, DataSet dataset) {
         List<Integer> keyIds = dataset.getParameters().stream()
-                .map(Parameter::getKey)
+                .map(Parameter::getParameterKey)
                 .map(ParameterKey::getId)
                 .collect(Collectors.toList());
 
-        return keyIds.contains(action.getKey().getId()) ? dataset.getId() : null;
+        return keyIds.contains(action.getParameterKey().getId()) ? dataset.getId() : null;
     }
 
 

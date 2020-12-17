@@ -22,7 +22,7 @@ public class ActionDaoImpl implements ActionDao {
     public Action create(Action action) {
         String sql = queryService.getQuery("action.create");
         Integer keyId = null;
-        if(action.getKey() != null) keyId = action.getKey().getId();
+        if(action.getParameterKey() != null) keyId = action.getParameterKey().getId();
         jdbcTemplate.update(sql,
                 action.getName(),
                 action.getDescription(),
@@ -111,7 +111,7 @@ public class ActionDaoImpl implements ActionDao {
     public Action update(Action action) {
         String sql = queryService.getQuery("action.edit");
         Integer keyId = null;
-        if(action.getKey() != null) keyId = action.getKey().getId();
+        if(action.getParameterKey() != null) keyId = action.getParameterKey().getId();
         jdbcTemplate.update(sql,
                 action.getName(),
                 action.getDescription(),
