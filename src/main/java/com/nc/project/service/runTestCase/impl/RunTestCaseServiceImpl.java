@@ -108,7 +108,7 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
                 }
                 TestingStatus currentActionInstStatus = invoker.invoke(actionInst.getActionType(),
                         actionInst.getParameterValue(),
-                        actionInst.getParameterKeyKey());
+                        actionInst.getId());
                 actionInst.setStatus(currentActionInstStatus);
                 progress.setProgress((actionNumber+1.0f)/actionInstRunDtos.size());
                 notificationService.sendProgressToTestCase(progress);
@@ -147,9 +147,9 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
     private Context getContext(List<ActionInstRunDto> actionInstRunDtos){
         return new Context() {
             @Override
-            public void put(String actionKey, String value) {
+            public void put(Integer actionId, String value) {
                 actionInstRunDtos.stream()
-                        .filter(actionInstRunDto -> actionInstRunDto.getParameterKeyKey().equals(actionKey))
+                        .filter(actionInstRunDto -> actionInstRunDto.getId().equals(actionId))
                         .findFirst().ifPresent(actionInstRunDto -> actionInstRunDto.setResult(value));
             }
             @Override

@@ -7,7 +7,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.Optional;
 import java.util.Set;
 
@@ -28,121 +27,121 @@ public class SeleniumExecutorImpl implements Executor{
     //TODO implement other selenium actions
 
     @Override
-    public void addToContext(String actionKey, String value) {
-        context.put(actionKey, value);
+    public void addToContext(Integer actionId, String value) {
+        context.put(actionId, value);
     }
 
     @Override
-    public TestingStatus saveElementAttributeToContext(String parameter, String actionKey) {
+    public TestingStatus saveElementAttributeToContext(String parameter, Integer actionId) {
         currentContextValue = currentWebElement.getAttribute(parameter);
-        context.put(actionKey, currentContextValue);
+        context.put(actionId, currentContextValue);
         return TestingStatus.PASSED;
     }
 
     @Override
-    public TestingStatus saveElementTextToContext(String parameter, String actionKey) {
+    public TestingStatus saveElementTextToContext(String parameter, Integer actionId) {
         currentContextValue = currentWebElement.getText();
-        context.put(actionKey, currentContextValue);
+        context.put(actionId, currentContextValue);
         return TestingStatus.PASSED;
     }
 
     @Override
-    public TestingStatus scrollPageToEnd(String parameter, String actionKey) {
+    public TestingStatus scrollPageToEnd(String parameter, Integer actionId) {
         JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("window.scrollTo(0, document.body.scrollHeight)");
         return TestingStatus.PASSED;
     }
 
     @Override
-    public TestingStatus compareWithContextValue(String parameter, String actionKey) {
+    public TestingStatus compareWithContextValue(String parameter, Integer actionId) {
         Optional<String> expected = context.get(parameter);
         if(currentContextValue.equals(expected.orElse(null))){
             return TestingStatus.PASSED;
         } else {
-            context.put(actionKey,"Comparing mismatch! Got("+currentContextValue+") Expected("+expected+")");
+            context.put(actionId,"Comparing mismatch! Got("+currentContextValue+") Expected("+expected+")");
             return TestingStatus.FAILED;
         }
     }
 
     @Override
-    public TestingStatus compareWithString(String parameter, String actionKey) {
+    public TestingStatus compareWithString(String parameter, Integer actionId) {
         if(currentContextValue.equals(parameter)){
             return TestingStatus.PASSED;
         } else {
-            context.put(actionKey,"Comparing mismatch! Got("+currentContextValue+") Expected("+parameter+")");
+            context.put(actionId,"Comparing mismatch! Got("+currentContextValue+") Expected("+parameter+")");
             return TestingStatus.FAILED;
         }
     }
 
     @Override
-    public TestingStatus switchTab(String parameter, String actionKey) {
+    public TestingStatus switchTab(String parameter, Integer actionId) {
         Set<String> handles = driver.getWindowHandles();
         handles.remove(driver.getWindowHandle());
         if(!handles.isEmpty()){
             driver.switchTo().window(handles.iterator().next());
             return TestingStatus.PASSED;
         } else {
-            context.put(actionKey, "No tab to switch");
+            context.put(actionId, "No tab to switch");
             return TestingStatus.FAILED;
         }
     }
 
     @Override
-    public TestingStatus sendKeys(String parameter, String actionKey) {
+    public TestingStatus sendKeys(String parameter, Integer actionId) {
         currentWebElement.sendKeys(parameter);
         return TestingStatus.PASSED;
     }
 
     @Override
-    public TestingStatus click(String parameter, String actionKey) {
+    public TestingStatus click(String parameter, Integer actionId) {
         currentWebElement.click();
         return TestingStatus.PASSED;
     }
 
     @Override
-    public TestingStatus findElementByCssSelector(String parameter, String actionKey) {
+    public TestingStatus findElementByCssSelector(String parameter, Integer actionId) {
         currentWebElement = driver.findElement(By.cssSelector(parameter));
         return TestingStatus.PASSED;
     }
 
     @Override
-    public TestingStatus findElementById(String parameter, String actionKey) {
+    public TestingStatus findElementById(String parameter, Integer actionId) {
         currentWebElement = driver.findElement(By.id(parameter));
         return TestingStatus.PASSED;
     }
 
     @Override
-    public TestingStatus findElementByLinkText(String parameter, String actionKey) {
+    public TestingStatus findElementByLinkText(String parameter, Integer actionId) {
         currentWebElement = driver.findElement(By.linkText(parameter));
         return TestingStatus.PASSED;
     }
 
     @Override
-    public TestingStatus findElementByPartialLinkText(String parameter, String actionKey) {
+    public TestingStatus findElementByPartialLinkText(String parameter, Integer actionId) {
         currentWebElement = driver.findElement(By.partialLinkText(parameter));
         return TestingStatus.PASSED;
     }
 
     @Override
-    public TestingStatus findElementByName(String parameter, String actionKey) {
+    public TestingStatus findElementByName(String parameter, Integer actionId) {
         currentWebElement = driver.findElement(By.name(parameter));
         return TestingStatus.PASSED;
     }
 
     @Override
-    public TestingStatus findElementByTagName(String parameter, String actionKey) {
+    public TestingStatus findElementByTagName(String parameter, Integer actionId) {
         currentWebElement = driver.findElement(By.tagName(parameter));
         return TestingStatus.PASSED;
     }
 
     @Override
-    public TestingStatus findElementByXpath(String parameter, String actionKey) {
+    public TestingStatus findElementByXpath(String parameter, Integer actionId) {
         currentWebElement = driver.findElement(By.xpath(parameter));
         return TestingStatus.PASSED;
     }
 
     @Override
-    public TestingStatus findElementByClassName(String parameter, String actionKey) {
+    public TestingStatus findElementByClassName(String parameter, Integer actionId) {
         currentWebElement = driver.findElement(By.className(parameter));
         return TestingStatus.PASSED;
     }
