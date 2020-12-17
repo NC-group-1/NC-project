@@ -4,5 +4,5 @@ import java.util.Optional;
 
 public interface Context {
     void put(Integer actionId, String value);
-    Optional<String> get(String actionKey);
+    Optional<String> get(Integer actionId);
 }

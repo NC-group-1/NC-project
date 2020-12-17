@@ -153,9 +153,14 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
                         .findFirst().ifPresent(actionInstRunDto -> actionInstRunDto.setResult(value));
             }
             @Override
-            public Optional<String> get(String actionKey) {
+            public Optional<String> get(Integer actionId) {
+                ActionInstRunDto currentAction = actionInstRunDtos.stream()
+                        .filter(actionInstRunDto -> actionInstRunDto.getId().equals(actionId))
+                        .findFirst().orElseThrow();
                 return actionInstRunDtos.stream()
-                        .filter(actionInstRunDto -> actionInstRunDto.getParameterKeyKey().equals(actionKey))
+                        .filter(actionInstRunDto -> actionInstRunDto.getActionType().getContextBehaviour() == 1)
+                        .filter(actionInstRunDto -> actionInstRunDto.getParameterKeyKey()
+                                .equals(currentAction.getParameterKeyKey()))
                         .map(ActionInstRunDto::getResult).findFirst();
             }
         };

@@ -54,7 +54,7 @@ public class SeleniumExecutorImpl implements Executor{
 
     @Override
     public TestingStatus compareWithContextValue(String parameter, Integer actionId) {
-        Optional<String> expected = context.get(parameter);
+        Optional<String> expected = context.get(actionId);
         if(currentContextValue.equals(expected.orElse(null))){
             return TestingStatus.PASSED;
         } else {
