@@ -5,6 +5,8 @@ import com.nc.project.dao.parameterKey.ParameterKeyDao;
 import com.nc.project.model.Parameter;
 import com.nc.project.service.parameter.ParameterService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +27,7 @@ public class ParameterServiceImpl implements ParameterService {
     }
 
     @Override
+    @Transactional
     public Parameter create(Parameter entity) {
         entity.setParameterKey(parameterKeyDao.create(entity.getParameterKey()));
         return parameterDao.create(entity);

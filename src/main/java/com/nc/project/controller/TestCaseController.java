@@ -76,6 +76,20 @@ public class TestCaseController {
 
         return new ResponseEntity<>(testCaseList, HttpStatus.OK);
     }
+    @GetMapping("/historyList/{projectId}")
+    public ResponseEntity<Page<TestCaseHistory>> getHistory(
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "1") int pageIndex,
+            @RequestParam(defaultValue = "") String filter,
+            @RequestParam(defaultValue = "") String orderBy,
+            @RequestParam(defaultValue = "") String order,
+            @PathVariable int projectId
+    )
+    {
+        Page<TestCaseHistory> testCaseList = testCaseService.getHistory(pageIndex, pageSize,filter,orderBy,order,projectId);
+
+        return new ResponseEntity<>(testCaseList, HttpStatus.OK);
+    }
 
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "edit")
