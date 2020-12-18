@@ -3,9 +3,19 @@ package com.nc.project.service.project.impl;
 import com.nc.project.dao.project.ProjectDao;
 import com.nc.project.dto.Page;
 import com.nc.project.dto.ProjectDto;
+import com.nc.project.dto.TestCaseDetailsDto;
 import com.nc.project.model.Project;
 import com.nc.project.service.project.ProjectService;
 import org.springframework.stereotype.Service;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -34,6 +44,49 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void editProject(Project project) {
         projectDao.edit(project);
+    }
+
+    @Override
+    public Optional<String> addParamsToEmail(TestCaseDetailsDto params, String pathToEmail) {
+        File file = new File(pathToEmail);
+
+        StringBuilder htmlStringBuilder = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            List<String> paramsDetail = new ArrayList<>();
+            while (reader.ready()) {
+                htmlStringBuilder.append(reader.readLine());
+            }
+
+            paramsDetail.add(
+                    (params.getProject().getName() != null ? "<p>Project name: " + params.getProject().getName() + "</p>" : "")
+                            + (params.getProject().getLink() != null ? "<p>Project link:" + params.getProject().getLink() + "</p>" : "")
+                            + (params.getProject().getUser().getName() != null ? "<p>Project creator:" + params.getProject().getUser().getName() + " " + params.getProject().getUser().getSurname() + "</p>" : "")
+            );
+
+            paramsDetail.add(
+                    (params.getName() != null ? "<p>Test Case name: " + params.getName() + "</p>" : "")
+                            + (params.getCreator() != null ? "<p>Test Case creator:" + params.getCreator().getName() + " " + params.getCreator().getSurname() + "</p>" : "")
+                            + (params.getStarter() != null ? "<p>Test Case starter:" + params.getStarter().getName() + " " + params.getStarter().getSurname() + "</p>" : "")
+                            + (params.getStartDate() != null ? "<p>Test Case started date: " + params.getStartDate() + "</p>" : "")
+                            + (params.getFinishDate() != null ? "<p>Test Case started date: " + params.getFinishDate() + "</p>" : "")
+                            + (params.getStatus() != null ? "<p>Test Case started date: " + params.getStatus() + "</p>" : "")
+            );
+
+            paramsDetail.add(
+                    "<table>" +
+                            params.getActionInstRunDtos().stream()
+                                    .map(actionInstDto ->
+                                            (actionInstDto.getActionName() != null ? "<td>Action result: " + actionInstDto.getActionName() + "</td><td> have result: " +  actionInstDto.getResult() + "</td>" : "")
+                                            + (actionInstDto.getCompoundName() != null ? "<td>Ac" + actionInstDto.getCompoundName() + "</td><td> have result: " + actionInstDto.getResult() + "</td>" : "")
+                                    )
+                            .collect(Collectors.joining("</tr><tr>", "<tr>", "</tr>"))
+                            + "</table>"
+                    );
+            return Optional.of(String.format(htmlStringBuilder.toString(), paramsDetail.get(0), paramsDetail.get(1), paramsDetail.get(2)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
     }
 
 
