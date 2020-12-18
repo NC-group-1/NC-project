@@ -76,10 +76,13 @@ public class TestCaseDaoImpl implements TestCaseDao {
     @Override
     public Boolean editTestCaseActions(TestScenarioDto testScenarioDto) {
         String sql = queryService.getQuery("testCase.editTestCaseActions");
-        return jdbcTemplate.update(sql, testScenarioDto.getTestCaseId(),
-                testScenarioDto.getActions().stream().mapToInt(action -> action.getParameterKey().getId()),
-                testScenarioDto.getActions().stream().mapToInt(ActionInstDto::getDatasetId),
-                testScenarioDto.getActions().size()) > 0;
+        return jdbcTemplate.update(sql,
+                testScenarioDto.getName(),
+                testScenarioDto.getDescription(),
+                testScenarioDto.getTestCaseId(),
+                testScenarioDto.getActions().stream().map(action -> action.getParameterKey().getId()).toArray(Integer[]::new),
+                testScenarioDto.getActions().stream().map(ActionInstDto::getDatasetId).toArray(Integer[]::new),
+                testScenarioDto.getActions().size() + 1) > 0;
     }
 
     @Override
