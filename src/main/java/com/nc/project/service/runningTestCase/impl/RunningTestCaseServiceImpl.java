@@ -6,6 +6,8 @@ import com.nc.project.dto.Page;
 import com.nc.project.dto.RunningTestCaseDto;
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.*;
+import com.nc.project.model.util.NotificationType;
+import com.nc.project.service.notification.NotificationService;
 import com.nc.project.service.runningTestCase.RunningTestCaseService;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +18,11 @@ import java.util.List;
 public class RunningTestCaseServiceImpl implements RunningTestCaseService {
 
     private final RunningTestCaseDao runningTestCaseDao;
+    private final NotificationService notificationService;
 
-    public RunningTestCaseServiceImpl(RunningTestCaseDao runningTestCaseDao) {
+    public RunningTestCaseServiceImpl(RunningTestCaseDao runningTestCaseDao, NotificationService notificationService) {
         this.runningTestCaseDao = runningTestCaseDao;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -51,5 +55,6 @@ public class RunningTestCaseServiceImpl implements RunningTestCaseService {
     @Override
     public void addWatcher(Watcher watcher) {
         runningTestCaseDao.addWatcher(watcher);
+        notificationService.createNotification(watcher.getTest_case_id(), NotificationType.WATCHER);
     }
 }

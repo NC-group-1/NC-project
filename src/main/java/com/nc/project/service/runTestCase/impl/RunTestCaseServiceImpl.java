@@ -7,7 +7,6 @@ import com.nc.project.dto.TestCaseProgress;
 import com.nc.project.model.TestCase;
 import com.nc.project.model.util.NotificationType;
 import com.nc.project.model.util.TestingStatus;
-import com.nc.project.scheduling.ScheduledTestCaseRunTask;
 import com.nc.project.selenium.Context;
 import com.nc.project.selenium.Invoker;
 import com.nc.project.selenium.SeleniumExecutorImpl;
@@ -37,7 +36,7 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final ConcurrentHashMap<Integer, CopyOnWriteArrayList<ActionInstRunDto>> sharedStorage;
-
+    private final ConcurrentHashMap<Integer, ThreadState> runningTestCases;
     private final ActionInstDao actionInstDao;
     private final TestCaseDao testCaseDao;
     private final RunTestCaseServiceImpl runTestCaseService;
@@ -59,9 +58,8 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
         this.threadPoolTaskScheduler = threadPoolTaskScheduler;
         WebDriverManager.chromedriver().setup();
         sharedStorage = new ConcurrentHashMap<>();
+        runningTestCases = new ConcurrentHashMap<>();
     }
-
-
 
     @Override
     @Transactional
@@ -74,8 +72,6 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
         testCase.setStarter(startedById);
         testCase.setStatus(TestingStatus.IN_PROGRESS);
         testCaseDao.editForRun(testCase);
-        notificationService.createNotification(testCaseId, NotificationType.STARTED);
-        sharedStorage.put(testCaseId, new CopyOnWriteArrayList<>());
         runTestCaseService.runAsync(testCase);
         return 0;
     }
@@ -91,9 +87,26 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
         testCase.setStatus(TestingStatus.SCHEDULED);
         testCaseDao.editForRun(testCase);
         threadPoolTaskScheduler.schedule(
-                new ScheduledTestCaseRunTask(testCaseId, startedById, runTestCaseService),
+                () -> runTestCaseService.runTestCase(testCaseId, startedById),
                 testCase.getStartDate()
         );
+        return 0;
+    }
+
+    @Override
+    public int suspendTestCase(Integer testCaseId) {
+        ThreadState state = runningTestCases.get(testCaseId);
+
+        return 0;
+    }
+
+    @Override
+    public int resumeTestCase(Integer testCaseId) {
+        return 0;
+    }
+
+    @Override
+    public int interruptTestCase(Integer testCaseId) {
         return 0;
     }
 
@@ -117,8 +130,11 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
     protected void runAsync(TestCase testCase){
         log.debug("Run test case with id="+testCase.getId()+" asynchronously. Thread name="
                 +Thread.currentThread().getName());
+        notificationService.createNotification(testCase.getId(), NotificationType.STARTED);
         WebDriver driver = setup();
         try {
+            runningTestCases.put(testCase.getId(), new ThreadState());
+            sharedStorage.put(testCase.getId(), new CopyOnWriteArrayList<>());
             driver.get(testCaseDao.getProjectLinkByTestCaseId(testCase.getId()).orElseThrow());
             List<ActionInstRunDto> actionInstRunDtos = actionInstDao.getAllActionInstRunDtosByTestCaseId(testCase.getId());
             Invoker invoker = new Invoker(new SeleniumExecutorImpl(driver, getContext(actionInstRunDtos)));
@@ -144,6 +160,8 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
                     break;
                 }
             }
+            actionInstRunDtos.stream().filter(actionInstRunDto -> actionInstRunDto.getStatus() == TestingStatus.UNKNOWN)
+                    .forEach(actionInstRunDto -> actionInstRunDto.setStatus(TestingStatus.NOT_STARTED));
             if(testCase.getStatus() == TestingStatus.IN_PROGRESS){
                 testCase.setStatus(TestingStatus.PASSED);
             }
@@ -158,6 +176,7 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
             }
         } finally {
             sharedStorage.remove(testCase.getId());
+            runningTestCases.remove(testCase.getId());
             driver.close();
         }
     }
@@ -189,5 +208,10 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
                         .map(ActionInstRunDto::getResult).findFirst();
             }
         };
+    }
+
+    private class ThreadState {
+        private boolean suspend = false;
+        private boolean interrupt = false;
     }
 }
