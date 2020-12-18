@@ -47,13 +47,13 @@ public class JwtTokenUtil {
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-//                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
                 .signWith(SignatureAlgorithm.HS256, secret).compact();
     }
 
     public Boolean validateToken(String token, String username) {
         final String extractedUsername = extractUsername(token);
-//        return extractedUsername.equals(username) && !isTokenExpired(token);
-        return extractedUsername.equals(username);
+        return extractedUsername.equals(username) && !isTokenExpired(token);
+        //return extractedUsername.equals(username);
     }
 }

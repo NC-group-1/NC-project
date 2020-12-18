@@ -31,7 +31,7 @@ public class UserDaoImpl implements UserDao {
                 user.getEmail(),
                 user.getRole(),
                 UUID.randomUUID().toString(),
-                new Timestamp(new Date().getTime() + 720000));
+                new Timestamp(new Date().getTime() + 43200000));
     }
 
     public Optional<UserProfileDto> updatePersonalProfileById(UserProfileDto userProfileDto) {
