@@ -68,6 +68,36 @@ public class TestCaseController {
         }
     }
 
+    @PutMapping("/{id}/stop")
+    public ResponseEntity<HttpStatus> stopTestCase(@PathVariable int id) {
+        int status = runTestCaseService.suspendTestCase(id);
+        if(status == 0){
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @PutMapping("/{id}/resume")
+    public ResponseEntity<HttpStatus> resumeTestCase(@PathVariable int id) {
+        int status = runTestCaseService.resumeTestCase(id);
+        if(status == 0){
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @PutMapping("/{id}/cancel")
+    public ResponseEntity<HttpStatus> cancelTestCase(@PathVariable int id) {
+        int status = runTestCaseService.interruptTestCase(id);
+        if(status == 0){
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
+
     @MessageMapping("/actionInst/tc")
     public void getTestCaseActionInstances(Integer testCaseId) {
         this.runTestCaseService.sendActionInstToTestCaseSocket(testCaseId);
