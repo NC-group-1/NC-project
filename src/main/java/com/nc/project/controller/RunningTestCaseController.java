@@ -41,22 +41,4 @@ public class RunningTestCaseController {
         runningTestCaseService.editRunningTestCase(testCase);
     }
 
-    @GetMapping
-    public ResponseEntity<List<UserProfileDto>> getWatcherByTestCaseId(@RequestParam int test_case_id) {
-        List<UserProfileDto> watchers = runningTestCaseService.getWatcherByTestCaseId(test_case_id);
-        return new ResponseEntity<>(watchers,HttpStatus.OK);
-    }
-
-    @GetMapping("/users")
-    public ResponseEntity<List<UserProfileDto>> getUsersByName(@RequestParam String name) {
-        List<UserProfileDto> users = runningTestCaseService.getUsersByName(name);
-        return new ResponseEntity<>(users,HttpStatus.OK);
-    }
-
-    @PostMapping("/add-watcher")
-    @ResponseStatus(value = HttpStatus.OK)
-    public void addWatcher(@RequestBody Watcher watcher) {
-        runningTestCaseService.addWatcher(watcher);
-    }
-
 }

@@ -2,6 +2,7 @@ package com.nc.project.controller;
 
 import com.nc.project.dto.*;
 import com.nc.project.model.TestCase;
+import com.nc.project.model.Watcher;
 import com.nc.project.service.runTestCase.RunTestCaseService;
 import com.nc.project.service.testCase.TestCaseService;
 import org.springframework.http.HttpStatus;
@@ -135,6 +136,26 @@ public class TestCaseController {
 
         return new ResponseEntity<>(testCaseList, HttpStatus.OK);
     }
+
+    @GetMapping
+    public ResponseEntity<List<UserProfileDto>> getListWatcherByTestCaseId(@RequestParam int test_case_id) {
+        List<UserProfileDto> watchers = testCaseService.getListWatcherByTestCaseId(test_case_id);
+        return new ResponseEntity<>(watchers,HttpStatus.OK);
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<UserProfileDto>> getUsersByName(@RequestParam String name) {
+        List<UserProfileDto> users = testCaseService.getUsersByName(name);
+        return new ResponseEntity<>(users,HttpStatus.OK);
+    }
+
+    @PostMapping("/add-watcher")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void addWatcher(@RequestBody Watcher watcher) {
+        testCaseService.addWatcher(watcher);
+    }
+
+
     @GetMapping("/historyList/{projectId}")
     public ResponseEntity<Page<TestCaseHistory>> getHistory(
             @RequestParam(defaultValue = "10") int pageSize,

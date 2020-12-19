@@ -9,7 +9,9 @@ import com.nc.project.dao.testCase.TestCaseDao;
 import com.nc.project.dao.user.UserDao;
 import com.nc.project.dto.*;
 import com.nc.project.model.*;
+import com.nc.project.model.util.NotificationType;
 import com.nc.project.model.util.TestingStatus;
+import com.nc.project.service.notification.NotificationService;
 import com.nc.project.service.testCase.TestCaseService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,16 +28,18 @@ public class TestCaseServiceImpl implements TestCaseService {
     private final ActionDao actionDao;
     private final ParameterKeyDao parameterKeyDao;
     private final RunningTestCaseDao runningTestCaseDao;
+    //private final NotificationService notificationService;
     private final DataSetDao dataSetDao;
     private final UserDao userDao;
 
     public TestCaseServiceImpl(TestCaseDao testCaseDao, ActionInstDao actionInstDao,
-                               ActionDao actionDao, ParameterKeyDao parameterKeyDao,
+                               ActionDao actionDao, ParameterKeyDao parameterKeyDao,/* NotificationService notificationService,*/
                                RunningTestCaseDao runningTestCaseDao, DataSetDao dataSetDao, UserDao userDao) {
         this.testCaseDao = testCaseDao;
         this.actionInstDao = actionInstDao;
         this.actionDao = actionDao;
         this.parameterKeyDao = parameterKeyDao;
+        //this.notificationService = notificationService;
         this.runningTestCaseDao = runningTestCaseDao;
         this.dataSetDao = dataSetDao;
         this.userDao = userDao;
@@ -50,6 +54,22 @@ public class TestCaseServiceImpl implements TestCaseService {
         }
 
         return new Page(testCaseDao.getAllByPage(page, size, filter, orderBy, order, projectId), testCaseDao.getSizeOfResultSet(filter,projectId).get());
+    }
+
+    @Override
+    public List<UserProfileDto> getListWatcherByTestCaseId(int test_case_id) {
+        return testCaseDao.getListWatcherByTestCaseId(test_case_id);
+    }
+
+    @Override
+    public List<UserProfileDto> getUsersByName(String name) {
+        return testCaseDao.getUsersByName(name);
+    }
+
+    @Override
+    public void addWatcher(Watcher watcher) {
+        testCaseDao.addWatcher(watcher);
+        //notificationService.createNotification(watcher.getTest_case_id(), NotificationType.WATCHER);
     }
 
     @Override

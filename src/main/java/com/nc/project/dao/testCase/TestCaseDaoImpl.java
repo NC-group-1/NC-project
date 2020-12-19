@@ -1,13 +1,11 @@
 package com.nc.project.dao.testCase;
 
-import com.nc.project.dto.TestCaseDetailsDto;
+import com.nc.project.dto.*;
 import com.nc.project.model.Project;
-import com.nc.project.dto.ActionInstDto;
-import com.nc.project.dto.TestScenarioDto;
-import com.nc.project.dto.TestCaseHistory;
 import com.nc.project.model.TestCase;
 import com.nc.project.model.User;
 import com.nc.project.dto.TestCaseHistory;
+import com.nc.project.model.Watcher;
 import com.nc.project.model.util.TestingStatus;
 import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -70,8 +68,6 @@ public class TestCaseDaoImpl implements TestCaseDao {
         return testCaseList;
     }
 
-
-
     @Override
     public Optional<Integer> getSizeOfResultSet(String filter, int projectId) {
         String sql = queryService.getQuery("testCase.getSizeOfResultSet");
@@ -79,6 +75,47 @@ public class TestCaseDaoImpl implements TestCaseDao {
                 new Object[]{"%" + filter + "%", projectId},
                 (rs, rowNum) -> rs.getInt("count"));
         return Optional.of(size);
+    }
+
+    @Override
+    public List<UserProfileDto> getListWatcherByTestCaseId(int test_case_id) {
+        String query = queryService.getQuery("testCase.getListWatcherByTestCaseId");
+        List<UserProfileDto> watcherList = jdbcTemplate.query(query,
+                new Object[]{test_case_id},
+                (resultSet, i) -> new UserProfileDto(
+                        resultSet.getInt("user_id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("surname"),
+                        resultSet.getString("role")
+                )
+        );
+
+        return watcherList;
+    }
+
+    @Override
+    public List<UserProfileDto> getUsersByName(String name) {
+        String query = queryService.getQuery("testCase.findByName");
+        List<UserProfileDto> users = jdbcTemplate.query(query,
+                new Object[]{name},
+                (resultSet, i) -> new UserProfileDto(
+                        resultSet.getInt("user_id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("surname"),
+                        resultSet.getString("role")
+                )
+        );
+
+        return users;
+    }
+
+    @Override
+    public void addWatcher(Watcher watcher) {
+        String query = queryService.getQuery("testCase.addWatcher");
+        jdbcTemplate.update(query,
+                watcher.getUser_id(),
+                watcher.getTest_case_id()
+        );
     }
 
     @Override
