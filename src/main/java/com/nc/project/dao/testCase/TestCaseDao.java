@@ -4,7 +4,10 @@ import com.nc.project.dao.GenericDao;
 import com.nc.project.dto.TestCaseDetailsDto;
 import com.nc.project.dto.TestScenarioDto;
 import com.nc.project.dto.TestCaseHistory;
+import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.TestCase;
+import com.nc.project.model.Watcher;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +21,12 @@ public interface TestCaseDao extends GenericDao<TestCase, Integer> {
     TestCase editForRun(TestCase testCase);
 
     void delete(Integer ID);
+
+    List<UserProfileDto> getListWatcherByTestCaseId(int test_case_id);
+
+    List<UserProfileDto> getUsersByName(String name);
+
+    void addWatcher(Watcher watcher);
 
     List<Integer> getTestCasesIdByWatcher(Integer userId);
 

@@ -32,6 +32,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public String getProjectName(int project_id) {
+        return projectDao.getName(project_id);
+    }
+
+    @Override
     public void editProject(Project project) {
         projectDao.edit(project);
     }

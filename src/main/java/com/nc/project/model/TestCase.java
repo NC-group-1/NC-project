@@ -41,7 +41,7 @@ public class TestCase {
     }
 
     public TestCase(Integer id, String name, String description, Timestamp creationDate,
-                    Integer iterationsAmount, String recurringTime, Timestamp startDate, TestingStatus status) {
+                    Integer iterationsAmount, String recurringTime, Timestamp startDate, Integer watcherNumb, TestingStatus status) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -49,6 +49,7 @@ public class TestCase {
         this.iterationsAmount = iterationsAmount;
         this.recurringTime = recurringTime;
         this.startDate = startDate;
+        this.watcherNumb = watcherNumb;
         this.status = status;
     }
 }

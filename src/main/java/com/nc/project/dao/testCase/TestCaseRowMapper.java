@@ -26,6 +26,7 @@ public class TestCaseRowMapper implements RowMapper<TestCase> {
         testCase.setStatus(TestingStatus.valueOf(resultSet.getString("status")));
         testCase.setDescription(resultSet.getString("description"));
         testCase.setRecurringTime(resultSet.getString("recurring_time"));
+        testCase.setWatcherNumb(resultSet.getInt("watcher_numb"));
         testCase.setIterationsAmount(resultSet.getObject("iterations_amount", Integer.class));
 
         return testCase;
