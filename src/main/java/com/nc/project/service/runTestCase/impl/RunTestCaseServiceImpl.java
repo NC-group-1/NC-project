@@ -7,7 +7,6 @@ import com.nc.project.dto.TestCaseProgress;
 import com.nc.project.model.TestCase;
 import com.nc.project.model.util.NotificationType;
 import com.nc.project.model.util.TestingStatus;
-import com.nc.project.scheduling.ScheduledTestCaseRunTask;
 import com.nc.project.selenium.Context;
 import com.nc.project.selenium.Invoker;
 import com.nc.project.selenium.SeleniumExecutorImpl;
@@ -24,7 +23,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -37,7 +35,7 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final ConcurrentHashMap<Integer, CopyOnWriteArrayList<ActionInstRunDto>> sharedStorage;
-
+    private final ConcurrentHashMap<Integer, TestingStatus> targetStatuses;
     private final ActionInstDao actionInstDao;
     private final TestCaseDao testCaseDao;
     private final RunTestCaseServiceImpl runTestCaseService;
@@ -59,42 +57,88 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
         this.threadPoolTaskScheduler = threadPoolTaskScheduler;
         WebDriverManager.chromedriver().setup();
         sharedStorage = new ConcurrentHashMap<>();
+        targetStatuses = new ConcurrentHashMap<>();
     }
-
-
 
     @Override
     @Transactional
     public int runTestCase(Integer testCaseId, Integer startedById) {
-        TestCase testCase = testCaseDao.findById(testCaseId).orElseThrow();
-        if(testCase.getStatus() != TestingStatus.READY && testCase.getStatus() != TestingStatus.SCHEDULED){
-            return -1;
+        synchronized (testCaseId.toString().intern()) {
+            TestCase testCase = testCaseDao.findById(testCaseId).orElseThrow();
+            if (testCase.getStatus() != TestingStatus.READY && testCase.getStatus() != TestingStatus.SCHEDULED) {
+                return -1;
+            }
+            testCase.setStartDate(Timestamp.valueOf(LocalDateTime.now()));
+            testCase.setStarter(startedById);
+            testCase.setStatus(TestingStatus.IN_PROGRESS);
+            testCaseDao.editForRun(testCase);
+            targetStatuses.put(testCase.getId(), TestingStatus.IN_PROGRESS);
+            sharedStorage.put(testCase.getId(), new CopyOnWriteArrayList<>());
+            runTestCaseService.runAsync(testCase);
+            return 0;
         }
-        testCase.setStartDate(Timestamp.valueOf(LocalDateTime.now()));
-        testCase.setStarter(startedById);
-        testCase.setStatus(TestingStatus.IN_PROGRESS);
-        testCaseDao.editForRun(testCase);
-        notificationService.createNotification(testCaseId, NotificationType.STARTED);
-        sharedStorage.put(testCaseId, new CopyOnWriteArrayList<>());
-        runTestCaseService.runAsync(testCase);
-        return 0;
     }
 
     @Override
     @Transactional
     public int scheduleTestCase(Integer testCaseId, Integer startedById) {
-        TestCase testCase = testCaseDao.findById(testCaseId).orElseThrow();
-        if(testCase.getStatus() != TestingStatus.READY || testCase.getStartDate() == null){
-            return -1;
+        synchronized (testCaseId.toString().intern()) {
+            TestCase testCase = testCaseDao.findById(testCaseId).orElseThrow();
+            if (testCase.getStatus() != TestingStatus.READY || testCase.getStartDate() == null) {
+                return -1;
+            }
+            testCase.setStarter(startedById);
+            testCase.setStatus(TestingStatus.SCHEDULED);
+            testCaseDao.editForRun(testCase);
+            threadPoolTaskScheduler.schedule(
+                    () -> runTestCaseService.runTestCase(testCaseId, startedById),
+                    testCase.getStartDate()
+            );
+            return 0;
         }
-        testCase.setStarter(startedById);
-        testCase.setStatus(TestingStatus.SCHEDULED);
-        testCaseDao.editForRun(testCase);
-        threadPoolTaskScheduler.schedule(
-                new ScheduledTestCaseRunTask(testCaseId, startedById, runTestCaseService),
-                testCase.getStartDate()
-        );
-        return 0;
+    }
+
+    @Override
+    public int suspendTestCase(Integer testCaseId) {
+        synchronized (testCaseId.toString().intern()) {
+            if(targetStatuses.get(testCaseId) != TestingStatus.IN_PROGRESS){
+                return -1;
+            } else {
+                targetStatuses.put(testCaseId, TestingStatus.STOPPED);
+                return 0;
+            }
+        }
+    }
+
+    @Override
+    public int resumeTestCase(Integer testCaseId) {
+        synchronized (testCaseId.toString().intern()) {
+            if(targetStatuses.get(testCaseId) != TestingStatus.STOPPED){
+                return -1;
+            } else {
+                targetStatuses.put(testCaseId, TestingStatus.IN_PROGRESS);
+                synchronized (sharedStorage.get(testCaseId)){
+                    sharedStorage.get(testCaseId).notifyAll();
+                }
+                return 0;
+            }
+        }
+    }
+
+    @Override
+    public int interruptTestCase(Integer testCaseId) {
+        synchronized (testCaseId.toString().intern()) {
+            if(targetStatuses.get(testCaseId) != TestingStatus.IN_PROGRESS &&
+                    targetStatuses.get(testCaseId) != TestingStatus.STOPPED){
+                return -1;
+            } else {
+                targetStatuses.put(testCaseId, TestingStatus.CANCELED);
+                synchronized (sharedStorage.get(testCaseId)){
+                    sharedStorage.get(testCaseId).notifyAll();
+                }
+                return 0;
+            }
+        }
     }
 
     @Override
@@ -113,52 +157,77 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
     }
 
     @Async
-    @Transactional
     protected void runAsync(TestCase testCase){
         log.debug("Run test case with id="+testCase.getId()+" asynchronously. Thread name="
                 +Thread.currentThread().getName());
         WebDriver driver = setup();
         try {
+            createStatusNotification(testCase);
             driver.get(testCaseDao.getProjectLinkByTestCaseId(testCase.getId()).orElseThrow());
             List<ActionInstRunDto> actionInstRunDtos = actionInstDao.getAllActionInstRunDtosByTestCaseId(testCase.getId());
             Invoker invoker = new Invoker(new SeleniumExecutorImpl(driver, getContext(actionInstRunDtos)));
-            TestCaseProgress progress = new TestCaseProgress(testCase.getId(),testCase.getName(),
-                    testCase.getStatus(),0.0f);
             for (int actionNumber = 0; actionNumber < actionInstRunDtos.size(); actionNumber++) {
                 ActionInstRunDto actionInst = actionInstRunDtos.get(actionNumber);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    log.error("Thread sleep error", e);
-                }
+                Thread.sleep(1000);
                 TestingStatus currentActionInstStatus = invoker.invoke(actionInst.getActionType(),
                         actionInst.getParameterValue(),
                         actionInst.getId());
                 actionInst.setStatus(currentActionInstStatus);
-                progress.setProgress((actionNumber+1.0f)/actionInstRunDtos.size());
-                notificationService.sendProgressToTestCase(progress);
                 sharedStorage.get(testCase.getId()).add(actionInst);
                 runTestCaseService.sendActionInstToTestCaseSocket(Collections.singletonList(actionInst), testCase.getId());
+                testCase.setStatus(targetStatuses.get(testCase.getId()));
                 if (currentActionInstStatus == TestingStatus.FAILED) {
                     testCase.setStatus(TestingStatus.FAILED);
+                }
+                notificationService.sendProgressToTestCase(new TestCaseProgress(testCase.getId(),testCase.getName(),
+                        testCase.getStatus(),(actionNumber+1.0f)/actionInstRunDtos.size()));
+                while (targetStatuses.get(testCase.getId()) == TestingStatus.STOPPED
+                        && testCase.getStatus() != TestingStatus.CANCELED
+                        && testCase.getStatus() != TestingStatus.FAILED){
+                    synchronized (sharedStorage.get(testCase.getId())){
+                        sharedStorage.get(testCase.getId()).wait();
+                    }
+                }
+                if (testCase.getStatus() == TestingStatus.FAILED || testCase.getStatus() == TestingStatus.CANCELED) {
                     break;
                 }
             }
+            actionInstRunDtos.stream().filter(actionInstRunDto -> actionInstRunDto.getStatus() == TestingStatus.UNKNOWN)
+                    .forEach(actionInstRunDto -> actionInstRunDto.setStatus(TestingStatus.NOT_STARTED));
             if(testCase.getStatus() == TestingStatus.IN_PROGRESS){
                 testCase.setStatus(TestingStatus.PASSED);
             }
             testCase.setFinishDate(Timestamp.valueOf(LocalDateTime.now()));
             testCaseDao.editForRun(testCase);
             actionInstDao.updateAll(actionInstRunDtos);
-            if(testCase.getStatus() == TestingStatus.FAILED){
-                notificationService.createNotification(testCase.getId(), NotificationType.FAIL);
-            }
-            if(testCase.getStatus() == TestingStatus.PASSED){
-                notificationService.createNotification(testCase.getId(), NotificationType.SUCCESS);
-            }
+            createStatusNotification(testCase);
+        } catch (Exception e){
+            log.error("Exception in run test case async thread", e);
+            testCase.setStatus(TestingStatus.UNKNOWN);
+            testCaseDao.editForRun(testCase);
+            createStatusNotification(testCase);
         } finally {
             sharedStorage.remove(testCase.getId());
+            targetStatuses.remove(testCase.getId());
             driver.close();
+        }
+    }
+
+    private void createStatusNotification(TestCase testCase){
+        switch (testCase.getStatus()) {
+            case PASSED:
+                notificationService.createNotification(testCase.getId(), NotificationType.SUCCESS);
+                break;
+            case FAILED:
+            case UNKNOWN:
+                notificationService.createNotification(testCase.getId(), NotificationType.FAIL);
+                break;
+            case IN_PROGRESS:
+                notificationService.createNotification(testCase.getId(), NotificationType.STARTED);
+                break;
+            case CANCELED:
+                notificationService.createNotification(testCase.getId(), NotificationType.CANCEL);
+                break;
         }
     }
 
