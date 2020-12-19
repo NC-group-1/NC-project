@@ -12,5 +12,7 @@ public interface ProjectDao {
 
     void edit(Project project);
 
+    String getName(int projectId);
+
     Integer getSizeOfResultSet(String filter);
 }
