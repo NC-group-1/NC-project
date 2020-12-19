@@ -113,9 +113,27 @@ public class TestCaseServiceImpl implements TestCaseService {
     }
 
     @Override
+    public Page<TestCaseDetailsDto> getTestCasesPaginatedByUserId(int page, int size, String orderBy,
+                                                                  String order, int userId) {
+        if (orderBy.equals(""))
+            orderBy = "test_case_id";
+        if (!order.equals("DESC")) {
+            order = "";
+        }
+        return new Page(testCaseDao.getTestCasesPaginatedByUserId(page, size, orderBy, order,userId),
+                testCaseDao.getCountOfTestCasesPaginatedByUserId(userId));
+    }
+
+    @Override
+    public TestCaseStatisticDto getTestCaseStatistic(int userId) {
+        return testCaseDao.getTestCaseStatistic(userId);
+    }
+
+    @Override
     @Transactional
     public TestCase create(TestScenarioDto testScenarioDto) {
         TestCase testCase = TestCase.builder()
+                .project(testScenarioDto.getProjectId())
                 .name(testScenarioDto.getName())
                 .description(testScenarioDto.getDescription())
                 .creationDate(new Timestamp(System.currentTimeMillis()))
@@ -152,14 +170,14 @@ public class TestCaseServiceImpl implements TestCaseService {
                 .collect(Collectors.toList());
     }
 
-    private Integer getDatasetIdForActionInstance(Action action, DataSet dataset) {
-        List<Integer> keyIds = dataset.getParameters().stream()
-                .map(Parameter::getParameterKey)
-                .map(ParameterKey::getId)
-                .collect(Collectors.toList());
-
-        return keyIds.contains(action.getParameterKey().getId()) ? dataset.getId() : null;
-    }
+//    private Integer getDatasetIdForActionInstance(Action action, DataSet dataset) {
+//        List<Integer> keyIds = dataset.getParameters().stream()
+//                .map(Parameter::getParameterKey)
+//                .map(ParameterKey::getId)
+//                .collect(Collectors.toList());
+//
+//        return keyIds.contains(action.getParameterKey().getId()) ? dataset.getId() : null;
+//    }
 
 
 }

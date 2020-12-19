@@ -2,6 +2,7 @@ package com.nc.project.dao.testCase;
 
 import com.nc.project.dao.GenericDao;
 import com.nc.project.dto.TestCaseDetailsDto;
+import com.nc.project.dto.TestCaseStatisticDto;
 import com.nc.project.dto.TestScenarioDto;
 import com.nc.project.dto.TestCaseHistory;
 import com.nc.project.model.TestCase;
@@ -32,4 +33,10 @@ public interface TestCaseDao extends GenericDao<TestCase, Integer> {
     List<TestCaseHistory> getHistory(int pageIndex, int pageSize, String filter, String orderBy, String order, int projectId);
 
     Integer getSizeOfHistoryResultSet(String filter, int projectId);
+
+    List<TestCaseDetailsDto> getTestCasesPaginatedByUserId(int page, int size, String orderBy, String order, int userId);
+
+    Integer getCountOfTestCasesPaginatedByUserId(int userId);
+
+    TestCaseStatisticDto getTestCaseStatistic(int userId);
 }

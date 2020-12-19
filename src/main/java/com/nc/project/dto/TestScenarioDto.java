@@ -16,7 +16,7 @@ public class TestScenarioDto {
     private String name;
     private String description;
     private User user;
-    // private Integer projectId;
+    private Integer projectId;
     private List<ActionInstDto> actions;
 
     public TestScenarioDto(int testScenarioId, String name, String description) {

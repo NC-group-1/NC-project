@@ -121,6 +121,23 @@ public class TestCaseController {
         return new ResponseEntity<>(instancesResponse, HttpStatus.OK);
     }
 
+    @GetMapping("/user/{userId}/paginated")
+    public ResponseEntity<Page<TestCaseDetailsDto>> getTestCasesPaginatedByUserId(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "finishDate") String orderBy,
+            @RequestParam(defaultValue = "ASC") String order,
+            @PathVariable int userId) {
+        Page<TestCaseDetailsDto> resultPage = testCaseService.getTestCasesPaginatedByUserId(page, size, orderBy, order, userId);
+        return new ResponseEntity<>(resultPage, HttpStatus.OK);
+    }
+
+    @GetMapping("/user/{userId}/statistic")
+    public ResponseEntity<TestCaseStatisticDto> getTestCaseStatistic(@PathVariable int userId) {
+        TestCaseStatisticDto statistic = testCaseService.getTestCaseStatistic(userId);
+        return new ResponseEntity<>(statistic, HttpStatus.OK);
+    }
+
     @GetMapping("/list/{projectId}")
     public ResponseEntity<Page<TestCaseDto>> getAll(
             @RequestParam(defaultValue = "10") int pageSize,
