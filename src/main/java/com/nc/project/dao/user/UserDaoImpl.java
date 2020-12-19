@@ -7,12 +7,8 @@ import com.nc.project.model.User;
 import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -29,9 +25,7 @@ public class UserDaoImpl implements UserDao {
         String sql = queryService.getQuery("user.create");
         jdbcTemplate.update(sql,
                 user.getEmail(),
-                user.getRole(),
-                UUID.randomUUID().toString(),
-                new Timestamp(new Date().getTime() + 43200000));
+                user.getRole());
     }
 
     public Optional<UserProfileDto> updatePersonalProfileById(UserProfileDto userProfileDto) {
@@ -105,8 +99,8 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void saveToken(RecoveryToken recoveryToken) {
         String sql = queryService.getQuery("user.saveToken");
-        this.jdbcTemplate.update(sql,
-                recoveryToken.getToken(), new Timestamp(new Date().getTime() + 60000), recoveryToken.getUser_id());
+        this.jdbcTemplate.update(sql, recoveryToken.getToken(),
+                new Timestamp(new Date().getTime() + 3600000), recoveryToken.getUser_id());
     }
 
     @Override
@@ -134,7 +128,7 @@ public class UserDaoImpl implements UserDao {
                 (rs, rowNum) -> new RecoveryToken(
                         rs.getString("email_code"),
                         rs.getInt("user_id"),
-                        rs.getDate("code_expire_date")
+                        rs.getTimestamp("code_expire_date")
                 ));
     }
 
