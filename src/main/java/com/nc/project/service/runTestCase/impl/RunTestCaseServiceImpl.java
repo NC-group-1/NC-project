@@ -18,6 +18,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -60,9 +62,8 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
         targetStatuses = new ConcurrentHashMap<>();
     }
 
-    @Override
     @Transactional
-    public int runTestCase(Integer testCaseId, Integer startedById) {
+    protected int runTestCase(Integer testCaseId, Integer startedById) {
         synchronized (testCaseId.toString().intern()) {
             TestCase testCase = testCaseDao.findById(testCaseId).orElseThrow();
             if (testCase.getStatus() != TestingStatus.READY && testCase.getStatus() != TestingStatus.SCHEDULED) {
@@ -79,9 +80,8 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
         }
     }
 
-    @Override
     @Transactional
-    public int scheduleTestCase(Integer testCaseId, Integer startedById) {
+    protected int scheduleTestCase(Integer testCaseId, Integer startedById) {
         synchronized (testCaseId.toString().intern()) {
             TestCase testCase = testCaseDao.findById(testCaseId).orElseThrow();
             if (testCase.getStatus() != TestingStatus.READY || testCase.getStartDate() == null) {
@@ -98,8 +98,7 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
         }
     }
 
-    @Override
-    public int suspendTestCase(Integer testCaseId) {
+    private int suspendTestCase(Integer testCaseId) {
         synchronized (testCaseId.toString().intern()) {
             if(targetStatuses.get(testCaseId) != TestingStatus.IN_PROGRESS){
                 return -1;
@@ -110,8 +109,7 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
         }
     }
 
-    @Override
-    public int resumeTestCase(Integer testCaseId) {
+    private int resumeTestCase(Integer testCaseId) {
         synchronized (testCaseId.toString().intern()) {
             if(targetStatuses.get(testCaseId) != TestingStatus.STOPPED){
                 return -1;
@@ -125,8 +123,7 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
         }
     }
 
-    @Override
-    public int interruptTestCase(Integer testCaseId) {
+    private int interruptTestCase(Integer testCaseId) {
         synchronized (testCaseId.toString().intern()) {
             if(targetStatuses.get(testCaseId) != TestingStatus.IN_PROGRESS &&
                     targetStatuses.get(testCaseId) != TestingStatus.STOPPED){
@@ -138,6 +135,24 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
                 }
                 return 0;
             }
+        }
+    }
+
+    @Override
+    public int performTestCaseOperation(TestCaseOperations operation, Integer testCaseId, Integer startedById) {
+        switch (operation) {
+            case RUN:
+                return runTestCaseService.runTestCase(testCaseId, startedById);
+            case SCHEDULE:
+                return runTestCaseService.scheduleTestCase(testCaseId, startedById);
+            case STOP:
+                return suspendTestCase(testCaseId);
+            case RESUME:
+                return resumeTestCase(testCaseId);
+            case CANCEL:
+                return interruptTestCase(testCaseId);
+            default:
+                return -1;
         }
     }
 
@@ -194,7 +209,7 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
             }
             actionInstRunDtos.stream().filter(actionInstRunDto -> actionInstRunDto.getStatus() == TestingStatus.UNKNOWN)
                     .forEach(actionInstRunDto -> actionInstRunDto.setStatus(TestingStatus.NOT_STARTED));
-            if(testCase.getStatus() == TestingStatus.IN_PROGRESS){
+            if(testCase.getStatus() == TestingStatus.IN_PROGRESS || testCase.getStatus() == TestingStatus.STOPPED){
                 testCase.setStatus(TestingStatus.PASSED);
             }
             testCase.setFinishDate(Timestamp.valueOf(LocalDateTime.now()));

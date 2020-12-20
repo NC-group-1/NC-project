@@ -19,7 +19,6 @@ import java.util.Optional;
 public class TestCaseController {
     private final TestCaseService testCaseService;
     private final RunTestCaseService runTestCaseService;
-    private enum TestCaseOperations {run,schedule,stop,resume,cancel}
 
     public TestCaseController(TestCaseService testCaseService,
                               RunTestCaseService runTestCaseService) {
@@ -48,32 +47,15 @@ public class TestCaseController {
         return testCase.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{id}/{operation}")
+    @PutMapping("/{id}")
     public ResponseEntity<HttpStatus> performTestCaseOperation(
             @PathVariable int id,
-            @PathVariable TestCaseOperations operation,
+            @RequestParam RunTestCaseService.TestCaseOperations operation,
             @RequestParam(defaultValue = "0") Integer startedById) {
-        switch (operation) {
-            case run:
-                return new ResponseEntity<>(transformStatus(runTestCaseService.runTestCase(id, startedById)));
-            case schedule:
-                return new ResponseEntity<>(transformStatus(runTestCaseService.scheduleTestCase(id, startedById)));
-            case stop:
-                return new ResponseEntity<>(transformStatus(runTestCaseService.suspendTestCase(id)));
-            case resume:
-                return new ResponseEntity<>(transformStatus(runTestCaseService.resumeTestCase(id)));
-            case cancel:
-                return new ResponseEntity<>(transformStatus(runTestCaseService.interruptTestCase(id)));
-            default:
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (0 == runTestCaseService.performTestCaseOperation(operation,id,startedById)) {
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-    }
-
-    private HttpStatus transformStatus (int status){
-        if (status == 0) {
-            return HttpStatus.OK;
-        }
-        return HttpStatus.FORBIDDEN;
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @MessageMapping("/actionInst/tc")
