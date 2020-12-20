@@ -2,6 +2,7 @@ package com.nc.project.controller;
 
 import com.nc.project.dto.Page;
 import com.nc.project.dto.ProjectDto;
+import com.nc.project.dto.ReportDto;
 import com.nc.project.dto.TestCaseDetailsDto;
 import com.nc.project.exception.UserNotFoundException;
 import com.nc.project.model.Project;
@@ -31,7 +32,6 @@ public class ProjectRestController {
     @PostMapping
     @ResponseStatus(value = HttpStatus.OK)
     public void create(@RequestBody Project project) {
-        System.out.println(project);
         projectService.createProject(project);
     }
 
@@ -49,11 +49,10 @@ public class ProjectRestController {
     }
 
     @PostMapping("send-report")
-    public void sendReport(
-            @RequestBody TestCaseDetailsDto testCaseDetailsDto,
-            @RequestBody String email) {
+    public void sendReport(@RequestBody ReportDto reportDto) {
+        System.out.println(reportDto);
         try {
-            emailSendReportService.sendMessageWithAttachment(email, SUBJECT, testCaseDetailsDto, PATH_TO_ATTACHMENT);
+            emailSendReportService.sendMessageWithAttachment(reportDto.getEmail(), SUBJECT, reportDto.getTestCaseDetailsDto(), PATH_TO_ATTACHMENT);
         } catch (MessagingException e) {
             System.out.println("Error: " + e.getMessage());
         }

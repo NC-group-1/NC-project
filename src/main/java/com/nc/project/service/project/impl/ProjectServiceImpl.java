@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,7 +61,7 @@ public class ProjectServiceImpl implements ProjectService {
             paramsDetail.add(
                     (params.getProject().getName() != null ? "<p>Project name: " + params.getProject().getName() + "</p>" : "")
                             + (params.getProject().getLink() != null ? "<p>Project link:" + params.getProject().getLink() + "</p>" : "")
-                            + (params.getProject().getUser().getName() != null ? "<p>Project creator:" + params.getProject().getUser().getName() + " " + params.getProject().getUser().getSurname() + "</p>" : "")
+//                            + (params.getProject().getUser().getName() != null ? "<p>Project creator:" + params.getProject().getUser().getName() + " " + params.getProject().getUser().getSurname() + "</p>" : "")
             );
 
             paramsDetail.add(
@@ -68,8 +69,8 @@ public class ProjectServiceImpl implements ProjectService {
                             + (params.getCreator() != null ? "<p>Test Case creator:" + params.getCreator().getName() + " " + params.getCreator().getSurname() + "</p>" : "")
                             + (params.getStarter() != null ? "<p>Test Case starter:" + params.getStarter().getName() + " " + params.getStarter().getSurname() + "</p>" : "")
                             + (params.getStartDate() != null ? "<p>Test Case started date: " + params.getStartDate() + "</p>" : "")
-                            + (params.getFinishDate() != null ? "<p>Test Case started date: " + params.getFinishDate() + "</p>" : "")
-                            + (params.getStatus() != null ? "<p>Test Case started date: " + params.getStatus() + "</p>" : "")
+                            + (params.getFinishDate() != null ? "<p>Test Case finished date: " + params.getFinishDate() + "</p>" : "")
+                            + (params.getStatus() != null ? "<p>Test Case status: " + params.getStatus() + "</p>" : "")
             );
 
             paramsDetail.add(
@@ -82,7 +83,7 @@ public class ProjectServiceImpl implements ProjectService {
                             .collect(Collectors.joining("</tr><tr>", "<tr>", "</tr>"))
                             + "</table>"
                     );
-            return Optional.of(String.format(htmlStringBuilder.toString(), paramsDetail.get(0), paramsDetail.get(1), paramsDetail.get(2)));
+            return Optional.of(String.format(htmlStringBuilder.toString(), String.join("", paramsDetail)));
         } catch (IOException e) {
             e.printStackTrace();
         }
