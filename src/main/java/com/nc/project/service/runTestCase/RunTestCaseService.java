@@ -4,47 +4,18 @@ import com.nc.project.dto.ActionInstRunDto;
 import java.util.List;
 
 public interface RunTestCaseService {
-    /**
-     * Starts test case
-     *
-     * @param testCaseId id of test case that would be started
-     * @param startedById id of user that started test case
-     * @return 0 if test case started or -1 if not
-     */
-    int runTestCase(Integer testCaseId, Integer startedById);
+
+    enum TestCaseOperations {RUN,SCHEDULE,STOP,RESUME,CANCEL}
 
     /**
-     * Schedule test case
+     * performs requested operation with test case
      *
-     * @param testCaseId id of test case that would be started
-     * @param startedById id of user that started test case
-     * @return 0 if test case scheduled or -1 if not
+     * @param operation operation type
+     * @param testCaseId testCaseId id of test case that would be started
+     * @param startedById startedById id of user that started/scheduled test case or 0 otherwise
+     * @return 0 if operation performed or -1 if not
      */
-    int scheduleTestCase(Integer testCaseId, Integer startedById);
-
-    /**
-     * Suspend test case
-     *
-     * @param testCaseId id of test case that would be suspended
-     * @return 0 if test case suspended or -1 if not
-     */
-    int suspendTestCase(Integer testCaseId);
-
-    /**
-     * Resumed test case
-     *
-     * @param testCaseId id of test case that would be resumed
-     * @return 0 if test case scheduled or -1 if not
-     */
-    int resumeTestCase(Integer testCaseId);
-
-    /**
-     * Interrupt test case
-     *
-     * @param testCaseId id of test case that would be interrupted
-     * @return 0 if test case scheduled or -1 if not
-     */
-    int interruptTestCase(Integer testCaseId);
+    int performTestCaseOperation(TestCaseOperations operation, Integer testCaseId, Integer startedById);
 
     List<ActionInstRunDto> getActionInstRunDtosFromSharedStorage(Integer testCaseId);
 
