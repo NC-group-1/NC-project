@@ -27,12 +27,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
     private final PasswordEncoder bCryptPasswordEncoder;
-    @Autowired
-    private NotificationService notificationService;
+    private final NotificationService notificationService;
 
-    public UserServiceImpl(UserDao userDao, PasswordEncoder bCryptPasswordEncoder) {
+    public UserServiceImpl(UserDao userDao, PasswordEncoder bCryptPasswordEncoder, NotificationService notificationService) {
         this.userDao = userDao;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.notificationService = notificationService;
     }
 
     @Override
