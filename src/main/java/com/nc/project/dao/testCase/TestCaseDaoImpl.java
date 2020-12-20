@@ -1,13 +1,11 @@
 package com.nc.project.dao.testCase;
 
-import com.nc.project.dto.TestCaseDetailsDto;
+import com.nc.project.dto.*;
 import com.nc.project.model.Project;
-import com.nc.project.dto.ActionInstDto;
-import com.nc.project.dto.TestScenarioDto;
-import com.nc.project.dto.TestCaseHistory;
 import com.nc.project.model.TestCase;
 import com.nc.project.model.User;
 import com.nc.project.dto.TestCaseHistory;
+import com.nc.project.model.Watcher;
 import com.nc.project.model.util.TestingStatus;
 import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -70,8 +68,6 @@ public class TestCaseDaoImpl implements TestCaseDao {
         return testCaseList;
     }
 
-
-
     @Override
     public Optional<Integer> getSizeOfResultSet(String filter, int projectId) {
         String sql = queryService.getQuery("testCase.getSizeOfResultSet");
@@ -79,6 +75,47 @@ public class TestCaseDaoImpl implements TestCaseDao {
                 new Object[]{"%" + filter + "%", projectId},
                 (rs, rowNum) -> rs.getInt("count"));
         return Optional.of(size);
+    }
+
+    @Override
+    public List<UserProfileDto> getListWatcherByTestCaseId(int test_case_id) {
+        String query = queryService.getQuery("testCase.getListWatcherByTestCaseId");
+        List<UserProfileDto> watcherList = jdbcTemplate.query(query,
+                new Object[]{test_case_id},
+                (resultSet, i) -> new UserProfileDto(
+                        resultSet.getInt("user_id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("surname"),
+                        resultSet.getString("role")
+                )
+        );
+
+        return watcherList;
+    }
+
+    @Override
+    public List<UserProfileDto> getUsersByName(String name) {
+        String query = queryService.getQuery("testCase.findByName");
+        List<UserProfileDto> users = jdbcTemplate.query(query,
+                new Object[]{name},
+                (resultSet, i) -> new UserProfileDto(
+                        resultSet.getInt("user_id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("surname"),
+                        resultSet.getString("role")
+                )
+        );
+
+        return users;
+    }
+
+    @Override
+    public void addWatcher(Watcher watcher) {
+        String query = queryService.getQuery("testCase.addWatcher");
+        jdbcTemplate.update(query,
+                watcher.getUser_id(),
+                watcher.getTest_case_id()
+        );
     }
 
     @Override
@@ -133,24 +170,65 @@ public class TestCaseDaoImpl implements TestCaseDao {
     }
 
     @Override
+    public List<TestCaseDetailsDto> getTestCasesPaginatedByUserId(int page, int size, String orderBy,
+                                                                  String order, int userId) {
+        String sql = queryService.getQuery("testCase.getTestCasesPaginatedByUserId");
+        sql = String.format(sql, orderBy, order);
+        return jdbcTemplate.query(sql,
+                new Object[]{userId, userId, size, page * size},
+                (rs, rowNum) -> TestCaseDetailsDto.builder()
+                        .id(rs.getInt("test_case_id"))
+                        .name(rs.getString("name"))
+                        .startDate(rs.getTimestamp("start_date"))
+                        .finishDate(rs.getTimestamp("finish_date"))
+                        .project(Project.builder()
+                                .projectId(rs.getInt("project_id"))
+                                .name(rs.getString("project_name"))
+                                .build())
+                        .status(rs.getString("status"))
+                        .build()
+        );
+    }
+
+    @Override
+    public Integer getCountOfTestCasesPaginatedByUserId(int userId) {
+        String sql = queryService.getQuery("testCase.getCountOfTestCasesPaginatedByUserId");
+        return jdbcTemplate.queryForObject(sql,
+                new Object[]{userId, userId},
+                (rs, rowNum) -> rs.getInt("count"));
+    }
+
+    @Override
+    public TestCaseStatisticDto getTestCaseStatistic(int userId) {
+        String sql = queryService.getQuery("testCase.getPassedAndFailedStatisticByUserId");
+        return jdbcTemplate.queryForObject(sql,
+                new Object[]{userId, userId, userId, userId},
+                (rs, rowNum) -> TestCaseStatisticDto.builder()
+                        .failedCount(rs.getInt("failed_count"))
+                        .passedCount(rs.getInt("passed_count"))
+                        .build()
+        );
+    }
+
+    @Override
     public TestCase create(TestCase testCase) {
         String sql = queryService.getQuery("testCase.create");
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(
                 connection -> {
                     PreparedStatement ps = connection.prepareStatement(sql, new String[]{"test_case_id"});
-                   // ps.setObject(1, testCase.getProject());
-                    ps.setObject(1, testCase.getCreator());
-                    ps.setObject(2, testCase.getStarter());
-                    ps.setObject(3, testCase.getTestScenario());
-                    ps.setString(4, testCase.getName());
-                    ps.setTimestamp(5, testCase.getCreationDate());
-                    ps.setTimestamp(6, testCase.getStartDate());
-                    ps.setTimestamp(7, testCase.getFinishDate());
-                    ps.setString(8, testCase.getStatus().name());
-                    ps.setString(9, testCase.getDescription());
-                    ps.setObject(10, testCase.getRecurringTime());
-                    ps.setObject(11, testCase.getIterationsAmount());
+                    ps.setObject(1, testCase.getProject());
+                    ps.setObject(2, testCase.getCreator());
+                    ps.setObject(3, testCase.getStarter());
+                    ps.setObject(4, testCase.getTestScenario());
+                    ps.setString(5, testCase.getName());
+                    ps.setTimestamp(6, testCase.getCreationDate());
+                    ps.setTimestamp(7, testCase.getStartDate());
+                    ps.setTimestamp(8, testCase.getFinishDate());
+                    ps.setString(9, testCase.getStatus().name());
+                    ps.setString(10, testCase.getDescription());
+                    ps.setObject(11, testCase.getRecurringTime());
+                    ps.setObject(12, testCase.getIterationsAmount());
                     return ps;
                 },
                 keyHolder);

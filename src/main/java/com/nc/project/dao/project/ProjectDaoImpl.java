@@ -63,6 +63,14 @@ public class ProjectDaoImpl implements ProjectDao {
     }
 
     @Override
+    public String getName(int projectId) {
+        String sql = queryService.getQuery("project.getName");
+        return jdbcTemplate.queryForObject(sql,
+                new Object[]{projectId},
+                (rs, rowNum) -> rs.getString("name"));
+    }
+
+    @Override
     public Integer getSizeOfResultSet(String filter) {
         String sql = queryService.getQuery("project.getSizeOfResultSet");
         return jdbcTemplate.queryForObject(sql,

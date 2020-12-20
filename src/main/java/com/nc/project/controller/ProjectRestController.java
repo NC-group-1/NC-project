@@ -10,6 +10,7 @@ import com.nc.project.service.mail.EmailSendReportService;
 import com.nc.project.service.mail.EmailService;
 import com.nc.project.service.project.ProjectService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,6 +57,12 @@ public class ProjectRestController {
         } catch (MessagingException e) {
             System.out.println("Error: " + e.getMessage());
         }
+    }
+
+    @GetMapping(produces = MediaType.TEXT_PLAIN_VALUE)
+    public String getProjectName(@RequestParam int projectId){
+        return projectService.getProjectName(projectId);
+
     }
 
     @PutMapping

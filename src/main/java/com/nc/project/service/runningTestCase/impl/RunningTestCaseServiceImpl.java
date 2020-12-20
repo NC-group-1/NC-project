@@ -18,11 +18,9 @@ import java.util.List;
 public class RunningTestCaseServiceImpl implements RunningTestCaseService {
 
     private final RunningTestCaseDao runningTestCaseDao;
-    private final NotificationService notificationService;
 
-    public RunningTestCaseServiceImpl(RunningTestCaseDao runningTestCaseDao, NotificationService notificationService) {
+    public RunningTestCaseServiceImpl(RunningTestCaseDao runningTestCaseDao) {
         this.runningTestCaseDao = runningTestCaseDao;
-        this.notificationService = notificationService;
     }
 
     @Override
@@ -41,20 +39,4 @@ public class RunningTestCaseServiceImpl implements RunningTestCaseService {
         runningTestCaseDao.edit(testCase);
     }
 
-    @Override
-    public List<UserProfileDto> getWatcherByTestCaseId(int test_case_id) {
-        return runningTestCaseDao.getWatcherByTestCaseId(test_case_id);
-    }
-
-    @Override
-    public List<UserProfileDto> getUsersByName(String name) {
-
-        return runningTestCaseDao.getUsersByName(name);
-    }
-
-    @Override
-    public void addWatcher(Watcher watcher) {
-        runningTestCaseDao.addWatcher(watcher);
-        notificationService.createNotification(watcher.getTest_case_id(), NotificationType.WATCHER);
-    }
 }

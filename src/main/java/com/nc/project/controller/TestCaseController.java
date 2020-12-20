@@ -2,6 +2,7 @@ package com.nc.project.controller;
 
 import com.nc.project.dto.*;
 import com.nc.project.model.TestCase;
+import com.nc.project.model.Watcher;
 import com.nc.project.service.runTestCase.RunTestCaseService;
 import com.nc.project.service.testCase.TestCaseService;
 import org.springframework.http.HttpStatus;
@@ -121,6 +122,23 @@ public class TestCaseController {
         return new ResponseEntity<>(instancesResponse, HttpStatus.OK);
     }
 
+    @GetMapping("/user/{userId}/paginated")
+    public ResponseEntity<Page<TestCaseDetailsDto>> getTestCasesPaginatedByUserId(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "finishDate") String orderBy,
+            @RequestParam(defaultValue = "ASC") String order,
+            @PathVariable int userId) {
+        Page<TestCaseDetailsDto> resultPage = testCaseService.getTestCasesPaginatedByUserId(page, size, orderBy, order, userId);
+        return new ResponseEntity<>(resultPage, HttpStatus.OK);
+    }
+
+    @GetMapping("/user/{userId}/statistic")
+    public ResponseEntity<TestCaseStatisticDto> getTestCaseStatistic(@PathVariable int userId) {
+        TestCaseStatisticDto statistic = testCaseService.getTestCaseStatistic(userId);
+        return new ResponseEntity<>(statistic, HttpStatus.OK);
+    }
+
     @GetMapping("/list/{projectId}")
     public ResponseEntity<Page<TestCaseDto>> getAll(
             @RequestParam(defaultValue = "10") int pageSize,
@@ -135,6 +153,26 @@ public class TestCaseController {
 
         return new ResponseEntity<>(testCaseList, HttpStatus.OK);
     }
+
+    @GetMapping
+    public ResponseEntity<List<UserProfileDto>> getListWatcherByTestCaseId(@RequestParam int test_case_id) {
+        List<UserProfileDto> watchers = testCaseService.getListWatcherByTestCaseId(test_case_id);
+        return new ResponseEntity<>(watchers,HttpStatus.OK);
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<UserProfileDto>> getUsersByName(@RequestParam String name) {
+        List<UserProfileDto> users = testCaseService.getUsersByName(name);
+        return new ResponseEntity<>(users,HttpStatus.OK);
+    }
+
+    @PostMapping("/add-watcher")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void addWatcher(@RequestBody Watcher watcher) {
+        testCaseService.addWatcher(watcher);
+    }
+
+
     @GetMapping("/historyList/{projectId}")
     public ResponseEntity<Page<TestCaseHistory>> getHistory(
             @RequestParam(defaultValue = "10") int pageSize,

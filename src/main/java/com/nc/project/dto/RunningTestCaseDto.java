@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,6 +17,7 @@ public class RunningTestCaseDto {
     private String description;
     private User user;
     private Integer starter_id;
+    private Timestamp startDate;
     private Integer watcher_numb;
     private String status;
 }

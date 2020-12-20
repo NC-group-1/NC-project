@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface ProjectService {
     void createProject(Project project);
     Page<ProjectDto> getAllByPage(int page, int size, String filter, String orderBy, String order);
+    String getProjectName(int project_id);
     void editProject(Project project);
     Optional<String> addParamsToEmail(TestCaseDetailsDto params, String pathToEmail);
 }
