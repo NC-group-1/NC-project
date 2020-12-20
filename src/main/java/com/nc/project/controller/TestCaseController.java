@@ -47,56 +47,15 @@ public class TestCaseController {
         return testCase.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/{id}/run")
-    public ResponseEntity<HttpStatus> runTestCase(@PathVariable int id,
-                                      @RequestParam(name = "startedById") Integer startedById) {
-        int status = runTestCaseService.runTestCase(id, startedById);
-        if(status == 0){
+    @PutMapping("/{id}")
+    public ResponseEntity<HttpStatus> performTestCaseOperation(
+            @PathVariable int id,
+            @RequestParam RunTestCaseService.TestCaseOperations operation,
+            @RequestParam(defaultValue = "0") Integer startedById) {
+        if (0 == runTestCaseService.performTestCaseOperation(operation,id,startedById)) {
             return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-    }
-
-    @PostMapping("/{id}/schedule")
-    public ResponseEntity<HttpStatus> scheduleTestCase(@PathVariable int id,
-                                                  @RequestParam(name = "startedById") Integer startedById) {
-        int status = runTestCaseService.scheduleTestCase(id, startedById);
-        if(status == 0){
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-    }
-
-    @PutMapping("/{id}/stop")
-    public ResponseEntity<HttpStatus> stopTestCase(@PathVariable int id) {
-        int status = runTestCaseService.suspendTestCase(id);
-        if(status == 0){
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-    }
-
-    @PutMapping("/{id}/resume")
-    public ResponseEntity<HttpStatus> resumeTestCase(@PathVariable int id) {
-        int status = runTestCaseService.resumeTestCase(id);
-        if(status == 0){
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-    }
-
-    @PutMapping("/{id}/cancel")
-    public ResponseEntity<HttpStatus> cancelTestCase(@PathVariable int id) {
-        int status = runTestCaseService.interruptTestCase(id);
-        if(status == 0){
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @MessageMapping("/actionInst/tc")
