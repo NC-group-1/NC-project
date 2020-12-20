@@ -19,6 +19,7 @@ public class RunningTestCaseRowMapper implements RowMapper<RunningTestCaseDto> {
                         resultSet.getString("username"),
                         resultSet.getString("surname")),
                 resultSet.getInt("starter_id"),
+                resultSet.getTimestamp("start_date"),
                 resultSet.getInt("watcher_numb"),
                 resultSet.getString("status")
         );

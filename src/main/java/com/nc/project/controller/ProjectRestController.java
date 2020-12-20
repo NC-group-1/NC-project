@@ -5,6 +5,7 @@ import com.nc.project.dto.ProjectDto;
 import com.nc.project.model.Project;
 import com.nc.project.service.project.ProjectService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +36,11 @@ public class ProjectRestController {
 
         Page<ProjectDto> projectList = projectService.getAllByPage(pageIndex, pageSize, filter, orderBy, order);
         return new ResponseEntity<>(projectList, HttpStatus.OK);
+    }
+
+    @GetMapping(produces = MediaType.TEXT_PLAIN_VALUE)
+    public String getProjectName(@RequestParam int projectId){
+        return projectService.getProjectName(projectId);
     }
 
     @PutMapping

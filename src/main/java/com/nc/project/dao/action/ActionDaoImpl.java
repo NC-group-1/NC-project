@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Objects.isNull;
+
 @Repository
 public class ActionDaoImpl implements ActionDao {
     private final QueryService queryService;
@@ -45,8 +47,9 @@ public class ActionDaoImpl implements ActionDao {
     @Override
     public int findNumberOfElements() {
         String sql = queryService.getQuery("action.findNumberOfElements");
-        return jdbcTemplate.queryForObject(sql,
+        Integer count = jdbcTemplate.queryForObject(sql,
                 (resultSet, i) -> resultSet.getInt("count"));
+        return isNull(count) ? 0 : count;
     }
 
     @Override

@@ -2,9 +2,13 @@ package com.nc.project.dao.testCase;
 
 import com.nc.project.dao.GenericDao;
 import com.nc.project.dto.TestCaseDetailsDto;
+import com.nc.project.dto.TestCaseStatisticDto;
 import com.nc.project.dto.TestScenarioDto;
 import com.nc.project.dto.TestCaseHistory;
+import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.TestCase;
+import com.nc.project.model.Watcher;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +23,12 @@ public interface TestCaseDao extends GenericDao<TestCase, Integer> {
 
     void delete(Integer ID);
 
+    List<UserProfileDto> getListWatcherByTestCaseId(int test_case_id);
+
+    List<UserProfileDto> getUsersByName(String name);
+
+    void addWatcher(Watcher watcher);
+
     List<Integer> getTestCasesIdByWatcher(Integer userId);
 
     Optional<Integer> getSizeOfResultSet(String filter, int projectId);
@@ -32,4 +42,10 @@ public interface TestCaseDao extends GenericDao<TestCase, Integer> {
     List<TestCaseHistory> getHistory(int pageIndex, int pageSize, String filter, String orderBy, String order, int projectId);
 
     Integer getSizeOfHistoryResultSet(String filter, int projectId);
+
+    List<TestCaseDetailsDto> getTestCasesPaginatedByUserId(int page, int size, String orderBy, String order, int userId);
+
+    Integer getCountOfTestCasesPaginatedByUserId(int userId);
+
+    TestCaseStatisticDto getTestCaseStatistic(int userId);
 }
