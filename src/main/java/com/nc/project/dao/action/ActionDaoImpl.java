@@ -47,8 +47,7 @@ public class ActionDaoImpl implements ActionDao {
     @Override
     public int findNumberOfElements() {
         String sql = queryService.getQuery("action.findNumberOfElements");
-        Integer count = jdbcTemplate.queryForObject(sql,
-                (resultSet, i) -> resultSet.getInt("count"));
+        Integer count = jdbcTemplate.queryForObject(sql, new Object[] {}, Integer.class);
         return isNull(count) ? 0 : count;
     }
 
