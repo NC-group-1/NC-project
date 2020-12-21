@@ -26,6 +26,7 @@ public class TestCaseDetailsDto {
     private Timestamp startDate;
     private Timestamp finishDate;
     private Project project;
+    private List<ActionInstRunDto> actionInstRunDtos;
     private List<UserProfileDto> watchers;
 
 
