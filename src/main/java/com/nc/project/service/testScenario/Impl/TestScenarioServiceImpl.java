@@ -4,6 +4,8 @@ import com.nc.project.dao.compound.CompoundDao;
 import com.nc.project.dao.testScenario.TestScenarioDao;
 import com.nc.project.dto.Page;
 import com.nc.project.dto.TestScenarioDto;
+import com.nc.project.model.ActionOfCompound;
+import com.nc.project.model.Compound;
 import com.nc.project.model.TestScenario;
 import com.nc.project.model.TestScenarioComponent;
 import com.nc.project.model.util.ActionType;
@@ -11,6 +13,7 @@ import com.nc.project.service.testScenario.TestScenarioService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,17 +76,48 @@ public class TestScenarioServiceImpl implements TestScenarioService {
         Optional<TestScenario> testScenarioOptional = testScenarioDao.getById(id);
         if (testScenarioOptional.isPresent()) {
             TestScenario testScenario = testScenarioOptional.get();
-            List<TestScenarioComponent> components = testScenarioDao.getComponents(id);
-            for (TestScenarioComponent component : components) {
-                if (component.getAction().getType() == ActionType.COMPOUND) {
-                    component
-                            .getAction()
-                            .setActions(compoundDao.getActionsOfCompound(component.getAction().getId()));
-                }
-            }
-            testScenario.setActions(components);
+            testScenario.setActions(getComponents(id));
             return testScenario;
         }
         return new TestScenario();
+    }
+
+    private List<TestScenarioComponent> getComponents(int id) {
+        List<TestScenarioComponent> components = testScenarioDao.getComponents(id);
+        for (TestScenarioComponent component : components) {
+            if (component.getAction().getType() == ActionType.COMPOUND) {
+                component
+                        .getAction()
+                        .setActions(compoundDao.getActionsOfCompound(component.getAction().getId()));
+            }
+        }
+        return components;
+    }
+
+    @Override
+    public TestScenario getDecomposedTestScenarioById(int id) {
+        Optional<TestScenario> testScenarioOptional = testScenarioDao.getById(id);
+        if (testScenarioOptional.isPresent()) {
+            TestScenario testScenario = testScenarioOptional.get();
+            testScenario.setActions(getDecomposedComponents(id));
+            return testScenario;
+        }
+        return new TestScenario();
+    }
+
+    private List<TestScenarioComponent> getDecomposedComponents(int id) {
+        List<TestScenarioComponent> components = new ArrayList<>();
+        int order_num = 1;
+        for (TestScenarioComponent component : testScenarioDao.getComponents(id)) {
+            if (component.getAction().getType() == ActionType.COMPOUND) {
+                for (ActionOfCompound action : compoundDao.getActionsOfCompound(component.getAction().getId())) {
+                    components.add(new TestScenarioComponent(   action.getAction(), order_num++));
+                }
+            } else {
+                component.setOrderNum(order_num++);
+                components.add(component);
+            }
+        }
+        return components;
     }
 }

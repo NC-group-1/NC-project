@@ -20,4 +20,9 @@ public class TestScenarioComponent {
         }
 
     }
+
+    public TestScenarioComponent(Action action, int orderNum) {
+        this.action = new Compound(action.getId(),action.getName(),action.getDescription(),action.getType(),action.getParameterKey());
+        this.orderNum = orderNum;
+    }
 }

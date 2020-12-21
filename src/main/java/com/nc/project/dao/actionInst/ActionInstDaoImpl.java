@@ -2,6 +2,7 @@ package com.nc.project.dao.actionInst;
 
 import com.nc.project.dto.ActionInstRunDto;
 import com.nc.project.model.ActionInst;
+import com.nc.project.model.ParameterKey;
 import com.nc.project.model.util.ActionType;
 import com.nc.project.model.util.TestingStatus;
 import com.nc.project.service.query.QueryService;
@@ -44,7 +45,7 @@ public class ActionInstDaoImpl implements ActionInstDao {
                 actionInst.getCompound(),
                 actionInst.getTestCase(),
                 actionInst.getDataSet(),
-                actionInst.getParameterKey().getId(),
+                ParameterKey.checkValid(actionInst.getParameterKey()) ? actionInst.getParameterKey().getId() : null,
                 actionInst.getStatus(),
                 actionInst.getOrderNum()
         );

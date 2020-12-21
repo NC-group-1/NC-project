@@ -22,6 +22,11 @@ public class TestScenarioRestController {
         return testScenarioService.getTestScenarioById(id);
     }
 
+    @GetMapping("decomposed/{id}")
+    public TestScenario getDecomposedTestScenarioById(@PathVariable int id) {
+        return testScenarioService.getDecomposedTestScenarioById(id);
+    }
+
     @PostMapping
     @ResponseStatus(value = HttpStatus.OK)
     public void create(@RequestBody TestScenario testScenario) {
