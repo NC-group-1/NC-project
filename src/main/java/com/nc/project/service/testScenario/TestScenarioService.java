@@ -13,4 +13,6 @@ public interface TestScenarioService {
     void deleteTestScenario(int testScenarioId);
 
     TestScenario getTestScenarioById(int id);
+
+    TestScenario getDecomposedTestScenarioById(int id);
 }
