@@ -17,6 +17,8 @@ public enum ActionType {
     FIND_ELEMENT_BY_PARTIAL_LINK_TEXT(2, 0),
     FIND_ELEMENT_BY_LINK_TEXT(2, 0),
     FIND_ELEMENT_BY_CSS_SELECTOR(2, 0),
+    KEY_UP(0, 0),
+    DOUBLE_CLICK(0, 0),
     COMPOUND(0, 0);
 
     private final Integer needParams;
