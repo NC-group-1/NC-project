@@ -111,7 +111,7 @@ public class TestScenarioServiceImpl implements TestScenarioService {
         for (TestScenarioComponent component : testScenarioDao.getComponents(id)) {
             if (component.getAction().getType() == ActionType.COMPOUND) {
                 for (ActionOfCompound action : compoundDao.getActionsOfCompound(component.getAction().getId())) {
-                    components.add(new TestScenarioComponent((Compound) action.getAction(), order_num++));
+                    components.add(new TestScenarioComponent(   action.getAction(), order_num++));
                 }
             } else {
                 component.setOrderNum(order_num++);
