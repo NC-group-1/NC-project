@@ -8,6 +8,7 @@ import com.nc.project.model.User;
 import com.nc.project.service.user.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +32,7 @@ public class UserRestController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(value = HttpStatus.OK)
     public void register(@RequestBody User user){
         System.out.println(user);
@@ -44,6 +46,7 @@ public class UserRestController {
         return userUpdated.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
     @GetMapping("/email/{email}")
+    @PreAuthorize("hasRole('ADMIN') || hasRole('MANAGER')")
     public ResponseEntity<UserProfileDto> findUserByEmail(@PathVariable String email) throws InterruptedException {
         Optional<UserProfileDto> user = userService.findByEmail(email);
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
