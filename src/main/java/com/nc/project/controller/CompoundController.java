@@ -7,12 +7,16 @@ import com.nc.project.model.Compound;
 
 import com.nc.project.service.compound.CompoundService;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @RestController
-@RequestMapping("/compound")
+@RequestMapping("/api/ncp/compound")
+//@PreAuthorize("hasRole('MANAGER')")
 public class CompoundController {
     private final CompoundService compoundService;
 
@@ -34,6 +38,7 @@ public class CompoundController {
     public Action createCompound(@RequestBody Compound compound){
         return compoundService.createCompound(compound);
     }
+
     @GetMapping("{id}")
     public Compound getCompoundById(@PathVariable int id){
         return compoundService.getCompoundById(id);
