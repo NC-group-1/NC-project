@@ -4,7 +4,7 @@ CREATE TABLE public.usr
     name character varying(30),
     surname character varying(30),
     email character varying(255) UNIQUE NOT NULL,
-    role character varying(10) NOT NULL,
+    role character varying(15) NOT NULL,
     activated boolean NOT NULL DEFAULT true,
     image_link character varying(2000),
     pass character varying(255),
