@@ -25,6 +25,7 @@ public class TestScenarioRestController {
     @PostMapping
     @ResponseStatus(value = HttpStatus.OK)
     public void create(@RequestBody TestScenario testScenario) {
+        System.out.println(testScenario);
         testScenarioService.createTestScenario(testScenario);
     }
 

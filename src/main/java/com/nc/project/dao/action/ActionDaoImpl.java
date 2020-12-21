@@ -52,9 +52,13 @@ public class ActionDaoImpl implements ActionDao {
     }
 
     @Override
-    public int findNumberOfElements(String filter, String filterTable) {
+    public int findNumberOfElements(String filter, String filterTable, Boolean includeCompounds) {
         String query = queryService.getQuery("action.findNumberOfElementsWithFilter");
-        query = String.format(query,filterTable);
+        if(includeCompounds){
+            query = String.format(query,filterTable,"");
+        } else {
+            query = String.format(query,filterTable,"AND action.type<>'COMPOUND' ");
+        }
         Integer size = jdbcTemplate.queryForObject(query,
                 new Object[]{"%"+filter+"%"},
                 (rs, rowNum) -> rs.getInt("count"));
@@ -100,8 +104,14 @@ public class ActionDaoImpl implements ActionDao {
     }
 
     @Override
-    public List<Action> findAllActionsByPage(int limit, int offset, String filter, String filterTable, String orderBy, String order) {
+    public List<Action> findAllActionsByPage(int limit, int offset, String filter, String filterTable,
+                                             String orderBy, String order, Boolean includeCompounds) {
         String query = queryService.getQuery("action.findAllByPageWithFilter");
+        if(includeCompounds){
+            query = String.format(query,filterTable,"",orderBy,order);
+        } else {
+            query = String.format(query,filterTable,"AND action.type<>'COMPOUND' ",orderBy,order);
+        }
         query = String.format(query,filterTable,orderBy,order);
         return jdbcTemplate.query(query,
                 new Object[]{"%" + filter + "%", limit, offset},

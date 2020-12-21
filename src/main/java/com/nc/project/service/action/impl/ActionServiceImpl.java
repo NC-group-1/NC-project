@@ -116,12 +116,13 @@ public class ActionServiceImpl implements ActionService {
                                             String filter,
                                             String filterTable,
                                             String orderBy,
-                                            String order) {
-        int numberOfElements = actionDao.findNumberOfElements(filter, filterTable);
+                                            String order,
+                                            Boolean includeCompounds) {
+        int numberOfElements = actionDao.findNumberOfElements(filter, filterTable, includeCompounds);
         Page<Action> resultPage = new Page<>();
         if (numberOfElements > size * page) {
             resultPage.setList(actionDao.findAllActionsByPage(size, size * page,
-                    filter,filterTable,orderBy,order));
+                    filter,filterTable,orderBy,order, includeCompounds));
             resultPage.setSize(numberOfElements);
         }
         return resultPage;

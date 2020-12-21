@@ -25,6 +25,7 @@ public class TestScenarioServiceImpl implements TestScenarioService {
     }
 
     @Override
+    @Transactional
     public void createTestScenario(TestScenario testScenario) {
         int testScenarioId = testScenarioDao.create(testScenario);
         testScenarioDao.addManyActionOrCompound(testScenario.getListActionCompoundId().stream().mapToInt(i -> i).toArray(), testScenarioId);

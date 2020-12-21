@@ -200,7 +200,10 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
                         && testCase.getStatus() != TestingStatus.CANCELED
                         && testCase.getStatus() != TestingStatus.FAILED){
                     synchronized (sharedStorage.get(testCase.getId())){
+                        testCaseDao.editForRun(testCase);
                         sharedStorage.get(testCase.getId()).wait();
+                        testCase.setStatus(TestingStatus.IN_PROGRESS);
+                        testCaseDao.editForRun(testCase);
                     }
                 }
                 if (testCase.getStatus() == TestingStatus.FAILED || testCase.getStatus() == TestingStatus.CANCELED) {
