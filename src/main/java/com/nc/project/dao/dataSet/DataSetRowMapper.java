@@ -15,7 +15,7 @@ public class DataSetRowMapper implements RowMapper<DataSet> {
     @Override
     public DataSet mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         User user = new User();
-        user.setId(resultSet.getInt("user_id"));
+        user.setUserId(resultSet.getInt("user_id"));
 
         ParameterKey parameterKey = new ParameterKey();
         parameterKey.setKey(resultSet.getString("key"));

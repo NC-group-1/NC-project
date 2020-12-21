@@ -32,13 +32,13 @@ public class TestCaseDaoImpl implements TestCaseDao {
         entity.setStartDate(resultSet.getTimestamp("start_date"));
         entity.setFinishDate(resultSet.getTimestamp("finish_date"));
         User creator = new User();
-        creator.setId(resultSet.getObject("creator_id", Integer.class));
+        creator.setUserId(resultSet.getObject("creator_id", Integer.class));
         creator.setName(resultSet.getString("creator_name"));
         creator.setSurname(resultSet.getString("creator_surname"));
         entity.setCreator(creator);
         if(resultSet.getObject("starter_id", Integer.class) != null){
             User starter = new User();
-            starter.setId(resultSet.getObject("starter_id", Integer.class));
+            starter.setUserId(resultSet.getObject("starter_id", Integer.class));
             starter.setName(resultSet.getString("starter_name"));
             starter.setSurname(resultSet.getString("starter_surname"));
             entity.setStarter(starter);

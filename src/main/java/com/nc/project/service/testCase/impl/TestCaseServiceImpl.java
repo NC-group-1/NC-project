@@ -9,9 +9,7 @@ import com.nc.project.dao.testCase.TestCaseDao;
 import com.nc.project.dao.user.UserDao;
 import com.nc.project.dto.*;
 import com.nc.project.model.*;
-import com.nc.project.model.util.NotificationType;
 import com.nc.project.model.util.TestingStatus;
-import com.nc.project.service.notification.NotificationService;
 import com.nc.project.service.testCase.TestCaseService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -157,7 +155,7 @@ public class TestCaseServiceImpl implements TestCaseService {
                 .description(testScenarioDto.getDescription())
                 .creationDate(new Timestamp(System.currentTimeMillis()))
                 .status(TestingStatus.UNKNOWN)
-                .creator(testScenarioDto.getUser().getId())
+                .creator(testScenarioDto.getUser().getUserId())
                 .testScenario(testScenarioDto.getTestScenarioId())
                 .build();
 

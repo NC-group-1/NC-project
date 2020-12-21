@@ -39,6 +39,7 @@ public class UserRestController {
 
     @PutMapping
     public ResponseEntity<UserProfileDto> updateUserProfile(@RequestBody UserProfileDto user){
+        System.out.println(user);
         Optional<UserProfileDto> userUpdated = userService.updatePersonalProfile(user);
         return userUpdated.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }

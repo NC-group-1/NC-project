@@ -30,7 +30,7 @@ public class TestScenarioDaoImpl implements TestScenarioDao {
         String sql = queryService.getQuery("testScenario.create");
         return jdbcTemplate.queryForObject(sql, new Object[]{
                         testScenario.getName(),
-                        testScenario.getUser().getId(),
+                        testScenario.getUser().getUserId(),
                         testScenario.getProject().getProjectId(),
                         testScenario.getDescription()},
                 (rs, rowNum) -> rs.getInt("test_scenario_id")
