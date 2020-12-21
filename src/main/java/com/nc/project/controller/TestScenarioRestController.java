@@ -21,6 +21,7 @@ public class TestScenarioRestController {
     public TestScenario getTestScenarioById(@PathVariable int id) {
         return testScenarioService.getTestScenarioById(id);
     }
+
     @GetMapping("decomposed/{id}")
     public TestScenario getDecomposedTestScenarioById(@PathVariable int id) {
         return testScenarioService.getDecomposedTestScenarioById(id);
