@@ -153,7 +153,6 @@ public class TestCaseServiceImpl implements TestCaseService {
     @Transactional
     public TestCase create(TestScenarioDto testScenarioDto) {
         TestCase testCase = TestCase.builder()
-                .project(testScenarioDto.getProjectId())
                 .name(testScenarioDto.getName())
                 .description(testScenarioDto.getDescription())
                 .creationDate(new Timestamp(System.currentTimeMillis()))

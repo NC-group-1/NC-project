@@ -217,18 +217,17 @@ public class TestCaseDaoImpl implements TestCaseDao {
         jdbcTemplate.update(
                 connection -> {
                     PreparedStatement ps = connection.prepareStatement(sql, new String[]{"test_case_id"});
-                    ps.setObject(1, testCase.getProject());
-                    ps.setObject(2, testCase.getCreator());
-                    ps.setObject(3, testCase.getStarter());
-                    ps.setObject(4, testCase.getTestScenario());
-                    ps.setString(5, testCase.getName());
-                    ps.setTimestamp(6, testCase.getCreationDate());
-                    ps.setTimestamp(7, testCase.getStartDate());
-                    ps.setTimestamp(8, testCase.getFinishDate());
-                    ps.setString(9, testCase.getStatus().name());
-                    ps.setString(10, testCase.getDescription());
-                    ps.setObject(11, testCase.getRecurringTime());
-                    ps.setObject(12, testCase.getIterationsAmount());
+                    ps.setObject(1, testCase.getCreator());
+                    ps.setObject(2, testCase.getStarter());
+                    ps.setObject(3, testCase.getTestScenario());
+                    ps.setString(4, testCase.getName());
+                    ps.setTimestamp(5, testCase.getCreationDate());
+                    ps.setTimestamp(6, testCase.getStartDate());
+                    ps.setTimestamp(7, testCase.getFinishDate());
+                    ps.setString(8, testCase.getStatus().name());
+                    ps.setString(9, testCase.getDescription());
+                    ps.setObject(10, testCase.getRecurringTime());
+                    ps.setObject(11, testCase.getIterationsAmount());
                     return ps;
                 },
                 keyHolder);

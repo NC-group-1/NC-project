@@ -18,7 +18,6 @@ import java.sql.Timestamp;
 public class TestCase {
     @Id
     private Integer id;
-    private Integer project;
     private Integer creator;
     private Integer starter;
     private Integer testScenario;
