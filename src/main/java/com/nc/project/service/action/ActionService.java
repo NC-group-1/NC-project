@@ -28,5 +28,6 @@ public interface ActionService {
                                      String filter,
                                      String filterTable,
                                      String orderBy,
-                                     String order);
+                                     String order,
+                                     Boolean includeCompounds);
 }

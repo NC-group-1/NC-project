@@ -47,7 +47,7 @@ public class ActionController {
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
         Page<Action> resultPage = actionService.getAllActionsByPage(page, size,
-                "", "name", "name", "ASC");
+                "", "name", "name", "ASC",true);
         return new ResponseEntity<>(resultPage, HttpStatus.OK);
     }
 
@@ -58,11 +58,13 @@ public class ActionController {
             @RequestParam(name = "filter", defaultValue = "") String filter,
             @RequestParam(name = "filterTable",defaultValue = "name") String filterTable,
             @RequestParam(name = "orderBy",defaultValue = "name") String orderBy,
-            @RequestParam(name = "order", defaultValue = "ASC") String order) {
+            @RequestParam(name = "order", defaultValue = "ASC") String order,
+            @RequestParam(name = "includeCompounds", defaultValue = "true") Boolean includeCompounds) {
         if(!allowedTableNames.contains(filterTable) ||
                 !allowedTableNames.contains(orderBy) ||
                 !allowedOrders.contains(order)) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        Page<Action> resultPage = actionService.getAllActionsByPage(page, size, filter, filterTable, orderBy, order);
+        Page<Action> resultPage = actionService.getAllActionsByPage(page, size, filter, filterTable, orderBy,
+                order, includeCompounds);
         return new ResponseEntity<>(resultPage, HttpStatus.OK);
     }
 

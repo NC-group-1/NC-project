@@ -11,7 +11,7 @@ public interface ActionDao extends GenericDao<Action, Integer> {
 
     int findNumberOfElements();
 
-    int findNumberOfElements(String filter, String filterTable);
+    int findNumberOfElements(String filter, String filterTable, Boolean includeCompounds);
 
     //List<Action> findAllActionsByPage(int limit, int offset);
 
@@ -26,5 +26,6 @@ public interface ActionDao extends GenericDao<Action, Integer> {
                                       String filter,
                                       String filterTable,
                                       String orderBy,
-                                      String order);
+                                      String order,
+                                      Boolean includeCompounds);
 }
