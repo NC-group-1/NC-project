@@ -59,7 +59,7 @@ CREATE TABLE public.parameter
     parameter_id serial PRIMARY KEY,
     value character varying(255) NOT NULL
     parameter_key_id integer REFERENCES parameter_key NOT NULL,
-    data_set_id integer REFERENCES data_set NOT NULL
+    data_set_id integer REFERENCES data_set ON DELETE CASCADE NOT NULL
 );
 
 
@@ -93,7 +93,6 @@ CREATE TABLE public.test_case
     description text NOT NULL,
     recurring_time interval,
     iterations_amount integer DEFAULT 0,
-    project_id integer REFERENCES project NOT NULL,
     creator_id integer REFERENCES usr NOT NULL,
     starter_id integer REFERENCES usr,
     test_scenario_id integer REFERENCES test_scenario NOT NULL
@@ -105,7 +104,8 @@ CREATE TABLE public.action_inst
     action_inst_id serial PRIMARY KEY,
     action_id integer REFERENCES action NOT NULL,
     compound_id integer REFERENCES action,
-    test_case_id integer REFERENCES test_case NOT NULL,
+    result character varying(2000),
+    test_case_id integer REFERENCES test_case ON DELETE CASCADE NULL,
     data_set_id integer REFERENCES data_set,
     parameter_key_id integer REFERENCES parameter_key,
     status character varying(30) NOT NULL,
