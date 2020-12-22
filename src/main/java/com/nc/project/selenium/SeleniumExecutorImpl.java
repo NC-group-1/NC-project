@@ -49,6 +49,7 @@ public class SeleniumExecutorImpl implements Executor{
     public TestingStatus scrollPageToEnd(String parameter, Integer actionId) {
         JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("window.scrollTo(0, document.body.scrollHeight)");
+        context.put(actionId, "Page scrolled successfully");
         return TestingStatus.PASSED;
     }
 
@@ -56,6 +57,7 @@ public class SeleniumExecutorImpl implements Executor{
     public TestingStatus compareWithContextValue(String parameter, Integer actionId) {
         Optional<String> expected = context.get(actionId);
         if(currentContextValue.equals(expected.orElse(null))){
+            context.put(actionId, "Compared values are equal");
             return TestingStatus.PASSED;
         } else {
             context.put(actionId,"Comparing mismatch! Got("+currentContextValue+") Expected("+expected+")");
@@ -66,6 +68,7 @@ public class SeleniumExecutorImpl implements Executor{
     @Override
     public TestingStatus compareWithString(String parameter, Integer actionId) {
         if(currentContextValue.equals(parameter)){
+            context.put(actionId, "Compared values are equal");
             return TestingStatus.PASSED;
         } else {
             context.put(actionId,"Comparing mismatch! Got("+currentContextValue+") Expected("+parameter+")");
@@ -79,6 +82,7 @@ public class SeleniumExecutorImpl implements Executor{
         handles.remove(driver.getWindowHandle());
         if(!handles.isEmpty()){
             driver.switchTo().window(handles.iterator().next());
+            context.put(actionId, "Tab switched successfully");
             return TestingStatus.PASSED;
         } else {
             context.put(actionId, "No tab to switch");
@@ -89,60 +93,70 @@ public class SeleniumExecutorImpl implements Executor{
     @Override
     public TestingStatus sendKeys(String parameter, Integer actionId) {
         currentWebElement.sendKeys(parameter);
+        context.put(actionId, "Keys sent successfully");
         return TestingStatus.PASSED;
     }
 
     @Override
     public TestingStatus click(String parameter, Integer actionId) {
         currentWebElement.click();
+        context.put(actionId, "Click performed successfully");
         return TestingStatus.PASSED;
     }
 
     @Override
     public TestingStatus findElementByCssSelector(String parameter, Integer actionId) {
         currentWebElement = driver.findElement(By.cssSelector(parameter));
+        context.put(actionId, "Element located successfully");
         return TestingStatus.PASSED;
     }
 
     @Override
     public TestingStatus findElementById(String parameter, Integer actionId) {
         currentWebElement = driver.findElement(By.id(parameter));
+        context.put(actionId, "Element located successfully");
         return TestingStatus.PASSED;
     }
 
     @Override
     public TestingStatus findElementByLinkText(String parameter, Integer actionId) {
         currentWebElement = driver.findElement(By.linkText(parameter));
+        context.put(actionId, "Element located successfully");
         return TestingStatus.PASSED;
     }
 
     @Override
     public TestingStatus findElementByPartialLinkText(String parameter, Integer actionId) {
         currentWebElement = driver.findElement(By.partialLinkText(parameter));
+        context.put(actionId, "Element located successfully");
         return TestingStatus.PASSED;
     }
 
     @Override
     public TestingStatus findElementByName(String parameter, Integer actionId) {
         currentWebElement = driver.findElement(By.name(parameter));
+        context.put(actionId, "Element located successfully");
         return TestingStatus.PASSED;
     }
 
     @Override
     public TestingStatus findElementByTagName(String parameter, Integer actionId) {
         currentWebElement = driver.findElement(By.tagName(parameter));
+        context.put(actionId, "Element located successfully");
         return TestingStatus.PASSED;
     }
 
     @Override
     public TestingStatus findElementByXpath(String parameter, Integer actionId) {
         currentWebElement = driver.findElement(By.xpath(parameter));
+        context.put(actionId, "Element located successfully");
         return TestingStatus.PASSED;
     }
 
     @Override
     public TestingStatus findElementByClassName(String parameter, Integer actionId) {
         currentWebElement = driver.findElement(By.className(parameter));
+        context.put(actionId, "Element located successfully");
         return TestingStatus.PASSED;
     }
 }

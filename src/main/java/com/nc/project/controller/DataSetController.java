@@ -67,7 +67,7 @@ public class DataSetController {
         if(usages == 0){
             return new ResponseEntity<>(0,HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(usages,HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(usages,HttpStatus.NOT_ACCEPTABLE);
         }
     }
 

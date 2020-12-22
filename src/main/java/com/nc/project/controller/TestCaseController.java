@@ -55,7 +55,7 @@ public class TestCaseController {
         if (0 == runTestCaseService.performTestCaseOperation(operation,id,startedById)) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
     }
 
     @MessageMapping("/actionInst/tc")
