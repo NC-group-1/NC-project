@@ -22,6 +22,11 @@ public class TestScenarioRestController {
         return testScenarioService.getTestScenarioById(id);
     }
 
+    @GetMapping("decomposed/{id}")
+    public TestScenario getDecomposedTestScenarioById(@PathVariable int id) {
+        return testScenarioService.getDecomposedTestScenarioById(id);
+    }
+
     @PostMapping
     @ResponseStatus(value = HttpStatus.OK)
     public void create(@RequestBody TestScenario testScenario) {
@@ -33,25 +38,32 @@ public class TestScenarioRestController {
     public ResponseEntity<Page<TestScenarioDto>> getAllByProject(
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "0") int pageIndex,
+            @RequestParam(defaultValue = "") String filterBy,
             @RequestParam(defaultValue = "") String filter,
             @RequestParam(defaultValue = "") String orderBy,
             @RequestParam(defaultValue = "") String order,
             @PathVariable int projectId
     ) {
-        Page<TestScenarioDto> testScenarioList = testScenarioService.getAllByPage(pageIndex, pageSize, filter, orderBy, order, projectId);
+        Page<TestScenarioDto> testScenarioList = testScenarioService.getAllByPage(pageIndex, pageSize, filterBy, filter, orderBy, order, projectId);
         return new ResponseEntity<>(testScenarioList, HttpStatus.OK);
+    }
+    @GetMapping("{testScenarioId}/projectId")
+    public Integer getProjectIdOfTestScenario(@PathVariable Integer testScenarioId){
+        return testScenarioService.getProjectIdOfTestScenario(testScenarioId);
     }
 
     @GetMapping("/list")
     public ResponseEntity<Page<TestScenarioDto>> getAll(
-            @RequestParam(defaultValue = "5") int pageSize,
+            @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "0") int pageIndex,
+            @RequestParam(defaultValue = "") String filterBy,
             @RequestParam(defaultValue = "") String filter,
             @RequestParam(defaultValue = "") String orderBy,
             @RequestParam(defaultValue = "") String order
+
     ) {
 
-        Page<TestScenarioDto> testScenarioList = testScenarioService.getAllByPage(pageIndex, pageSize, filter, orderBy, order, 0);
+        Page<TestScenarioDto> testScenarioList = testScenarioService.getAllByPage(pageIndex, pageSize, filterBy, filter, orderBy, order, 0);
         return new ResponseEntity<>(testScenarioList, HttpStatus.OK);
     }
 

@@ -26,7 +26,7 @@ public class ProjectDaoImpl implements ProjectDao {
         jdbcTemplate.update(sql,
                 project.getName(),
                 project.getLink(),
-                project.getUser().getId()
+                project.getUser().getUserId()
         );
     }
 

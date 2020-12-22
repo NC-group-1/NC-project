@@ -65,28 +65,25 @@ public class ProjectServiceImpl implements ProjectService {
 
             paramsDetail.add(
                     (params.getProject().getName() != null ? "<p>Project name: " + params.getProject().getName() + "</p>" : "")
-                            + (params.getProject().getLink() != null ? "<p>Project link:" + params.getProject().getLink() + "</p>" : "")
-//                            + (params.getProject().getUser().getName() != null ? "<p>Project creator:" + params.getProject().getUser().getName() + " " + params.getProject().getUser().getSurname() + "</p>" : "")
+                            + (params.getProject().getLink() != null ? "<p>Project link: " + params.getProject().getLink() + "</p>" : "")
             );
 
             paramsDetail.add(
                     (params.getName() != null ? "<p>Test Case name: " + params.getName() + "</p>" : "")
-                            + (params.getCreator() != null ? "<p>Test Case creator:" + params.getCreator().getName() + " " + params.getCreator().getSurname() + "</p>" : "")
-                            + (params.getStarter() != null ? "<p>Test Case starter:" + params.getStarter().getName() + " " + params.getStarter().getSurname() + "</p>" : "")
+                            + (params.getCreator() != null ? "<p>Test Case creator: " + params.getCreator().getName() + " " + params.getCreator().getSurname() + "</p>" : "")
+                            + (params.getStarter() != null ? "<p>Test Case starter: " + params.getStarter().getName() + " " + params.getStarter().getSurname() + "</p>" : "")
                             + (params.getStartDate() != null ? "<p>Test Case started date: " + params.getStartDate() + "</p>" : "")
                             + (params.getFinishDate() != null ? "<p>Test Case finished date: " + params.getFinishDate() + "</p>" : "")
                             + (params.getStatus() != null ? "<p>Test Case status: " + params.getStatus() + "</p>" : "")
             );
 
             paramsDetail.add(
-                    "<table>" +
                             params.getActionInstRunDtos().stream()
                                     .map(actionInstDto ->
-                                            (actionInstDto.getActionName() != null ? "<td>Action result: " + actionInstDto.getActionName() + "</td><td> have result: " +  actionInstDto.getResult() + "</td>" : "")
-                                            + (actionInstDto.getCompoundName() != null ? "<td>Ac" + actionInstDto.getCompoundName() + "</td><td> have result: " + actionInstDto.getResult() + "</td>" : "")
+                                            (actionInstDto.getActionName() != null ? "<p>Action : " + actionInstDto.getActionName() + " <b>have result:</b> " +  actionInstDto.getResult() + "</p>" : "")
+//                                            + (actionInstDto.getCompoundName() != null ? "<p>Compound result: " + actionInstDto.getCompoundName() + " <b>have result:</b> " + actionInstDto.getResult() + "</p>" : "")
                                     )
-                            .collect(Collectors.joining("</tr><tr>", "<tr>", "</tr>"))
-                            + "</table>"
+                            .collect(Collectors.joining())
                     );
             return Optional.of(String.format(htmlStringBuilder.toString(), String.join("", paramsDetail)));
         } catch (IOException e) {

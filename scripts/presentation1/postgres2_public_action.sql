@@ -1,0 +1,9 @@
+INSERT INTO public.action (action_id, name, description, type, parameter_key_id) VALUES (1, 'Click', 'simple click on element', 'CLICK', null);
+INSERT INTO public.action (action_id, name, description, type, parameter_key_id) VALUES (2, 'Send text', 'send text into some input', 'SEND_KEYS', null);
+INSERT INTO public.action (action_id, name, description, type, parameter_key_id) VALUES (3, 'Wiki find search input field by id', 'find wiki search input', 'FIND_ELEMENT_BY_ID', 1);
+INSERT INTO public.action (action_id, name, description, type, parameter_key_id) VALUES (4, 'Wiki find search button by id', 'Find search button in wiki project', 'FIND_ELEMENT_BY_ID', 2);
+INSERT INTO public.action (action_id, name, description, type, parameter_key_id) VALUES (5, 'Wiki find search result heading by id', 'find result heading to test if wiki searched correctly', 'FIND_ELEMENT_BY_ID', 3);
+INSERT INTO public.action (action_id, name, description, type, parameter_key_id) VALUES (6, 'Save element text to context', 'Retrieves element text and saves it to context', 'SAVE_ELEMENT_TEXT_TO_CONTEXT', null);
+INSERT INTO public.action (action_id, name, description, type, parameter_key_id) VALUES (7, 'Compare previous value with string', 'Compares previous context value with given string', 'COMPARE_WITH_STRING', null);
+INSERT INTO public.action (action_id, name, description, type, parameter_key_id) VALUES (8, 'wiki search compound', 'compound that contains actions to search some in wikipedia', 'COMPOUND', null);
+INSERT INTO public.action (action_id, name, description, type, parameter_key_id) VALUES (9, 'wiki compare compound', 'check if header of search result contains what we searched', 'COMPOUND', null);

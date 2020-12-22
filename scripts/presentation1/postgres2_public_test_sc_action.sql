@@ -1,0 +1,12 @@
+INSERT INTO public.test_sc_action (test_sc_action_id, action_id, test_scenario_id, order_num) VALUES (1, 8, 1, 1);
+INSERT INTO public.test_sc_action (test_sc_action_id, action_id, test_scenario_id, order_num) VALUES (2, 9, 1, 2);
+INSERT INTO public.test_sc_action (test_sc_action_id, action_id, test_scenario_id, order_num) VALUES (3, 8, 2, 1);
+INSERT INTO public.test_sc_action (test_sc_action_id, action_id, test_scenario_id, order_num) VALUES (4, 9, 2, 2);
+INSERT INTO public.test_sc_action (test_sc_action_id, action_id, test_scenario_id, order_num) VALUES (5, 8, 2, 3);
+INSERT INTO public.test_sc_action (test_sc_action_id, action_id, test_scenario_id, order_num) VALUES (6, 9, 2, 4);
+INSERT INTO public.test_sc_action (test_sc_action_id, action_id, test_scenario_id, order_num) VALUES (7, 8, 2, 5);
+INSERT INTO public.test_sc_action (test_sc_action_id, action_id, test_scenario_id, order_num) VALUES (8, 9, 2, 6);
+INSERT INTO public.test_sc_action (test_sc_action_id, action_id, test_scenario_id, order_num) VALUES (9, 8, 2, 7);
+INSERT INTO public.test_sc_action (test_sc_action_id, action_id, test_scenario_id, order_num) VALUES (10, 9, 2, 8);
+INSERT INTO public.test_sc_action (test_sc_action_id, action_id, test_scenario_id, order_num) VALUES (11, 8, 2, 9);
+INSERT INTO public.test_sc_action (test_sc_action_id, action_id, test_scenario_id, order_num) VALUES (12, 9, 2, 10);

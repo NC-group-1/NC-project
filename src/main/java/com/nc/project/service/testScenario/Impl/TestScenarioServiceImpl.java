@@ -4,6 +4,8 @@ import com.nc.project.dao.compound.CompoundDao;
 import com.nc.project.dao.testScenario.TestScenarioDao;
 import com.nc.project.dto.Page;
 import com.nc.project.dto.TestScenarioDto;
+import com.nc.project.model.ActionOfCompound;
+import com.nc.project.model.Compound;
 import com.nc.project.model.TestScenario;
 import com.nc.project.model.TestScenarioComponent;
 import com.nc.project.model.util.ActionType;
@@ -11,6 +13,7 @@ import com.nc.project.service.testScenario.TestScenarioService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,15 +35,41 @@ public class TestScenarioServiceImpl implements TestScenarioService {
     }
 
     @Override
-    public Page<TestScenarioDto> getAllByPage(int page, int size, String filter, String orderBy, String order, int projectId) {
-        if (orderBy.equals(""))
-            orderBy = "test_scenario_id";
-        if (!order.equals("DESC"))
-            order = "";
-        if (projectId != 0) {
-            return new Page<>(testScenarioDao.getAllByPageAndProject(page, size, filter, orderBy, order, projectId), testScenarioDao.getSizeOfProjectResultSet(filter, projectId));
+    public Page<TestScenarioDto> getAllByPage(int page, int size, String filterBy, String filter, String orderBy, String order, int projectId) {
+        switch (orderBy){
+            case "name":
+                orderBy ="t.name";
+                break;
+            case "creatorName":
+                orderBy ="(CASE WHEN concat(u.name, ' ', surname) = ' ' THEN email ELSE concat(u.name, ' ', surname) END)";
+                break;
+            case "description":
+                orderBy ="description";
+                break;
+            default:
+                orderBy = "test_scenario_id";
+                break;
         }
-        return new Page<>(testScenarioDao.getAllByPage(page, size, filter, orderBy, order), testScenarioDao.getSizeOfResultSet(filter));
+        switch (filterBy){
+            case "creatorName":
+                filterBy ="CASE WHEN concat(u.name, ' ', surname) = ' ' THEN email ELSE concat(u.name, ' ', surname) END";
+                break;
+            case "description":
+                filterBy ="description";
+                break;
+            default:
+                filterBy = "t.name";
+                break;
+        }
+        if (!order.toLowerCase().equals("desc"))
+            order = "";
+
+
+
+        if (projectId != 0) {
+            return new Page<>(testScenarioDao.getAllByPageAndProject(page, size, filterBy, filter, orderBy, order, projectId), testScenarioDao.getSizeOfProjectResultSet(filterBy, filter, projectId));
+        }
+        return new Page<>(testScenarioDao.getAllByPage(page, size,filterBy, filter, orderBy, order), testScenarioDao.getSizeOfResultSet(filterBy, filter));
     }
 
     @Override
@@ -73,17 +102,53 @@ public class TestScenarioServiceImpl implements TestScenarioService {
         Optional<TestScenario> testScenarioOptional = testScenarioDao.getById(id);
         if (testScenarioOptional.isPresent()) {
             TestScenario testScenario = testScenarioOptional.get();
-            List<TestScenarioComponent> components = testScenarioDao.getComponents(id);
-            for (TestScenarioComponent component : components) {
-                if (component.getAction().getType() == ActionType.COMPOUND) {
-                    component
-                            .getAction()
-                            .setActions(compoundDao.getActionsOfCompound(component.getAction().getId()));
-                }
-            }
-            testScenario.setActions(components);
+            testScenario.setActions(getComponents(id));
             return testScenario;
         }
         return new TestScenario();
+    }
+
+    private List<TestScenarioComponent> getComponents(int id) {
+        List<TestScenarioComponent> components = testScenarioDao.getComponents(id);
+        for (TestScenarioComponent component : components) {
+            if (component.getAction().getType() == ActionType.COMPOUND) {
+                component
+                        .getAction()
+                        .setActions(compoundDao.getActionsOfCompound(component.getAction().getId()));
+            }
+        }
+        return components;
+    }
+
+    @Override
+    public TestScenario getDecomposedTestScenarioById(int id) {
+        Optional<TestScenario> testScenarioOptional = testScenarioDao.getById(id);
+        if (testScenarioOptional.isPresent()) {
+            TestScenario testScenario = testScenarioOptional.get();
+            testScenario.setActions(getDecomposedComponents(id));
+            return testScenario;
+        }
+        return new TestScenario();
+    }
+
+    @Override
+    public Integer getProjectIdOfTestScenario(Integer testScenarioId) {
+        return this.testScenarioDao.getProjectIdOfTestScenario(testScenarioId);
+    }
+
+    private List<TestScenarioComponent> getDecomposedComponents(int id) {
+        List<TestScenarioComponent> components = new ArrayList<>();
+        int order_num = 1;
+        for (TestScenarioComponent component : testScenarioDao.getComponents(id)) {
+            if (component.getAction().getType() == ActionType.COMPOUND) {
+                for (ActionOfCompound action : compoundDao.getActionsOfCompound(component.getAction().getId())) {
+                    components.add(new TestScenarioComponent(   action.getAction(), order_num++));
+                }
+            } else {
+                component.setOrderNum(order_num++);
+                components.add(component);
+            }
+        }
+        return components;
     }
 }

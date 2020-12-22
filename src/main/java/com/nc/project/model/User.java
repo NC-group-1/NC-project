@@ -20,7 +20,7 @@ import java.util.Collections;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User implements UserDetails {
     @Id
-    private int id;
+    private int userId;
     private String name;
     private String surname;
     private String email;
@@ -40,26 +40,26 @@ public class User implements UserDetails {
         this.pass = pass;
     }
 
-    public User(int id) {
-        this.id = id;
+    public User(int userId) {
+        this.userId = userId;
     }
 
-    public User(int id, String email, String emailCode, Timestamp codeExpireDate) {
-        this.id = id;
+    public User(int userId, String email, String emailCode, Timestamp codeExpireDate) {
+        this.userId = userId;
         this.email = email;
         this.emailCode = emailCode;
         this.codeExpireDate = codeExpireDate;
     }
 
-    public User(int id, String email, String name, String surname) {
-        this.id = id;
+    public User(int userId, String email, String name, String surname) {
+        this.userId = userId;
         this.email = email;
         this.name = name;
         this.surname = surname;
     }
 
-    public User(int id, String name, String surname) {
-        this.id = id;
+    public User(int userId, String name, String surname) {
+        this.userId = userId;
         this.name = name;
         this.surname = surname;
     }

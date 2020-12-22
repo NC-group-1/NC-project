@@ -19,8 +19,8 @@ import javax.mail.MessagingException;
 @RestController
 @RequestMapping("api/ncp/project")
 public class ProjectRestController {
-    private String SUBJECT = "Report";
-    private String PATH_TO_ATTACHMENT = "src/main/resources/email/send-report.html";
+    private final static String SUBJECT = "Report";
+    private final static String PATH_TO_ATTACHMENT = "src/main/resources/email/send-report.html";
 
     private final ProjectService projectService;
     private final EmailSendReportService emailSendReportService;

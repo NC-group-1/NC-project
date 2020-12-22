@@ -9,7 +9,6 @@ import com.nc.project.model.User;
 import com.nc.project.service.notification.NotificationService;
 import com.nc.project.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -89,7 +88,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateConfirmationToken(User user, String token) {
-        RecoveryToken confToken = new RecoveryToken(token, user.getId(), new Date());
+        RecoveryToken confToken = new RecoveryToken(token, user.getUserId(), new Date());
         userDao.saveToken(confToken);
         log.info("Token was updated successfully");
 

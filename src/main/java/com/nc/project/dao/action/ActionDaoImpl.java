@@ -143,7 +143,7 @@ public class ActionDaoImpl implements ActionDao {
                 new ActionRowMapper()
         );
 
-        return Optional.ofNullable(actions.get(0));
+        return actions.size() == 0 ? Optional.empty() : Optional.ofNullable(actions.get(0));
     }
 
     @Override
