@@ -131,6 +131,11 @@ public class TestScenarioServiceImpl implements TestScenarioService {
         return new TestScenario();
     }
 
+    @Override
+    public Integer getProjectIdOfTestScenario(Integer testScenarioId) {
+        return this.testScenarioDao.getProjectIdOfTestScenario(testScenarioId);
+    }
+
     private List<TestScenarioComponent> getDecomposedComponents(int id) {
         List<TestScenarioComponent> components = new ArrayList<>();
         int order_num = 1;

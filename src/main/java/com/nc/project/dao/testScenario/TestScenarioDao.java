@@ -36,4 +36,6 @@ public interface TestScenarioDao {
     Optional<TestScenario> getById(int id);
 
     List<TestScenarioComponent> getComponents(int id);
+
+    Integer getProjectIdOfTestScenario(Integer testScenarioId);
 }

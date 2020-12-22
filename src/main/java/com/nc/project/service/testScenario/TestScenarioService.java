@@ -15,4 +15,6 @@ public interface TestScenarioService {
     TestScenario getTestScenarioById(int id);
 
     TestScenario getDecomposedTestScenarioById(int id);
+
+    Integer getProjectIdOfTestScenario(Integer testScenarioId);
 }

@@ -30,7 +30,13 @@ public class UserDaoImpl implements UserDao {
 
     public Optional<UserProfileDto> updatePersonalProfileById(UserProfileDto userProfileDto) {
         String sql = queryService.getQuery("user.updatePersonalProfileById");
-        int update = jdbcTemplate.update(sql, userProfileDto.getName(), userProfileDto.getSurname(), userProfileDto.getAboutMe(), userProfileDto.getUserId());
+        int update = jdbcTemplate.update(sql,
+                userProfileDto.getName(),
+                userProfileDto.getSurname(),
+                userProfileDto.getAboutMe(),
+                userProfileDto.getImageLink(),
+                userProfileDto.getUserId()
+                );
         return update > 0 ? Optional.of(userProfileDto) : Optional.empty();
     }
 

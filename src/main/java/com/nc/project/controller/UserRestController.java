@@ -41,12 +41,10 @@ public class UserRestController {
 
     @PutMapping
     public ResponseEntity<UserProfileDto> updateUserProfile(@RequestBody UserProfileDto user){
-        System.out.println(user);
         Optional<UserProfileDto> userUpdated = userService.updatePersonalProfile(user);
         return userUpdated.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
     @GetMapping("/email/{email}")
-    @PreAuthorize("hasRole('ADMIN') || hasRole('MANAGER')")
     public ResponseEntity<UserProfileDto> findUserByEmail(@PathVariable String email) throws InterruptedException {
         Optional<UserProfileDto> user = userService.findByEmail(email);
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());

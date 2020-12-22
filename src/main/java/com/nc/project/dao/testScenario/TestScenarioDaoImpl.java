@@ -172,4 +172,10 @@ public class TestScenarioDaoImpl implements TestScenarioDao {
                 )
         );
     }
+
+    @Override
+    public Integer getProjectIdOfTestScenario(Integer testScenarioId) {
+        String sql = queryService.getQuery("testScenario.getProjectIdOfTestScenario");
+        return jdbcTemplate.queryForObject(sql, new Object[]{testScenarioId} , Integer.class);
+    }
 }
