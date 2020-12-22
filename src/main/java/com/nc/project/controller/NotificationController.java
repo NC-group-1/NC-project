@@ -25,6 +25,7 @@ public class NotificationController {
     }
     @MessageMapping("/progress/tc")
     public void getTestCaseProgress(Integer testCaseId) throws InterruptedException {
+        Thread.sleep(500);
         this.notificationService.sendProgressToTestCase(testCaseId);
     }
     @PutMapping("/{userId}")

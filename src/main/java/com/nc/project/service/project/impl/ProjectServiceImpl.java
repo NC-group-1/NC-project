@@ -80,8 +80,8 @@ public class ProjectServiceImpl implements ProjectService {
             paramsDetail.add(
                             params.getActionInstRunDtos().stream()
                                     .map(actionInstDto ->
-                                            (actionInstDto.getActionName() != null ? "<p>Action result: " + actionInstDto.getActionName() + " <b>have result:</b> " +  actionInstDto.getResult() + "</p>" : "")
-                                            + (actionInstDto.getCompoundName() != null ? "<p>Compound result: " + actionInstDto.getCompoundName() + " <b>have result:</b> " + actionInstDto.getResult() + "</p>" : "")
+                                            (actionInstDto.getActionName() != null ? "<p>Action : " + actionInstDto.getActionName() + " <b>have result:</b> " +  actionInstDto.getResult() + "</p>" : "")
+//                                            + (actionInstDto.getCompoundName() != null ? "<p>Compound result: " + actionInstDto.getCompoundName() + " <b>have result:</b> " + actionInstDto.getResult() + "</p>" : "")
                                     )
                             .collect(Collectors.joining())
                     );

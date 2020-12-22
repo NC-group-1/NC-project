@@ -30,7 +30,8 @@ public class ParameterController {
     @PutMapping("/{id}")
     public ResponseEntity<Parameter> editParameter(@RequestBody Parameter entity) {
         Optional<Parameter> updatedDataSet = parameterService.update(entity);
-        return updatedDataSet.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.FORBIDDEN).build());
+        return updatedDataSet.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build());
     }
 
     @DeleteMapping("/{id}")
@@ -39,7 +40,7 @@ public class ParameterController {
         if(usages == 0){
             return new ResponseEntity<>(0,HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(usages,HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(usages,HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
