@@ -35,15 +35,41 @@ public class TestScenarioServiceImpl implements TestScenarioService {
     }
 
     @Override
-    public Page<TestScenarioDto> getAllByPage(int page, int size, String filter, String orderBy, String order, int projectId) {
-        if (orderBy.equals(""))
-            orderBy = "test_scenario_id";
-        if (!order.equals("DESC"))
-            order = "";
-        if (projectId != 0) {
-            return new Page<>(testScenarioDao.getAllByPageAndProject(page, size, filter, orderBy, order, projectId), testScenarioDao.getSizeOfProjectResultSet(filter, projectId));
+    public Page<TestScenarioDto> getAllByPage(int page, int size, String filterBy, String filter, String orderBy, String order, int projectId) {
+        switch (orderBy){
+            case "name":
+                orderBy ="t.name";
+                break;
+            case "creatorName":
+                orderBy ="u.name";
+                break;
+            case "description":
+                orderBy ="description";
+                break;
+            default:
+                orderBy = "test_scenario_id";
+                break;
         }
-        return new Page<>(testScenarioDao.getAllByPage(page, size, filter, orderBy, order), testScenarioDao.getSizeOfResultSet(filter));
+        switch (filterBy){
+            case "creatorName":
+                filterBy ="CONCAT(u.name, ' ',u.surname)";
+                break;
+            case "description":
+                filterBy ="description";
+                break;
+            default:
+                filterBy = "t.name";
+                break;
+        }
+        if (!order.toLowerCase().equals("desc"))
+            order = "";
+
+
+
+        if (projectId != 0) {
+            return new Page<>(testScenarioDao.getAllByPageAndProject(page, size, filterBy, filter, orderBy, order, projectId), testScenarioDao.getSizeOfProjectResultSet(filterBy, filter, projectId));
+        }
+        return new Page<>(testScenarioDao.getAllByPage(page, size,filterBy, filter, orderBy, order), testScenarioDao.getSizeOfResultSet(filterBy, filter));
     }
 
     @Override
