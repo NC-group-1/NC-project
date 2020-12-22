@@ -1,11 +1,15 @@
 package com.nc.project.service.notification.impl;
 
+import com.nc.project.dao.actionInst.ActionInstDao;
 import com.nc.project.dao.notification.NotificationDao;
 import com.nc.project.dto.TestCaseProgress;
 import com.nc.project.model.UserNotification;
 import com.nc.project.model.util.NotificationType;
+import com.nc.project.model.util.TestingStatus;
 import com.nc.project.service.notification.NotificationService;
+import com.nc.project.service.runTestCase.RunTestCaseService;
 import com.nc.project.service.testCase.TestCaseService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +21,19 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationDao notificationDao;
     private final SimpMessagingTemplate messagingTemplate;
     private final TestCaseService testCaseService;
+    private final ActionInstDao actionInstDao;
+    private final RunTestCaseService runTestCaseService;
 
     public NotificationServiceImpl(NotificationDao notificationDao,
                                    SimpMessagingTemplate messagingTemplate,
-                                   TestCaseService testCaseService) {
+                                   TestCaseService testCaseService,
+                                   ActionInstDao actionInstDao,
+                                   @Lazy RunTestCaseService runTestCaseService) {
         this.notificationDao = notificationDao;
         this.messagingTemplate = messagingTemplate;
         this.testCaseService = testCaseService;
+        this.actionInstDao = actionInstDao;
+        this.runTestCaseService = runTestCaseService;
     }
 
 
@@ -46,8 +56,16 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void sendProgressToTestCase(Integer testCaseId) {
         Optional<TestCaseProgress> progress = this.getTestCaseProgress(testCaseId);
-        progress.ifPresent(testCaseProgress ->
-                messagingTemplate.convertAndSend("/topic/progress/" + testCaseId, testCaseProgress));
+        progress.ifPresent(testCaseProgress -> {
+            if(testCaseProgress.getStatus() != TestingStatus.CANCELED
+                    && testCaseProgress.getStatus() != TestingStatus.FAILED
+                    && testCaseProgress.getStatus() != TestingStatus.PASSED) {
+                float completed = runTestCaseService.getActionInstRunDtosFromSharedStorage(testCaseId).size();
+                int all = actionInstDao.getNumberOfActionInstancesByTestCaseId(testCaseId).orElse(1);
+                testCaseProgress.setProgress(completed/all);
+            }
+            messagingTemplate.convertAndSend("/topic/progress/" + testCaseId, testCaseProgress);
+        });
     }
 
     @Override
