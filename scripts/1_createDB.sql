@@ -57,7 +57,7 @@ CREATE TABLE public.compound_action
 CREATE TABLE public.parameter
 (
     parameter_id serial PRIMARY KEY,
-    value character varying(255) NOT NULL
+    value character varying(255) NOT NULL,
     parameter_key_id integer REFERENCES parameter_key NOT NULL,
     data_set_id integer REFERENCES data_set ON DELETE CASCADE NOT NULL
 );
@@ -68,7 +68,7 @@ CREATE TABLE public.test_scenario
     test_scenario_id serial PRIMARY KEY,
     name character varying(127) NOT NULL,
     description text,
-    activated boolean NOT NULL DEFAULT false,
+    activated boolean NOT NULL DEFAULT true,
     user_id integer REFERENCES usr NOT NULL,
     project_id integer REFERENCES project NOT NULL
 );

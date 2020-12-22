@@ -59,7 +59,8 @@ public class TestCaseController {
     }
 
     @MessageMapping("/actionInst/tc")
-    public void getTestCaseActionInstances(Integer testCaseId) {
+    public void getTestCaseActionInstances(Integer testCaseId) throws InterruptedException {
+        Thread.sleep(500);
         this.runTestCaseService.sendActionInstToTestCaseSocket(testCaseId);
     }
 
