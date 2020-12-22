@@ -65,6 +65,12 @@ public class ActionInstDaoImpl implements ActionInstDao {
     }
 
     @Override
+    public Optional<Integer> getNumberOfActionInstancesByTestCaseId(Integer testCaseId) {
+        String sql = queryService.getQuery("actionInst.getNumberOfActionInstancesByTestCaseId");
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new Object[]{testCaseId}, Integer.class));
+    }
+
+    @Override
     public Optional<ActionInst> findById(Integer id) {
         String sql = queryService.getQuery("actionInst.findById");
         List<ActionInst> actions = jdbcTemplate.query(sql,
