@@ -36,7 +36,7 @@ public class TestScenarioRestController {
 
     @GetMapping("list/{projectId}")
     public ResponseEntity<Page<TestScenarioDto>> getAllByProject(
-            @RequestParam(defaultValue = "5") int pageSize,
+            @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "0") int pageIndex,
             @RequestParam(defaultValue = "") String filterBy,
             @RequestParam(defaultValue = "") String filter,
@@ -50,7 +50,7 @@ public class TestScenarioRestController {
 
     @GetMapping("/list")
     public ResponseEntity<Page<TestScenarioDto>> getAll(
-            @RequestParam(defaultValue = "5") int pageSize,
+            @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "0") int pageIndex,
             @RequestParam(defaultValue = "") String filterBy,
             @RequestParam(defaultValue = "") String filter,
