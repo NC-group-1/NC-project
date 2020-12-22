@@ -41,7 +41,7 @@ public class TestScenarioServiceImpl implements TestScenarioService {
                 orderBy ="t.name";
                 break;
             case "creatorName":
-                orderBy ="u.name";
+                orderBy ="(CASE WHEN concat(u.name, ' ', surname) = ' ' THEN email ELSE concat(u.name, ' ', surname) END)";
                 break;
             case "description":
                 orderBy ="description";
@@ -52,7 +52,7 @@ public class TestScenarioServiceImpl implements TestScenarioService {
         }
         switch (filterBy){
             case "creatorName":
-                filterBy ="CONCAT(u.name, ' ',u.surname)";
+                filterBy ="CASE WHEN concat(u.name, ' ', surname) = ' ' THEN email ELSE concat(u.name, ' ', surname) END";
                 break;
             case "description":
                 filterBy ="description";
