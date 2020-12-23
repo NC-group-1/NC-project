@@ -1,0 +1,3 @@
+INSERT INTO public.data_set (data_set_id, name, description, user_id) VALUES (1, 'wiki main page elements selectors', 'dataset of ids or other selectors to locate elements in wikipedia main page', 1);
+INSERT INTO public.data_set (data_set_id, name, description, user_id) VALUES (2, 'wiki search input strings', 'data set with some test search requests', 1);
+INSERT INTO public.data_set (data_set_id, name, description, user_id) VALUES (3, 'context data set', 'system data set for context keys', 1);

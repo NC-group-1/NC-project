@@ -1,0 +1,2 @@
+INSERT INTO public.test_scenario (test_scenario_id, name, description, activated, user_id, project_id) VALUES (1, 'Wiki search and check one time', 'performs a search in wikipedia and compares result with search request', true, 1, 1);
+INSERT INTO public.test_scenario (test_scenario_id, name, description, activated, user_id, project_id) VALUES (2, 'Wiki search and check 5 times', 'complex scenario that tests multiple search requests', true, 1, 1);

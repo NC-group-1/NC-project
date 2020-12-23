@@ -1,0 +1,2 @@
+INSERT INTO public.notification (notification_id, test_case_id, date, type) VALUES (9, 3, '2020-12-22 13:34:30.668290', 'STARTED');
+INSERT INTO public.notification (notification_id, test_case_id, date, type) VALUES (10, 3, '2020-12-22 13:35:45.143697', 'SUCCESS');
