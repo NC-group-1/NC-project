@@ -1,1 +1,0 @@
-INSERT INTO public.project (project_id, name, link, date, activated, user_id) VALUES (1, 'Wikipedia', 'https://en.wikipedia.org', '2020-12-22 08:21:59.865109', true, 1);
