@@ -38,9 +38,9 @@ public class PasswordController {
             userService.updateConfirmationToken(user, token);
             String recoverPasswordLink = "http://localhost:4200/password/change?token=" + token;
 
-            emailService.sendMessageWithAttachment(email, SUBJECT, recoverPasswordLink, PATH_TO_ATTACHMENT);
-        } catch (UserNotFoundException | MessagingException e) {
-;            throw new UserNotFoundException(e.getMessage());
+            new Thread(() -> emailService.sendMessageWithAttachment(email, SUBJECT, recoverPasswordLink, PATH_TO_ATTACHMENT)).start();
+        } catch (UserNotFoundException e) {
+            throw new UserNotFoundException(e.getMessage());
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -27,43 +27,21 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public Boolean sendSimpleMessage(String to, String subject, String body) {
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-
-        simpleMailMessage.setFrom(from);
-        simpleMailMessage.setTo(to);
-        simpleMailMessage.setSubject(subject);
-        simpleMailMessage.setText(body);
-        boolean isSent = false;
-        try{
-            javaMailSender.send(simpleMailMessage);
-            isSent = true;
-        } catch (Exception e) {
-            log.error("Sending email error: {}", e.getMessage());
-        }
-        return isSent;
-    }
-
-    @Override
-    public Boolean sendMessageWithAttachment(String to, String subject, String body, String pathToAttachment)
-            throws MessagingException {
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-
-        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
-
-        mimeMessageHelper.setFrom(from);
-        mimeMessageHelper.setTo(to);
-        mimeMessageHelper.setSubject(subject);
-        String text = userService.addLinkToEmail(body, pathToAttachment).orElseThrow();
-        mimeMessageHelper.setText("", text);
-
-        boolean isSent = false;
+    public void sendMessageWithAttachment(String to, String subject, String body, String pathToAttachment) {
         try {
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+
+            mimeMessageHelper.setFrom(from);
+            mimeMessageHelper.setTo(to);
+            mimeMessageHelper.setSubject(subject);
+            String text = userService.addLinkToEmail(body, pathToAttachment).orElseThrow();
+            mimeMessageHelper.setText("", text);
+
             javaMailSender.send(mimeMessage);
-            isSent = true;
         } catch (Exception e) {
             log.error("Sending email with attachment error: {}", e.getMessage());
         }
-        return isSent;
     }
 }
