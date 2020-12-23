@@ -9,7 +9,6 @@ import com.nc.project.model.util.TestingStatus;
 import com.nc.project.service.notification.NotificationService;
 import com.nc.project.service.runTestCase.RunTestCaseService;
 import com.nc.project.service.testCase.TestCaseService;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +27,7 @@ public class NotificationServiceImpl implements NotificationService {
                                    SimpMessagingTemplate messagingTemplate,
                                    TestCaseService testCaseService,
                                    ActionInstDao actionInstDao,
-                                   @Lazy RunTestCaseService runTestCaseService) {
+                                   RunTestCaseService runTestCaseService) {
         this.notificationDao = notificationDao;
         this.messagingTemplate = messagingTemplate;
         this.testCaseService = testCaseService;
@@ -59,7 +58,8 @@ public class NotificationServiceImpl implements NotificationService {
         progress.ifPresent(testCaseProgress -> {
             if(testCaseProgress.getStatus() != TestingStatus.CANCELED
                     && testCaseProgress.getStatus() != TestingStatus.FAILED
-                    && testCaseProgress.getStatus() != TestingStatus.PASSED) {
+                    && testCaseProgress.getStatus() != TestingStatus.PASSED
+                    && testCaseProgress.getStatus() != TestingStatus.SCHEDULED) {
                 float completed = runTestCaseService.getActionInstRunDtosFromSharedStorage(testCaseId).size();
                 int all = actionInstDao.getNumberOfActionInstancesByTestCaseId(testCaseId).orElse(1);
                 testCaseProgress.setProgress(completed/all);
