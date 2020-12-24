@@ -61,11 +61,10 @@ public class TestCaseDaoImpl implements TestCaseDao {
     public List<TestCase> getAllByPage(int page, int size, String filter, String orderBy, String order, int projectId) {
         String query = queryService.getQuery("testCase.getAllByPage");
         query = String.format(query,orderBy,order);
-        List<TestCase> testCaseList = jdbcTemplate.query(query,
+        return jdbcTemplate.query(query,
                 new Object[]{"%"+filter +"%", projectId, size, size, page-1},
                 new TestCaseRowMapper()
         );
-        return testCaseList;
     }
 
     @Override
@@ -74,13 +73,13 @@ public class TestCaseDaoImpl implements TestCaseDao {
         Integer size = jdbcTemplate.queryForObject(sql,
                 new Object[]{"%" + filter + "%", projectId},
                 (rs, rowNum) -> rs.getInt("count"));
-        return Optional.of(size);
+        return Optional.ofNullable(size);
     }
 
     @Override
     public List<UserProfileDto> getListWatcherByTestCaseId(int test_case_id) {
         String query = queryService.getQuery("testCase.getListWatcherByTestCaseId");
-        List<UserProfileDto> watcherList = jdbcTemplate.query(query,
+        return jdbcTemplate.query(query,
                 new Object[]{test_case_id},
                 (resultSet, i) -> new UserProfileDto(
                         resultSet.getInt("user_id"),
@@ -89,14 +88,12 @@ public class TestCaseDaoImpl implements TestCaseDao {
                         resultSet.getString("role")
                 )
         );
-
-        return watcherList;
     }
 
     @Override
     public List<UserProfileDto> getUsersByName(String name) {
         String query = queryService.getQuery("testCase.findByName");
-        List<UserProfileDto> users = jdbcTemplate.query(query,
+        return jdbcTemplate.query(query,
                 new Object[]{name},
                 (resultSet, i) -> new UserProfileDto(
                         resultSet.getInt("user_id"),
@@ -105,8 +102,6 @@ public class TestCaseDaoImpl implements TestCaseDao {
                         resultSet.getString("role")
                 )
         );
-
-        return users;
     }
 
     @Override
