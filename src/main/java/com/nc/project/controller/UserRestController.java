@@ -44,17 +44,20 @@ public class UserRestController {
         Optional<UserProfileDto> userUpdated = userService.updatePersonalProfile(user);
         return userUpdated.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
     @GetMapping("/email/{email}")
     public ResponseEntity<UserProfileDto> findUserByEmail(@PathVariable String email) throws InterruptedException {
         Optional<UserProfileDto> user = userService.findByEmail(email);
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
     @RolesAllowed("ADMIN")
     @GetMapping("{id}")
     public ResponseEntity<UserProfileDto> findUserById(@PathVariable int id) {
 		Optional<UserProfileDto> user = userService.findUserProfileById(id);
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
     @RequestMapping(path = "/auth", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
     public AuthResponse authenticate(@RequestBody AuthRequest req) {
