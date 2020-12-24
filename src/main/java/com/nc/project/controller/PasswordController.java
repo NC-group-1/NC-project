@@ -32,15 +32,15 @@ public class PasswordController {
 
     @PostMapping("/recovery-password")
     public ResponseEntity<?> recoverPassword(@RequestBody String email) {
-        User user = userService.findByEmailForRecovery(email).get();
+        User user = userService.findByEmailForRecovery(email).orElseThrow();
         String token = UUID.randomUUID().toString();
         try {
             userService.updateConfirmationToken(user, token);
             String recoverPasswordLink = "http://localhost:4200/password/change?token=" + token;
 
-            emailService.sendMessageWithAttachment(email, SUBJECT, recoverPasswordLink, PATH_TO_ATTACHMENT);
-        } catch (UserNotFoundException | MessagingException e) {
-            System.out.println("User not found" + e.getMessage());
+            new Thread(() -> emailService.sendMessageWithAttachment(email, SUBJECT, recoverPasswordLink, PATH_TO_ATTACHMENT)).start();
+        } catch (UserNotFoundException e) {
+            throw new UserNotFoundException(e.getMessage());
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
