@@ -153,7 +153,7 @@ public class TestCaseServiceImpl implements TestCaseService {
                 .name(testScenarioDto.getName())
                 .description(testScenarioDto.getDescription())
                 .creationDate(new Timestamp(System.currentTimeMillis()))
-                .status(TestingStatus.UNKNOWN)
+                .status(TestingStatus.DRAFT)
                 .creator(testScenarioDto.getUser().getUserId())
                 .testScenario(testScenarioDto.getTestScenarioId())
                 .build();
