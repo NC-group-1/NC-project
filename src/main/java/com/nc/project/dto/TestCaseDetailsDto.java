@@ -28,6 +28,7 @@ public class TestCaseDetailsDto {
     private Project project;
     private List<ActionInstRunDto> actionInstRunDtos;
     private List<UserProfileDto> watchers;
+    private Integer testScenarioId;
 
 
     public TestCaseDetailsDto(int id, String name, User starter, Timestamp startDate,

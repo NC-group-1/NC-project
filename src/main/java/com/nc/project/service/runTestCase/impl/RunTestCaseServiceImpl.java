@@ -1,38 +1,31 @@
 package com.nc.project.service.runTestCase.impl;
 
 
-import com.nc.project.dto.ActionInstRunDto;
 import com.nc.project.model.TestCase;
 import com.nc.project.model.util.TestingStatus;
 import com.nc.project.service.runTestCase.RunTestCaseService;
+import com.nc.project.service.runTestCase.TestCaseOperations;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
+
 
 @Service
 public class RunTestCaseServiceImpl implements RunTestCaseService {
 
-    private final ConcurrentHashMap<Integer, CopyOnWriteArrayList<ActionInstRunDto>> sharedStorage;
-    private final ConcurrentHashMap<Integer, TestingStatus> targetStatuses;
-    private final SimpMessagingTemplate messagingTemplate;
     private final ThreadPoolTaskScheduler threadPoolTaskScheduler;
-    private final RunAsyncService runAsyncService;
+    private final RunAsyncServiceImpl runAsyncService;
+    private final SharedContainerServiceImpl sharedContainerService;
 
-    public RunTestCaseServiceImpl(SimpMessagingTemplate messagingTemplate,
-                                  ThreadPoolTaskScheduler threadPoolTaskScheduler,
-                                  @Lazy RunAsyncService runAsyncService) {
-        this.messagingTemplate = messagingTemplate;
+    public RunTestCaseServiceImpl(ThreadPoolTaskScheduler threadPoolTaskScheduler,
+                                  RunAsyncServiceImpl runAsyncService,
+                                  SharedContainerServiceImpl sharedContainerService) {
         this.threadPoolTaskScheduler = threadPoolTaskScheduler;
         this.runAsyncService = runAsyncService;
+        this.sharedContainerService = sharedContainerService;
         WebDriverManager.chromedriver().setup();
-        sharedStorage = new ConcurrentHashMap<>();
-        targetStatuses = new ConcurrentHashMap<>();
     }
 
     private int runTestCase(Integer testCaseId, Integer startedById) {
@@ -57,34 +50,34 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
     }
 
     private int suspendTestCase(Integer testCaseId) {
-        if (targetStatuses.get(testCaseId) != TestingStatus.IN_PROGRESS) {
+        if (sharedContainerService.getFromTargetStatuses(testCaseId) != TestingStatus.IN_PROGRESS) {
             return -1;
         } else {
-            targetStatuses.put(testCaseId, TestingStatus.STOPPED);
+            sharedContainerService.putToTargetStatuses(testCaseId, TestingStatus.STOPPED);
             return 0;
         }
     }
 
     private int resumeTestCase(Integer testCaseId) {
-        if (targetStatuses.get(testCaseId) != TestingStatus.STOPPED) {
+        if (sharedContainerService.getFromTargetStatuses(testCaseId) != TestingStatus.STOPPED) {
             return -1;
         } else {
-            targetStatuses.put(testCaseId, TestingStatus.IN_PROGRESS);
-            synchronized (sharedStorage.get(testCaseId)) {
-                sharedStorage.get(testCaseId).notifyAll();
+            sharedContainerService.putToTargetStatuses(testCaseId, TestingStatus.IN_PROGRESS);
+            synchronized (sharedContainerService.getFromSharedStorage(testCaseId)) {
+                sharedContainerService.getFromSharedStorage(testCaseId).notifyAll();
             }
             return 0;
         }
     }
 
     private int interruptTestCase(Integer testCaseId) {
-        if (targetStatuses.get(testCaseId) != TestingStatus.IN_PROGRESS &&
-                targetStatuses.get(testCaseId) != TestingStatus.STOPPED) {
+        if (sharedContainerService.getFromTargetStatuses(testCaseId) != TestingStatus.IN_PROGRESS &&
+                sharedContainerService.getFromTargetStatuses(testCaseId) != TestingStatus.STOPPED) {
             return -1;
         } else {
-            targetStatuses.put(testCaseId, TestingStatus.CANCELED);
-            synchronized (sharedStorage.get(testCaseId)) {
-                sharedStorage.get(testCaseId).notifyAll();
+            sharedContainerService.putToTargetStatuses(testCaseId, TestingStatus.CANCELED);
+            synchronized (sharedContainerService.getFromSharedStorage(testCaseId)) {
+                sharedContainerService.getFromSharedStorage(testCaseId).notifyAll();
             }
             return 0;
         }
@@ -108,34 +101,5 @@ public class RunTestCaseServiceImpl implements RunTestCaseService {
                     return -1;
             }
         }
-    }
-
-    @Override
-    public List<ActionInstRunDto> getActionInstRunDtosFromSharedStorage(Integer testCaseId) {
-        return sharedStorage.get(testCaseId);
-    }
-
-    @Override
-    public void sendActionInstToTestCaseSocket(List<ActionInstRunDto> actionInstRunDtos, Integer testCaseId) {
-        messagingTemplate.convertAndSend("/topic/actionInst/" + testCaseId, actionInstRunDtos);
-    }
-
-    @Override
-    public void sendActionInstToTestCaseSocket(Integer testCaseId) {
-        messagingTemplate.convertAndSend("/topic/actionInst/" + testCaseId, sharedStorage.get(testCaseId));
-    }
-
-    protected TestingStatus getFromTargetStatuses(Integer testCaseId) {
-        return targetStatuses.get(testCaseId);
-    }
-
-    protected void initInSharedMaps(Integer testCaseId) {
-        targetStatuses.put(testCaseId, TestingStatus.IN_PROGRESS);
-        sharedStorage.put(testCaseId, new CopyOnWriteArrayList<>());
-    }
-
-    protected void deleteFromSharedMaps(Integer testCaseId) {
-        sharedStorage.remove(testCaseId);
-        targetStatuses.remove(testCaseId);
     }
 }

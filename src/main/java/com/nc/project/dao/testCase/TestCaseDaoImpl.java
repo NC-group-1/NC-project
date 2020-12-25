@@ -49,6 +49,7 @@ public class TestCaseDaoImpl implements TestCaseDao {
         project.setLink(resultSet.getString("link"));
         entity.setProject(project);
         entity.setNumberOfActions(resultSet.getObject("number_of_actions", Long.class));
+        entity.setTestScenarioId(resultSet.getObject("test_scenario_id", Integer.class));
         return entity;
     };
 
