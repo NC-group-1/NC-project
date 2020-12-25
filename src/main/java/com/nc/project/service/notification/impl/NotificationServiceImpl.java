@@ -57,10 +57,8 @@ public class NotificationServiceImpl implements NotificationService {
     public void sendProgressToTestCase(Integer testCaseId) {
         Optional<TestCaseProgress> progress = this.getTestCaseProgress(testCaseId);
         progress.ifPresent(testCaseProgress -> {
-            if(testCaseProgress.getStatus() != TestingStatus.CANCELED
-                    && testCaseProgress.getStatus() != TestingStatus.FAILED
-                    && testCaseProgress.getStatus() != TestingStatus.PASSED
-                    && testCaseProgress.getStatus() != TestingStatus.SCHEDULED) {
+            if(testCaseProgress.getStatus() == TestingStatus.IN_PROGRESS
+                    || testCaseProgress.getStatus() == TestingStatus.STOPPED) {
                 float completed = sharedContainerService.getFromSharedStorage(testCaseId).size();
                 int all = actionInstDao.getNumberOfActionInstancesByTestCaseId(testCaseId).orElse(1);
                 testCaseProgress.setProgress(completed/all);
