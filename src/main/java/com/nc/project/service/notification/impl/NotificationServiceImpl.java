@@ -2,12 +2,13 @@ package com.nc.project.service.notification.impl;
 
 import com.nc.project.dao.actionInst.ActionInstDao;
 import com.nc.project.dao.notification.NotificationDao;
+import com.nc.project.dto.ActionInstRunDto;
 import com.nc.project.dto.TestCaseProgress;
 import com.nc.project.model.UserNotification;
 import com.nc.project.model.util.NotificationType;
 import com.nc.project.model.util.TestingStatus;
 import com.nc.project.service.notification.NotificationService;
-import com.nc.project.service.runTestCase.RunTestCaseService;
+import com.nc.project.service.runTestCase.SharedContainerService;
 import com.nc.project.service.testCase.TestCaseService;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -21,18 +22,18 @@ public class NotificationServiceImpl implements NotificationService {
     private final SimpMessagingTemplate messagingTemplate;
     private final TestCaseService testCaseService;
     private final ActionInstDao actionInstDao;
-    private final RunTestCaseService runTestCaseService;
+    private final SharedContainerService sharedContainerService;
 
     public NotificationServiceImpl(NotificationDao notificationDao,
                                    SimpMessagingTemplate messagingTemplate,
                                    TestCaseService testCaseService,
                                    ActionInstDao actionInstDao,
-                                   RunTestCaseService runTestCaseService) {
+                                   SharedContainerService sharedContainerService) {
         this.notificationDao = notificationDao;
         this.messagingTemplate = messagingTemplate;
         this.testCaseService = testCaseService;
         this.actionInstDao = actionInstDao;
-        this.runTestCaseService = runTestCaseService;
+        this.sharedContainerService = sharedContainerService;
     }
 
 
@@ -60,7 +61,7 @@ public class NotificationServiceImpl implements NotificationService {
                     && testCaseProgress.getStatus() != TestingStatus.FAILED
                     && testCaseProgress.getStatus() != TestingStatus.PASSED
                     && testCaseProgress.getStatus() != TestingStatus.SCHEDULED) {
-                float completed = runTestCaseService.getActionInstRunDtosFromSharedStorage(testCaseId).size();
+                float completed = sharedContainerService.getFromSharedStorage(testCaseId).size();
                 int all = actionInstDao.getNumberOfActionInstancesByTestCaseId(testCaseId).orElse(1);
                 testCaseProgress.setProgress(completed/all);
             }
@@ -104,5 +105,14 @@ public class NotificationServiceImpl implements NotificationService {
         return this.notificationDao.deleteNotification(userId, notificationId);
     }
 
+    @Override
+    public void sendActionInstToTestCaseSocket(List<ActionInstRunDto> actionInstRunDtos, Integer testCaseId) {
+        messagingTemplate.convertAndSend("/topic/actionInst/" + testCaseId, actionInstRunDtos);
+    }
 
+    @Override
+    public void sendActionInstToTestCaseSocket(Integer testCaseId) {
+        messagingTemplate.convertAndSend("/topic/actionInst/" + testCaseId,
+                sharedContainerService.getFromSharedStorage(testCaseId));
+    }
 }

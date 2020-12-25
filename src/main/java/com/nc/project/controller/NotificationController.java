@@ -2,7 +2,6 @@ package com.nc.project.controller;
 
 import com.nc.project.service.notification.NotificationService;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,6 +26,11 @@ public class NotificationController {
     public void getTestCaseProgress(Integer testCaseId) throws InterruptedException {
         Thread.sleep(500);
         this.notificationService.sendProgressToTestCase(testCaseId);
+    }
+    @MessageMapping("/actionInst/tc")
+    public void getTestCaseActionInstances(Integer testCaseId) throws InterruptedException {
+        Thread.sleep(500);
+        notificationService.sendActionInstToTestCaseSocket(testCaseId);
     }
     @PutMapping("/{userId}")
     public Boolean markAsRead(@PathVariable Integer userId, @RequestBody Integer notificationId){

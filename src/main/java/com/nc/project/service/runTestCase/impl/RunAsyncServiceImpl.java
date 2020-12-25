@@ -27,23 +27,23 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class RunAsyncService {
+public class RunAsyncServiceImpl {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final ActionInstDao actionInstDao;
     private final TestCaseDao testCaseDao;
     private final NotificationService notificationService;
-    private final RunTestCaseServiceImpl runTestCaseService;
+    private final SharedContainerServiceImpl sharedContainerService;
 
-    public RunAsyncService(ActionInstDao actionInstDao,
-                           TestCaseDao testCaseDao,
-                           NotificationService notificationService,
-                           RunTestCaseServiceImpl runTestCaseService) {
+    public RunAsyncServiceImpl(ActionInstDao actionInstDao,
+                               TestCaseDao testCaseDao,
+                               NotificationService notificationService,
+                               SharedContainerServiceImpl sharedContainerService) {
         this.actionInstDao = actionInstDao;
         this.testCaseDao = testCaseDao;
         this.notificationService = notificationService;
-        this.runTestCaseService = runTestCaseService;
+        this.sharedContainerService = sharedContainerService;
     }
 
     @Transactional
@@ -58,7 +58,7 @@ public class RunAsyncService {
         testCase.setStarter(startedById);
         testCase.setStatus(TestingStatus.IN_PROGRESS);
         testCaseDao.editForRun(testCase);
-        runTestCaseService.initInSharedMaps(testCase.getId());
+        sharedContainerService.initInSharedMaps(testCaseId);
         return Optional.of(testCase);
     }
 
@@ -94,20 +94,20 @@ public class RunAsyncService {
                         actionInst.getParameterValue(),
                         actionInst.getId());
                 actionInst.setStatus(currentActionInstStatus);
-                runTestCaseService.getActionInstRunDtosFromSharedStorage(testCase.getId()).add(actionInst);
-                runTestCaseService.sendActionInstToTestCaseSocket(Collections.singletonList(actionInst), testCase.getId());
-                testCase.setStatus(runTestCaseService.getFromTargetStatuses(testCase.getId()));
+                sharedContainerService.getFromSharedStorage(testCase.getId()).add(actionInst);
+                notificationService.sendActionInstToTestCaseSocket(Collections.singletonList(actionInst), testCase.getId());
+                testCase.setStatus(sharedContainerService.getFromTargetStatuses(testCase.getId()));
                 if (currentActionInstStatus == TestingStatus.FAILED) {
                     testCase.setStatus(TestingStatus.FAILED);
                 }
                 notificationService.sendProgressToTestCase(new TestCaseProgress(testCase.getId(), testCase.getName(),
                         testCase.getStatus(), (actionNumber + 1.0f) / actionInstRunDtos.size()));
-                while (runTestCaseService.getFromTargetStatuses(testCase.getId()) == TestingStatus.STOPPED
+                while (sharedContainerService.getFromTargetStatuses(testCase.getId()) == TestingStatus.STOPPED
                         && testCase.getStatus() != TestingStatus.CANCELED
                         && testCase.getStatus() != TestingStatus.FAILED) {
-                    synchronized (runTestCaseService.getActionInstRunDtosFromSharedStorage(testCase.getId())) {
+                    synchronized (sharedContainerService.getFromSharedStorage(testCase.getId())) {
                         testCaseDao.editForRun(testCase);
-                        runTestCaseService.getActionInstRunDtosFromSharedStorage(testCase.getId()).wait();
+                        sharedContainerService.getFromSharedStorage(testCase.getId()).wait();
                         testCase.setStatus(TestingStatus.IN_PROGRESS);
                         testCaseDao.editForRun(testCase);
                     }
@@ -131,7 +131,7 @@ public class RunAsyncService {
             testCaseDao.editForRun(testCase);
             createStatusNotification(testCase);
         } finally {
-            runTestCaseService.deleteFromSharedMaps(testCase.getId());
+            sharedContainerService.deleteFromSharedMaps(testCase.getId());
             driver.close();
         }
     }

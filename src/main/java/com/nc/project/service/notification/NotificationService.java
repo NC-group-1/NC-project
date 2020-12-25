@@ -1,5 +1,6 @@
 package com.nc.project.service.notification;
 
+import com.nc.project.dto.ActionInstRunDto;
 import com.nc.project.dto.TestCaseProgress;
 import com.nc.project.model.UserNotification;
 import com.nc.project.model.util.NotificationType;
@@ -21,4 +22,6 @@ public interface NotificationService {
     Boolean changeRead(Integer userId, Integer notificationId);
 
     Boolean deleteNotification(Integer userId, Integer notificationId);
+    void sendActionInstToTestCaseSocket(List<ActionInstRunDto> actionInstRunDtos, Integer testCaseId);
+    void sendActionInstToTestCaseSocket(Integer testCaseId);
 }

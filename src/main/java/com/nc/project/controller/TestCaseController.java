@@ -4,11 +4,11 @@ import com.nc.project.dto.*;
 import com.nc.project.model.TestCase;
 import com.nc.project.model.Watcher;
 import com.nc.project.service.runTestCase.RunTestCaseService;
+import com.nc.project.service.runTestCase.TestCaseOperations;
 import com.nc.project.service.testCase.TestCaseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -50,18 +50,12 @@ public class TestCaseController {
     @PutMapping("/{id}")
     public ResponseEntity<HttpStatus> performTestCaseOperation(
             @PathVariable int id,
-            @RequestParam RunTestCaseService.TestCaseOperations operation,
+            @RequestParam TestCaseOperations operation,
             @RequestParam(defaultValue = "0") Integer startedById) {
         if (0 == runTestCaseService.performTestCaseOperation(operation,id,startedById)) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-    }
-
-    @MessageMapping("/actionInst/tc")
-    public void getTestCaseActionInstances(Integer testCaseId) throws InterruptedException {
-        Thread.sleep(500);
-        this.runTestCaseService.sendActionInstToTestCaseSocket(testCaseId);
     }
 
     @GetMapping("/{id}/run-details")
