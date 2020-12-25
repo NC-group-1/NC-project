@@ -23,7 +23,7 @@ public class NotificationRowMapper implements RowMapper<UserNotification> {
                                 resultSet.getString("description"),
                                 TestingStatus.valueOf(resultSet.getString("status"))
                         ),
-                        resultSet.getDate("date"),
+                        resultSet.getTimestamp("date"),
                         NotificationType.valueOf(resultSet.getString("type"))
                 ),
                 resultSet.getBoolean("is_read"),
