@@ -15,7 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 public class Compound extends Action{
     private List<ActionOfCompound> actions;
-    @JsonIgnore
     private ParameterKey parameterKey;
     public Compound(int id, String name, String description, ActionType type, ParameterKey parameterKey, List<ActionOfCompound> actions) {
         super(id, name, description, type, parameterKey);
