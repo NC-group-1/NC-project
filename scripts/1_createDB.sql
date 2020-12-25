@@ -1,8 +1,8 @@
 CREATE TABLE public.usr
 (
     user_id serial PRIMARY KEY,
-    name character varying(30),
-    surname character varying(30),
+    name character varying(30) DEFAULT 'DefaultName',
+    surname character varying(30) DEFAULT 'DefaultSurname',
     email character varying(255) UNIQUE NOT NULL,
     role character varying(15) NOT NULL,
     activated boolean NOT NULL DEFAULT true,
