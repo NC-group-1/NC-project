@@ -47,8 +47,9 @@ public class TestScenarioRestController {
         Page<TestScenarioDto> testScenarioList = testScenarioService.getAllByPage(pageIndex, pageSize, filterBy, filter, orderBy, order, projectId);
         return new ResponseEntity<>(testScenarioList, HttpStatus.OK);
     }
+
     @GetMapping("{testScenarioId}/projectId")
-    public Integer getProjectIdOfTestScenario(@PathVariable Integer testScenarioId){
+    public Integer getProjectIdOfTestScenario(@PathVariable Integer testScenarioId) {
         return testScenarioService.getProjectIdOfTestScenario(testScenarioId);
     }
 

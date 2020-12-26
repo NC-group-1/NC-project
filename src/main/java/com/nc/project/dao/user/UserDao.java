@@ -1,13 +1,10 @@
 package com.nc.project.dao.user;
 
-import com.nc.project.dto.Page;
 import com.nc.project.dto.UserProfileDto;
 import com.nc.project.model.RecoveryToken;
 import com.nc.project.model.User;
-
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +32,7 @@ public interface UserDao {
 
     String getUserRoleByEmail(String email);
 
-    List<UserProfileDto> getAllByPage(int page, int size, String filter, String orderBy,String order);
+    List<UserProfileDto> getAllByPage(int page, int size, String filter, String orderBy, String order);
 
     void updateUserFromTable(UserProfileDto userProfile);
 

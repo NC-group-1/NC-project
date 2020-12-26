@@ -15,13 +15,13 @@ public interface TestScenarioDao {
 
     void addManyActionOrCompound(int[] action_compound_id, int ts_id);
 
-    List<TestScenarioDto> getAllByPage(int page, int size,String filterBy,  String filter, String orderBy, String order);
+    List<TestScenarioDto> getAllByPage(int page, int size, String filterBy, String filter, String orderBy, String order);
 
     void edit(TestScenario testScenario);
 
     Integer getSizeOfResultSet(String filterBy, String filter);
 
-    List<TestScenarioDto> getAllByPageAndProject(int page, int size,String filterBy, String filter, String orderBy, String order, int projectId);
+    List<TestScenarioDto> getAllByPageAndProject(int page, int size, String filterBy, String filter, String orderBy, String order, int projectId);
 
     Integer getSizeOfProjectResultSet(String filterBy, String filter, int projectId);
 

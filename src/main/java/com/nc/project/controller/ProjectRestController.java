@@ -3,11 +3,8 @@ package com.nc.project.controller;
 import com.nc.project.dto.Page;
 import com.nc.project.dto.ProjectDto;
 import com.nc.project.dto.ReportDto;
-import com.nc.project.dto.TestCaseDetailsDto;
-import com.nc.project.exception.UserNotFoundException;
 import com.nc.project.model.Project;
 import com.nc.project.service.mail.EmailSendReportService;
-import com.nc.project.service.mail.EmailService;
 import com.nc.project.service.project.ProjectService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -60,7 +57,7 @@ public class ProjectRestController {
     }
 
     @GetMapping(produces = MediaType.TEXT_PLAIN_VALUE)
-    public String getProjectName(@RequestParam int projectId){
+    public String getProjectName(@RequestParam int projectId) {
         return projectService.getProjectName(projectId);
 
     }

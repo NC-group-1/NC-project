@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserProfileDto> getAllByPage(int page, int size, String filter ,String orderBy,String order) {
+    public Page<UserProfileDto> getAllByPage(int page, int size, String filter, String orderBy, String order) {
         if (orderBy.equals(""))
             orderBy = "user_id";
         if (!order.equals("DESC")) {

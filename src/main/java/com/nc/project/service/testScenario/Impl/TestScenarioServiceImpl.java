@@ -5,10 +5,10 @@ import com.nc.project.dao.testScenario.TestScenarioDao;
 import com.nc.project.dto.Page;
 import com.nc.project.dto.TestScenarioDto;
 import com.nc.project.model.ActionOfCompound;
-import com.nc.project.model.Compound;
 import com.nc.project.model.TestScenario;
 import com.nc.project.model.TestScenarioComponent;
 import com.nc.project.model.util.ActionType;
+import com.nc.project.service.testScenario.TestScenarioFilterAndOrderByEnum;
 import com.nc.project.service.testScenario.TestScenarioService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,40 +36,15 @@ public class TestScenarioServiceImpl implements TestScenarioService {
 
     @Override
     public Page<TestScenarioDto> getAllByPage(int page, int size, String filterBy, String filter, String orderBy, String order, int projectId) {
-        switch (orderBy){
-            case "name":
-                orderBy ="t.name";
-                break;
-            case "creatorName":
-                orderBy ="(CASE WHEN concat(u.name, ' ', surname) = ' ' THEN email ELSE concat(u.name, ' ', surname) END)";
-                break;
-            case "description":
-                orderBy ="description";
-                break;
-            default:
-                orderBy = "test_scenario_id";
-                break;
-        }
-        switch (filterBy){
-            case "creatorName":
-                filterBy ="CASE WHEN concat(u.name, ' ', surname) = ' ' THEN email ELSE concat(u.name, ' ', surname) END";
-                break;
-            case "description":
-                filterBy ="description";
-                break;
-            default:
-                filterBy = "t.name";
-                break;
-        }
-        if (!order.toLowerCase().equals("desc"))
+        orderBy = TestScenarioFilterAndOrderByEnum.getEnum(orderBy).getValue();
+        filterBy = TestScenarioFilterAndOrderByEnum.getEnum(filterBy).getValue();
+        if (!order.toLowerCase().equals("desc")) {
             order = "";
-
-
-
+        }
         if (projectId != 0) {
             return new Page<>(testScenarioDao.getAllByPageAndProject(page, size, filterBy, filter, orderBy, order, projectId), testScenarioDao.getSizeOfProjectResultSet(filterBy, filter, projectId));
         }
-        return new Page<>(testScenarioDao.getAllByPage(page, size,filterBy, filter, orderBy, order), testScenarioDao.getSizeOfResultSet(filterBy, filter));
+        return new Page<>(testScenarioDao.getAllByPage(page, size, filterBy, filter, orderBy, order), testScenarioDao.getSizeOfResultSet(filterBy, filter));
     }
 
     @Override
@@ -142,7 +117,7 @@ public class TestScenarioServiceImpl implements TestScenarioService {
         for (TestScenarioComponent component : testScenarioDao.getComponents(id)) {
             if (component.getAction().getType() == ActionType.COMPOUND) {
                 for (ActionOfCompound action : compoundDao.getActionsOfCompound(component.getAction().getId())) {
-                    components.add(new TestScenarioComponent(   action.getAction(), order_num++));
+                    components.add(new TestScenarioComponent(action.getAction(), order_num++));
                 }
             } else {
                 component.setOrderNum(order_num++);

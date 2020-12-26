@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,13 +32,13 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Page<ProjectDto> getAllByPage(int page, int size, String filter, String orderBy, String order) {
-        if(orderBy.equals(""))
+        if (orderBy.equals(""))
             orderBy = "project_id";
-        if(!order.equals("DESC")){
-            order="";
+        if (!order.equals("DESC")) {
+            order = "";
         }
 
-        return new Page<>(projectDao.getAllByPage(page,size,filter,orderBy,order),projectDao.getSizeOfResultSet(filter));
+        return new Page<>(projectDao.getAllByPage(page, size, filter, orderBy, order), projectDao.getSizeOfResultSet(filter));
     }
 
     @Override
@@ -78,13 +77,13 @@ public class ProjectServiceImpl implements ProjectService {
             );
 
             paramsDetail.add(
-                            params.getActionInstRunDtos().stream()
-                                    .map(actionInstDto ->
-                                            (actionInstDto.getActionName() != null ? "<p>Action : " + actionInstDto.getActionName() + " <b>have result:</b> " +  actionInstDto.getResult() + "</p>" : "")
+                    params.getActionInstRunDtos().stream()
+                            .map(actionInstDto ->
+                                            (actionInstDto.getActionName() != null ? "<p>Action : " + actionInstDto.getActionName() + " <b>have result:</b> " + actionInstDto.getResult() + "</p>" : "")
 //                                            + (actionInstDto.getCompoundName() != null ? "<p>Compound result: " + actionInstDto.getCompoundName() + " <b>have result:</b> " + actionInstDto.getResult() + "</p>" : "")
-                                    )
+                            )
                             .collect(Collectors.joining())
-                    );
+            );
             return Optional.of(String.format(htmlStringBuilder.toString(), String.join("", paramsDetail)));
         } catch (IOException e) {
             e.printStackTrace();

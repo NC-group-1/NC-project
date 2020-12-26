@@ -18,6 +18,6 @@ public class TestScenarioDtoRowMapper implements RowMapper<TestScenarioDto> {
                         resultSet.getString("email"),
                         resultSet.getString("username"),
                         resultSet.getString("surname")
-                        ));
+                ));
     }
 }

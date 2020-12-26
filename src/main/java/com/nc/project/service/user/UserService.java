@@ -33,7 +33,7 @@ public interface UserService {
     void updateUserFromTable(UserProfileDto userProfile);
 
     Integer getUserIdByEmail(String username);
-  
+
     Optional<String> addLinkToEmail(String link, String pathToEmail);
 
 }

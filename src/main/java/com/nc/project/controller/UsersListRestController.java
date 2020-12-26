@@ -5,7 +5,6 @@ import com.nc.project.dto.UserProfileDto;
 import com.nc.project.service.user.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,10 +24,9 @@ public class UsersListRestController {
             @RequestParam(defaultValue = "") String filter,
             @RequestParam(defaultValue = "") String orderBy,
             @RequestParam(defaultValue = "") String order
-            )
-    {
+    ) {
 
-        Page<UserProfileDto> userList = userService.getAllByPage(pageIndex,pageSize,filter,orderBy,order);
+        Page<UserProfileDto> userList = userService.getAllByPage(pageIndex, pageSize, filter, orderBy, order);
 
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
@@ -36,8 +34,7 @@ public class UsersListRestController {
     @PutMapping
     @ResponseStatus(value = HttpStatus.OK)
     public void update(
-            @RequestBody UserProfileDto userProfileDto)
-    {
+            @RequestBody UserProfileDto userProfileDto) {
         userService.updateUserFromTable(userProfileDto);
     }
 }

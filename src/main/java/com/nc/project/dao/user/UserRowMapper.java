@@ -1,7 +1,6 @@
 package com.nc.project.dao.user;
 
 import com.nc.project.dto.UserProfileDto;
-import com.nc.project.model.Compound;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

@@ -57,7 +57,7 @@ public class TestScenarioDaoImpl implements TestScenarioDao {
     }
 
     @Override
-    public List<TestScenarioDto> getAllByPage(int page, int size,String filterBy,  String filter, String orderBy, String order) {
+    public List<TestScenarioDto> getAllByPage(int page, int size, String filterBy, String filter, String orderBy, String order) {
         String query = queryService.getQuery("testScenario.getAllByPage");
         query = String.format(query, filterBy, orderBy, order);
         return jdbcTemplate.query(query,
@@ -87,7 +87,7 @@ public class TestScenarioDaoImpl implements TestScenarioDao {
     }
 
     @Override
-    public List<TestScenarioDto> getAllByPageAndProject(int page, int size, String filterBy,  String filter, String orderBy, String order, int projectId) {
+    public List<TestScenarioDto> getAllByPageAndProject(int page, int size, String filterBy, String filter, String orderBy, String order, int projectId) {
         String query = queryService.getQuery("testScenario.getAllByPageAndProject");
         query = String.format(query, filterBy, orderBy, order);
         List<TestScenarioDto> testScenarioList = jdbcTemplate.query(query,
@@ -176,6 +176,6 @@ public class TestScenarioDaoImpl implements TestScenarioDao {
     @Override
     public Integer getProjectIdOfTestScenario(Integer testScenarioId) {
         String sql = queryService.getQuery("testScenario.getProjectIdOfTestScenario");
-        return jdbcTemplate.queryForObject(sql, new Object[]{testScenarioId} , Integer.class);
+        return jdbcTemplate.queryForObject(sql, new Object[]{testScenarioId}, Integer.class);
     }
 }

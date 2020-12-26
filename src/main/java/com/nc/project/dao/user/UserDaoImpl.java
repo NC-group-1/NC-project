@@ -7,8 +7,11 @@ import com.nc.project.model.User;
 import com.nc.project.service.query.QueryService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -36,7 +39,7 @@ public class UserDaoImpl implements UserDao {
                 userProfileDto.getAboutMe(),
                 userProfileDto.getImageLink(),
                 userProfileDto.getUserId()
-                );
+        );
         return update > 0 ? Optional.of(userProfileDto) : Optional.empty();
     }
 
@@ -139,11 +142,11 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<UserProfileDto> getAllByPage(int page, int size,String filter ,String orderBy, String order) {
+    public List<UserProfileDto> getAllByPage(int page, int size, String filter, String orderBy, String order) {
         String query = queryService.getQuery("user.getAllByPage");
-        query = String.format(query,orderBy,order);
+        query = String.format(query, orderBy, order);
         List<UserProfileDto> listUserProfile = jdbcTemplate.query(query,
-                new Object[]{"%"+filter +"%", size, size, page-1},
+                new Object[]{"%" + filter + "%", size, size, page - 1},
                 new UserRowMapper()
         );
         return listUserProfile;
@@ -164,7 +167,7 @@ public class UserDaoImpl implements UserDao {
     public Optional<Integer> getSizeOfResultSet(String filter) {
         String sql = queryService.getQuery("user.getSizeOfResultSet");
         Integer size = jdbcTemplate.queryForObject(sql,
-                new Object[]{"%"+filter +"%"},
+                new Object[]{"%" + filter + "%"},
                 (rs, rowNum) -> rs.getInt("count"));
         return Optional.of(size);
     }
