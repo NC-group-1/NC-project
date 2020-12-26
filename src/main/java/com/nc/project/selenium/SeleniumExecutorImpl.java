@@ -24,8 +24,6 @@ public class SeleniumExecutorImpl implements Executor{
         this.context = context;
     }
 
-    //TODO implement other selenium actions
-
     @Override
     public void addToContext(Integer actionId, String value) {
         context.put(actionId, value);
@@ -60,7 +58,8 @@ public class SeleniumExecutorImpl implements Executor{
             context.put(actionId, "Compared values are equal");
             return TestingStatus.PASSED;
         } else {
-            context.put(actionId,"Comparing mismatch! Got("+currentContextValue+") Expected("+expected+")");
+            context.put(actionId,"Comparing mismatch! Got("+currentContextValue+
+                    ") Expected("+expected.orElse(null)+")");
             return TestingStatus.FAILED;
         }
     }

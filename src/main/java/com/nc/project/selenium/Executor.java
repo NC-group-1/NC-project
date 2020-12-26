@@ -20,5 +20,4 @@ public interface Executor {
     TestingStatus findElementByTagName(String parameter, Integer actionId);
     TestingStatus findElementByXpath(String parameter, Integer actionId);
     TestingStatus findElementByClassName(String parameter, Integer actionId);
-    //TODO add other selenium actions
 }

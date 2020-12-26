@@ -35,7 +35,6 @@ public class Invoker {
         actionTypeCommandMap.put(ActionType.FIND_ELEMENT_BY_NAME,executor::findElementByName);
         actionTypeCommandMap.put(ActionType.FIND_ELEMENT_BY_PARTIAL_LINK_TEXT,executor::findElementByPartialLinkText);
         actionTypeCommandMap.put(ActionType.FIND_ELEMENT_BY_TAG_NAME,executor::findElementByTagName);
-        //TODO map all selenium actions with their action types
     }
 
     public TestingStatus invoke(ActionType type, String parameter, Integer actionId) {

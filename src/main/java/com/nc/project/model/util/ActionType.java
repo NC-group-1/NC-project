@@ -5,9 +5,9 @@ public enum ActionType {
     SEND_KEYS(2, 0),
     SWITCH_TAB(0, 0),
     COMPARE_WITH_STRING(2, 0),
-    COMPARE_WITH_CONTEXT_VALUE(1, 2),
+    COMPARE_WITH_CONTEXT_VALUE(2, 2),
     SCROLL_PAGE_TO_END(0, 0),
-    SAVE_ELEMENT_TEXT_TO_CONTEXT(1, 1),
+    SAVE_ELEMENT_TEXT_TO_CONTEXT(2, 1),
     SAVE_ELEMENT_ATTRIBUTE_TO_CONTEXT(2, 1),
     FIND_ELEMENT_BY_ID(2, 0),
     FIND_ELEMENT_BY_XPATH(2, 0),
@@ -56,6 +56,6 @@ public enum ActionType {
      */
     ActionType(Integer needParams, Integer contextBehaviour) {
         this.needParams = needParams;
-        this.contextBehaviour = needParams;
+        this.contextBehaviour = contextBehaviour;
     }
 }

@@ -132,7 +132,7 @@ public class RunAsyncServiceImpl {
             createStatusNotification(testCase);
         } finally {
             sharedContainerService.deleteFromSharedMaps(testCase.getId());
-            driver.close();
+            driver.quit();
         }
     }
 
@@ -158,7 +158,7 @@ public class RunAsyncServiceImpl {
                         .filter(actionInstRunDto -> actionInstRunDto.getId().equals(actionId))
                         .findFirst().orElseThrow();
                 return actionInstRunDtos.stream()
-                        .filter(actionInstRunDto -> actionInstRunDto.getActionType().getContextBehaviour() == 1)
+                        .filter(actionInstRunDto -> actionInstRunDto.getActionType().getContextBehaviour().equals(1))
                         .filter(actionInstRunDto -> actionInstRunDto.getParameterKeyKey()
                                 .equals(currentAction.getParameterKeyKey()))
                         .map(ActionInstRunDto::getResult).findFirst();
