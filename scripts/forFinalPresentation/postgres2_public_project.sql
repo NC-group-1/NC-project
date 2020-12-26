@@ -1,0 +1,3 @@
+INSERT INTO public.project (project_id, name, link, date, activated, user_id) VALUES (1, 'Wikipedia', 'https://en.wikipedia.org', '2020-12-22 08:21:59.865109', true, 1);
+INSERT INTO public.project (project_id, name, link, date, activated, user_id) VALUES (2, 'Yahoo', 'https://www.yahoo.com', '2020-12-25 14:11:39.362053', true, 6);
+INSERT INTO public.project (project_id, name, link, date, activated, user_id) VALUES (3, 'Citrus store', 'https://www.citrus.ua', '2020-12-26 10:03:48.746152', true, 6);

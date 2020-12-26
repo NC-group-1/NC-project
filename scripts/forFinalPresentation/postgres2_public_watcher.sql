@@ -1,0 +1,11 @@
+INSERT INTO public.watcher (user_id, test_case_id) VALUES (1, 2);
+INSERT INTO public.watcher (user_id, test_case_id) VALUES (1, 4);
+INSERT INTO public.watcher (user_id, test_case_id) VALUES (1, 3);
+INSERT INTO public.watcher (user_id, test_case_id) VALUES (1, 5);
+INSERT INTO public.watcher (user_id, test_case_id) VALUES (1, 6);
+INSERT INTO public.watcher (user_id, test_case_id) VALUES (6, 6);
+INSERT INTO public.watcher (user_id, test_case_id) VALUES (6, 10);
+INSERT INTO public.watcher (user_id, test_case_id) VALUES (6, 11);
+INSERT INTO public.watcher (user_id, test_case_id) VALUES (6, 3);
+INSERT INTO public.watcher (user_id, test_case_id) VALUES (6, 5);
+INSERT INTO public.watcher (user_id, test_case_id) VALUES (6, 12);
