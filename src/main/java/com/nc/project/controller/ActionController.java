@@ -95,9 +95,9 @@ public class ActionController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteAction(@PathVariable int id) {
+    public ResponseEntity<?> deleteAction(@PathVariable int id) {
         actionService.deleteAction(id);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/types")

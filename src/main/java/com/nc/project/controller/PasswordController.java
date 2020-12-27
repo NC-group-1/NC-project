@@ -10,13 +10,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.mail.MessagingException;
 import java.util.Optional;
 import java.util.UUID;
 
 @RestController
 @Slf4j
-@RequestMapping("/api")
+@RequestMapping("/api/ncp")
 @CrossOrigin(origins = "http://localhost:4200")
 public class PasswordController {
     private String SUBJECT = "Recovery Password";
@@ -31,7 +30,7 @@ public class PasswordController {
     }
 
     @PostMapping("/recovery-password")
-    public ResponseEntity<?> recoverPassword(@RequestBody String email) {
+    public ResponseEntity<Void> recoverPassword(@RequestBody String email) {
         User user = userService.findByEmailForRecovery(email).orElseThrow();
         String token = UUID.randomUUID().toString();
         try {
@@ -40,13 +39,13 @@ public class PasswordController {
 
             new Thread(() -> emailService.sendMessageWithAttachment(email, SUBJECT, recoverPasswordLink, PATH_TO_ATTACHMENT)).start();
         } catch (UserNotFoundException e) {
-            throw new UserNotFoundException(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/save-password")
-    public ResponseEntity<?> savePassword(@RequestBody PasswordDto passwordDto) {
+    public ResponseEntity<Void> savePassword(@RequestBody PasswordDto passwordDto) {
         String token = passwordDto.getToken();
         String result = userService.validatePasswordRecoverToken(token);
         if (result != null) {

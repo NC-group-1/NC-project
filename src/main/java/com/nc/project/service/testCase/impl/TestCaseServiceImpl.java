@@ -137,7 +137,7 @@ public class TestCaseServiceImpl implements TestCaseService {
         if (!order.equals("DESC")) {
             order = "";
         }
-        return new Page(testCaseDao.getTestCasesPaginatedByUserId(page, size, orderBy, order,userId),
+        return new Page<>(testCaseDao.getTestCasesPaginatedByUserId(page, size, orderBy, order,userId),
                 testCaseDao.getCountOfTestCasesPaginatedByUserId(userId));
     }
 
